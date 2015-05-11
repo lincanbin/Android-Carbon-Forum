@@ -1,16 +1,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_height="wrap_content"
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer"
         android:layout_width="match_parent"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?android:attr/actionBarSize">
-    </android.support.v7.widget.Toolbar>
-    <ListView
-        android:id="@+id/topic_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </ListView>
+        android:layout_height="match_parent" >
+
+        <!-- 内容界面 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+                <include layout="@layout/toolbar" />
+                <ListView
+                    android:id="@+id/topic_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                </ListView>
+        </LinearLayout>
+
+        <!-- 侧滑菜单内容 -->
+        <include layout="@layout/drawer" />
+    </android.support.v4.widget.DrawerLayout>
+
 </RelativeLayout>

@@ -2,6 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".index">
+       <item android:id="@+id/action_websearch"
+            android:icon="@drawable/ic_search_white_24dp"
+            android:title="@string/action_search"
+            android:orderInCategory="80"
+            android:showAsAction="ifRoom|withText" />
         <item android:id="@+id/action_share"
             android:title="@string/action_share"
             android:orderInCategory="90"
