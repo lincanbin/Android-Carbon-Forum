@@ -25,6 +25,7 @@ public class index extends AppCompatActivity {//http://stackoverflow.com/questio
         // 设置ToolBar
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
+
             // Title
             mToolbar.setTitle(R.string.app_name);
             //mToolbar.bringToFront();
@@ -34,7 +35,6 @@ public class index extends AppCompatActivity {//http://stackoverflow.com/questio
             // toolbar.setSubtitle("Sub title");
             setSupportActionBar(mToolbar);//把Toolbar当做ActionBar给设置了
             getSupportActionBar().setHomeButtonEnabled(true);
-
             /* 菜单的监听可以在toolbar里设置，也可以像ActionBar那样，通过Activity的onOptionsItemSelected回调方法来处理 */
 
             mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {

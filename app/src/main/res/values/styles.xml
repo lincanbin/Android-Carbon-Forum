@@ -4,9 +4,9 @@
 
     </style>
     <!-- your theme inherits from the material theme -->
-    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item-->
         <!-- theme customizations -->
         <!-- customize the color palette -->
         <item name="colorPrimary">@color/material_blue_500</item>
@@ -36,5 +36,12 @@
         Layout for query suggestion rows
         <item name="suggestionRowLayout">...</item>
             -->
+    </style>
+    <!-- 加入一個新的 navigation drarwer 的風格 -->
+    <style name="AppTheme.MyDrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <!-- 將 spinBars 屬性設定為 false -->
+        <item name="spinBars">false</item>
+        <!-- 設定 drawer arrow 的顏色 -->
+        <item name="color">@android:color/white</item>
     </style>
 </resources>
