@@ -41,6 +41,9 @@ public class index extends AppCompatActivity {//http://stackoverflow.com/questio
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()) {
+                        case R.id.action_search:
+                            Toast.makeText(index.this, "action_search", Toast.LENGTH_SHORT).show();
+                            break;
                         case R.id.action_settings:
                             Toast.makeText(index.this, "action_settings", Toast.LENGTH_SHORT).show();
                             break;
@@ -101,6 +104,15 @@ public class index extends AppCompatActivity {//http://stackoverflow.com/questio
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_index, menu);
+        /*
+        MenuItem shareItem = menu.findItem(R.id.action_share);
+        MenuItemCompat.setShowAsAction(shareItem,
+                MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        MenuItemCompat.setShowAsAction(searchItem,
+            MenuItemCompat.SHOW_AS_ACTION_WITH_TEXT);
+        */
         return true;
     }
     @Override
@@ -113,6 +125,9 @@ public class index extends AppCompatActivity {//http://stackoverflow.com/questio
         }
         int id = item.getItemId();
         switch (id) {
+            case R.id.action_search:
+                Toast.makeText(index.this, "action_search", Toast.LENGTH_SHORT).show();
+                break;
             case R.id.action_settings:
                 Toast.makeText(index.this, "action_settings", Toast.LENGTH_SHORT).show();
                 break;
