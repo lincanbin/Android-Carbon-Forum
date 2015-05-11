@@ -1,22 +1,34 @@
 package com.lincanbin.carbonforum;
 
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import com.lincanbin.carbonforum.adapter.IndexAdapter;
+import com.lincanbin.carbonforum.config.ApiAddress;
+import com.lincanbin.carbonforum.util.HttpUtil;
+
+import java.util.List;
+import java.util.Map;
 
 
 public class index extends AppCompatActivity {//http://stackoverflow.com/questions/28150100/setsupportactionbar-throws-error/28150167
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
+    private ListView mListView;
+    private IndexAdapter MAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +89,9 @@ public class index extends AppCompatActivity {//http://stackoverflow.com/questio
             };
             mDrawerLayout.setDrawerListener(mDrawerToggle);
         }
+        mListView = (ListView) findViewById(R.id.topic_list);
+        MAdapter = new IndexAdapter(this);
+        new IndexModel().execute(ApiAddress.HOME_URL+"2");
     }
 
     @Override
@@ -138,5 +153,36 @@ public class index extends AppCompatActivity {//http://stackoverflow.com/questio
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+    public class IndexModel extends AsyncTask<String, Void, List<Map<String,Object>>> {
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+            Toast.makeText(index.this, "onPreExecute", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(List<Map<String, Object>> result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+            MAdapter.setData(result);
+            mListView.setAdapter(MAdapter);
+            MAdapter.notifyDataSetChanged();
+            Toast.makeText(index.this, "onPostExecute", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected List<Map<String, Object>> doInBackground(String... params) {
+            // TODO Auto-generated method stub
+            List<Map<String,Object>> list ;
+
+            String str = HttpUtil.getRequest(params[0]);
+            Log.v("JSON", str);
+            list = HttpUtil.getRequest2List(str, "TopicsArray");
+            Log.v("List", list.toString());
+            return list;
+        }
+
     }
 }

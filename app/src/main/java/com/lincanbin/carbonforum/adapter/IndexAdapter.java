@@ -2,6 +2,7 @@ package com.lincanbin.carbonforum.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 public class IndexAdapter extends BaseAdapter {
-	
 	private Context context;
 	private LayoutInflater layoutInflater;
 	private List<Map<String,Object>> list;
@@ -75,13 +75,13 @@ public class IndexAdapter extends BaseAdapter {
 			viewHolder = (ViewHolder)convertView.getTag();
 		}
 		
-		viewHolder.ID.setText(list.get(position).get("sid").toString());
-		viewHolder.Title.setText(list.get(position).get("name").toString());
-		viewHolder.Description.setText(list.get(position).get("addr").toString());
+		viewHolder.ID.setText(list.get(position).get("ID").toString());
+		viewHolder.Title.setText(list.get(position).get("Topic").toString());
+		viewHolder.Description.setText(list.get(position).get("UserName").toString()+" 最后来自 "+list.get(position).get("LastName").toString());
 
-
+		Log.v("UserID", ApiAddress.MIDDLE_AVATAR_URL + (list.get(position).get("UserID").toString()) + ".png");
 		//接口回调的方法，完成图片的读取;
-		DownImage downImage = new DownImage(ApiAddress.DOMAIN_NAME+list.get(position).get("UesrID").toString()+".png");
+		DownImage downImage = new DownImage(ApiAddress.MIDDLE_AVATAR_URL + (list.get(position).get("UserID").toString()) + ".png");
 		downImage.loadImage(new DownImage.ImageCallBack() {
 
 			@Override
@@ -90,7 +90,6 @@ public class IndexAdapter extends BaseAdapter {
 				viewHolder.Avatar.setImageDrawable(drawable);
 			}
 		});
-		
 		
 		return convertView;
 	}

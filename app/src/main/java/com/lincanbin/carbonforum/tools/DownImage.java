@@ -37,7 +37,6 @@ public class DownImage {
 				// TODO Auto-generated method stub
 				try {
 					Drawable drawable = Drawable.createFromStream(new URL(image_path).openStream(), "");
-
 					Message message = Message.obtain();
 					message.obj = drawable;
 					handler.sendMessage(message);
