@@ -3,8 +3,10 @@ package com.lincanbin.carbonforum;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,10 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 
-public class index extends AppCompatActivity {//http://stackoverflow.com/questions/28150100/setsupportactionbar-throws-error/28150167
+public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRefreshListener {//http://stackoverflow.com/questions/28150100/setsupportactionbar-throws-error/28150167
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private ListView mListView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private IndexAdapter MAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     @Override
@@ -89,11 +92,32 @@ public class index extends AppCompatActivity {//http://stackoverflow.com/questio
             };
             mDrawerLayout.setDrawerListener(mDrawerToggle);
         }
+        //下拉刷新监听器
+        SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_index_swipe_refresh_layout);
+        //设置刷新时动画的颜色，可以设置4个
+        mSwipeRefreshLayout.setColorSchemeResources(
+                R.color.material_light_blue_700,
+                R.color.material_red_700,
+                R.color.material_orange_700,
+                R.color.material_light_green_700
+        );
+        loadTopic();
+    }
+    @Override
+    public void onRefresh() {
+        loadTopic();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        }, 2000);
+    }
+    private void loadTopic() {
         mListView = (ListView) findViewById(R.id.topic_list);
         MAdapter = new IndexAdapter(this);
-        new IndexModel().execute(ApiAddress.HOME_URL+"2");
+        new indexModel().execute(ApiAddress.HOME_URL + "1");
     }
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -154,7 +178,7 @@ public class index extends AppCompatActivity {//http://stackoverflow.com/questio
         }
         return super.onOptionsItemSelected(item);
     }
-    public class IndexModel extends AsyncTask<String, Void, List<Map<String,Object>>> {
+    public class indexModel extends AsyncTask<String, Void, List<Map<String,Object>>> {
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
