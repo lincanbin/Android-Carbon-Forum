@@ -15,7 +15,7 @@
         <!--item name="android:statusBarColor">@color/material_blue_700</item-->
         <item name="android:textColorPrimary">@color/material_blue_grey_50</item>
         <!--item name="android:navigationBarColor">@color/material_blue_700</item-->
-        <item name="android:windowBackground">@color/material_blue_grey_50</item>
+        <item name="android:windowBackground">@color/material_grey_50</item>
     </style>
     <style name="MySearchViewStyle" parent="Widget.AppCompat.SearchView">
         <!--

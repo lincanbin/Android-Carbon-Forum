@@ -3,14 +3,12 @@ package com.lincanbin.carbonforum;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -93,7 +91,7 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
             mDrawerLayout.setDrawerListener(mDrawerToggle);
         }
         //下拉刷新监听器
-        SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_index_swipe_refresh_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_index_swipe_refresh_layout);
         //设置刷新时动画的颜色，可以设置4个
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.material_light_blue_700,
@@ -101,19 +99,14 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
                 R.color.material_orange_700,
                 R.color.material_light_green_700
         );
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         loadTopic();
     }
     @Override
     public void onRefresh() {
         loadTopic();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        }, 2000);
     }
-    private void loadTopic() {
+    public void loadTopic() {
         mListView = (ListView) findViewById(R.id.topic_list);
         MAdapter = new IndexAdapter(this);
         new indexModel().execute(ApiAddress.HOME_URL + "1");
@@ -183,6 +176,7 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
+            mSwipeRefreshLayout.setRefreshing(true);
             Toast.makeText(index.this, "onPreExecute", Toast.LENGTH_SHORT).show();
         }
 
@@ -193,6 +187,7 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
             MAdapter.setData(result);
             mListView.setAdapter(MAdapter);
             MAdapter.notifyDataSetChanged();
+            mSwipeRefreshLayout.setRefreshing(false);
             Toast.makeText(index.this, "onPostExecute", Toast.LENGTH_SHORT).show();
         }
 
@@ -202,9 +197,9 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
             List<Map<String,Object>> list ;
 
             String str = HttpUtil.getRequest(params[0]);
-            Log.v("JSON", str);
+            //Log.v("JSON", str);
             list = HttpUtil.getRequest2List(str, "TopicsArray");
-            Log.v("List", list.toString());
+            //Log.v("List", list.toString());
             return list;
         }
 
