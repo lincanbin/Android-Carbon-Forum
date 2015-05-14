@@ -14,26 +14,24 @@
   limitations under the License.
   -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:minHeight="?android:listPreferredItemHeight"
-              android:orientation="horizontal">
-
-    <ImageView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:minHeight="?android:listPreferredItemHeight"
+    android:orientation="horizontal">
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/avatar"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:contentDescription="@string/avatar"
         android:src="@drawable/ic_perm_identity_grey600_24dp"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?android:attr/listPreferredItemHeight"
         android:mode="twoLine"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
         android:padding="@dimen/list_item_padding"
         android:orientation="vertical">
 
@@ -42,6 +40,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_text_view"
+            android:layout_marginLeft="@dimen/margin_text_view"
             android:layout_marginTop="@dimen/margin_text_view"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
 
@@ -50,6 +49,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_text_view"
+            android:layout_marginLeft="@dimen/margin_text_view"
             android:layout_marginTop="@dimen/margin_text_view"
             android:textAppearance="?android:attr/textAppearanceSmall"/>
         <TextView

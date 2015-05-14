@@ -31,6 +31,8 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private IndexAdapter MAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
+    private int currentPage;
+    private List<Map<String,Object>> topicList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,16 +102,18 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
                 R.color.material_light_green_700
         );
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        loadTopic();
+        loadTopic(1);
     }
-    @Override
-    public void onRefresh() {
-        loadTopic();
-    }
-    public void loadTopic() {
+    //加载帖子
+    public void loadTopic(int TargetPage) {
         mListView = (ListView) findViewById(R.id.topic_list);
         MAdapter = new IndexAdapter(this);
-        new indexModel().execute(ApiAddress.HOME_URL + "1");
+        new indexModel(TargetPage).execute(ApiAddress.HOME_URL + "1");
+    }
+    //下拉刷新事件
+    @Override
+    public void onRefresh() {
+        loadTopic(1);
     }
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -172,23 +176,32 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
         return super.onOptionsItemSelected(item);
     }
     public class indexModel extends AsyncTask<String, Void, List<Map<String,Object>>> {
+    	public int targetPage;
+		public indexModel(int targetPage) {
+			this.targetPage = targetPage;
+		}
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
             mSwipeRefreshLayout.setRefreshing(true);
-            Toast.makeText(index.this, "onPreExecute", Toast.LENGTH_SHORT).show();
+            Toast.makeText(index.this, "Before AsyncTask", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         protected void onPostExecute(List<Map<String, Object>> result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-            MAdapter.setData(result);
+            if(targetPage>1){
+                topicList.addAll(result);
+            }else{
+                topicList = result;
+            }
+            MAdapter.setData(topicList);
             mListView.setAdapter(MAdapter);
             MAdapter.notifyDataSetChanged();
             mSwipeRefreshLayout.setRefreshing(false);
-            Toast.makeText(index.this, "onPostExecute", Toast.LENGTH_SHORT).show();
+            Toast.makeText(index.this, "AsyncTask End", Toast.LENGTH_SHORT).show();
         }
 
         @Override

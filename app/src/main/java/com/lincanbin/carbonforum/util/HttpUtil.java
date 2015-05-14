@@ -42,7 +42,7 @@ public class HttpUtil {
         
     }
     
-        // 字符串转成集合数据
+    // 字符串转成集合数据
     public static void resultString2List(List<Map<String ,Object>> list, String str,String title) {
         try {
             JSONObject jsonObject = new JSONObject(str);

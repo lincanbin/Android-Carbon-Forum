@@ -8,7 +8,13 @@
     android:background="@color/material_white_1000"
     android:orientation="vertical"
     android:padding="8dp" >
-    <TextView
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:contentDescription="@string/avatar"
+        android:src="@drawable/ic_perm_identity_grey600_24dp"/>
+    <ListView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:id="@+id/drawerListView" />
 </LinearLayout>

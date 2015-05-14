@@ -2,7 +2,6 @@ package com.lincanbin.carbonforum.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,7 +70,6 @@ public class IndexAdapter extends BaseAdapter {
 			convertView.setTag(viewHolder);
 			
 		}else{
-			
 			viewHolder = (ViewHolder)convertView.getTag();
 		}
 		
@@ -79,8 +77,9 @@ public class IndexAdapter extends BaseAdapter {
 		viewHolder.Title.setText(list.get(position).get("Topic").toString());
 		viewHolder.Description.setText(list.get(position).get("UserName").toString()+" 最后来自 "+list.get(position).get("LastName").toString());
 
-		Log.v("UserID", ApiAddress.MIDDLE_AVATAR_URL + (list.get(position).get("UserID").toString()) + ".png");
-		//接口回调的方法，完成图片的读取;
+		//Log.v("UserID", ApiAddress.MIDDLE_AVATAR_URL + (list.get(position).get("UserID").toString()) + ".png");
+		
+		//接口回调的方法，完成图片的异步读取
 		DownImage downImage = new DownImage(ApiAddress.MIDDLE_AVATAR_URL + (list.get(position).get("UserID").toString()) + ".png");
 		downImage.loadImage(new DownImage.ImageCallBack() {
 
