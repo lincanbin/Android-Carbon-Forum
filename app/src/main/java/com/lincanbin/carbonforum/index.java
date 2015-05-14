@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +22,7 @@ import com.lincanbin.carbonforum.adapter.TopicAdapter;
 import com.lincanbin.carbonforum.config.ApiAddress;
 import com.lincanbin.carbonforum.util.HttpUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +35,7 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
     private TopicAdapter MAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private int currentPage;
-    private List<Map<String,Object>> topicList;
+    private List<Map<String,Object>> topicList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +105,7 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
                 R.color.material_light_green_700
         );
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        //RecyclemrView
+        //RecyclerView
         mRecyclerView = (RecyclerView) findViewById(R.id.topic_list);
         //使RecyclerView保持固定的大小，这样会提高RecyclerView的性能
         mRecyclerView.setHasFixedSize(true);
@@ -111,12 +113,34 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         // 设置布局管理器
         mRecyclerView.setLayoutManager(layoutManager);
+        //设置Item默认动画
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        //指定数据集
+        MAdapter = new TopicAdapter(this);
+        MAdapter.setData(topicList);
+        //设置Adapter
+        mRecyclerView.setAdapter(MAdapter);
+        //添加事件监听器
+        MAdapter.setOnRecyclerViewListener(new TopicAdapter.OnRecyclerViewListener() {
+            @Override
+            public void onItemClick(int position) {
+                Toast.makeText(index.this, "onItemClick" + topicList.get(position).get("Topic").toString(), Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public boolean onItemLongClick(int position) {
+                Toast.makeText(index.this, "onItemLongClick" + topicList.get(position).get("Topic").toString(), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
         loadTopic(1);
+        loadTopic(2);
+        loadTopic(3);
+        loadTopic(4);
     }
     //加载帖子
     public void loadTopic(int TargetPage) {
-        new indexModel(TargetPage).execute(ApiAddress.HOME_URL + "1");
+        new indexModel(TargetPage).execute(ApiAddress.HOME_URL + TargetPage);
     }
     //下拉刷新事件
     @Override
@@ -185,6 +209,7 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
     }
     public class indexModel extends AsyncTask<String, Void, List<Map<String,Object>>> {
     	public int targetPage;
+        private int positionStart;
 		public indexModel(int targetPage) {
 			this.targetPage = targetPage;
 		}
@@ -201,14 +226,17 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
             // TODO Auto-generated method stub
             super.onPostExecute(result);
             if(targetPage>1){
+                positionStart = topicList.size()-1;
                 topicList.addAll(result);
+                MAdapter.setData(topicList);
+                //局部刷新，更好的性能
+                MAdapter.notifyItemRangeChanged(positionStart, MAdapter.getItemCount());
             }else{
                 topicList = result;
+                MAdapter.setData(topicList);
+                //全部刷新
+                MAdapter.notifyDataSetChanged();
             }
-            //指定数据集
-            MAdapter = new TopicAdapter(topicList);
-            mRecyclerView.setAdapter(MAdapter);
-            MAdapter.notifyDataSetChanged();
             //移除刷新控件
             mSwipeRefreshLayout.setRefreshing(false);
             Toast.makeText(index.this, "AsyncTask End", Toast.LENGTH_SHORT).show();

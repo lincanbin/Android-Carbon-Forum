@@ -1,5 +1,6 @@
 package com.lincanbin.carbonforum.adapter;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,7 +21,9 @@ import java.util.Map;
  * Created by 灿斌 on 5/14/2015.
  */
 public class TopicAdapter extends RecyclerView.Adapter{
-    public static interface OnRecyclerViewListener {
+    private Context context;
+    private LayoutInflater layoutInflater;
+    public interface OnRecyclerViewListener {
         void onItemClick(int position);
         boolean onItemLongClick(int position);
     }
@@ -33,15 +36,18 @@ public class TopicAdapter extends RecyclerView.Adapter{
 
     private static final String TAG = TopicAdapter.class.getSimpleName();
     private List<Map<String,Object>> list;
-
-    public TopicAdapter(List<Map<String,Object>> list) {
+    public TopicAdapter(Context context){
+        this.context = context;
+        layoutInflater = layoutInflater.from(context);
+    }
+    public void setData(List<Map<String,Object>> list) {
         this.list = list;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
 
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.topic_list_item, null);
+        View view = layoutInflater.inflate(R.layout.topic_list_item, null);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         view.setLayoutParams(lp);
         return new topicViewHolder(view);
@@ -92,8 +98,8 @@ public class TopicAdapter extends RecyclerView.Adapter{
             rootView.setOnClickListener(this);
             rootView.setOnLongClickListener(this);
         }
-
         @Override
+        //点击事件
         public void onClick(View v) {
             if (null != onRecyclerViewListener) {
                 onRecyclerViewListener.onItemClick(position);
@@ -101,6 +107,7 @@ public class TopicAdapter extends RecyclerView.Adapter{
         }
 
         @Override
+        //长按事件
         public boolean onLongClick(View v) {
             if(null != onRecyclerViewListener){
                 return onRecyclerViewListener.onItemLongClick(position);
