@@ -8,15 +8,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.lincanbin.carbonforum.adapter.IndexAdapter;
+import com.lincanbin.carbonforum.adapter.TopicAdapter;
 import com.lincanbin.carbonforum.config.ApiAddress;
 import com.lincanbin.carbonforum.util.HttpUtil;
 
@@ -27,9 +28,9 @@ import java.util.Map;
 public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRefreshListener {//http://stackoverflow.com/questions/28150100/setsupportactionbar-throws-error/28150167
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
-    private ListView mListView;
+    private RecyclerView mRecyclerView ;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private IndexAdapter MAdapter;
+    private TopicAdapter MAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private int currentPage;
     private List<Map<String,Object>> topicList;
@@ -102,12 +103,19 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
                 R.color.material_light_green_700
         );
         mSwipeRefreshLayout.setOnRefreshListener(this);
+        //RecyclemrView
+        mRecyclerView = (RecyclerView) findViewById(R.id.topic_list);
+        //使RecyclerView保持固定的大小，这样会提高RecyclerView的性能
+        mRecyclerView.setHasFixedSize(true);
+        // 创建一个线性布局管理器
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        // 设置布局管理器
+        mRecyclerView.setLayoutManager(layoutManager);
+
         loadTopic(1);
     }
     //加载帖子
     public void loadTopic(int TargetPage) {
-        mListView = (ListView) findViewById(R.id.topic_list);
-        MAdapter = new IndexAdapter(this);
         new indexModel(TargetPage).execute(ApiAddress.HOME_URL + "1");
     }
     //下拉刷新事件
@@ -197,9 +205,11 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
             }else{
                 topicList = result;
             }
-            MAdapter.setData(topicList);
-            mListView.setAdapter(MAdapter);
+            //指定数据集
+            MAdapter = new TopicAdapter(topicList);
+            mRecyclerView.setAdapter(MAdapter);
             MAdapter.notifyDataSetChanged();
+            //移除刷新控件
             mSwipeRefreshLayout.setRefreshing(false);
             Toast.makeText(index.this, "AsyncTask End", Toast.LENGTH_SHORT).show();
         }

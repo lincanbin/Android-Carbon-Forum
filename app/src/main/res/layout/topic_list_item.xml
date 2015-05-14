@@ -16,6 +16,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/topic_item"
     android:padding="10dp"
     android:minHeight="?android:listPreferredItemHeight"
     android:orientation="horizontal">
@@ -32,7 +33,6 @@
         android:mode="twoLine"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
-        android:padding="@dimen/list_item_padding"
         android:orientation="vertical">
 
         <TextView
@@ -41,7 +41,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_text_view"
             android:layout_marginLeft="@dimen/margin_text_view"
-            android:layout_marginTop="@dimen/margin_text_view"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <TextView
