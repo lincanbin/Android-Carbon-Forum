@@ -116,8 +116,6 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         //setOnScrollListener已废弃，使用addOnScrollListener需要在使用后用clearOnScrollListeners()移除监听器
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            //用来标记是否正在向最后一个滑动，既是否向右滑动或向下滑动
-            boolean isSlidingToLast = false;
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 // 当不滚动时
@@ -173,12 +171,7 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
     }
     //加载帖子
     public void loadTopic(int TargetPage) {
-        try {
             new indexModel(TargetPage).execute(ApiAddress.HOME_URL + TargetPage);
-        } catch (Exception e) {
-            mSwipeRefreshLayout.setRefreshing(false);
-            Toast.makeText(index.this, "Network Error", Toast.LENGTH_SHORT).show();
-        }
     }
     //下拉刷新事件
     @Override
