@@ -13,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -106,8 +105,6 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
                 R.color.material_light_green_700
         );
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        //底部要显示的进度条
-        final View footerView = LayoutInflater.from(this).inflate(R.layout.progress_bar, null);
         //RecyclerView
         mRecyclerView = (RecyclerView) findViewById(R.id.topic_list);
         //使RecyclerView保持固定的大小，这样会提高RecyclerView的性能
@@ -127,7 +124,6 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
                     if (lastVisibleItem == (totalItemCount - 1)) {
                         //加载更多功能的代码
                         loadTopic(currentPage+1);
-                        footerView.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -249,30 +245,34 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
             // TODO Auto-generated method stub
             super.onPreExecute();
             mSwipeRefreshLayout.setRefreshing(true);
-            Toast.makeText(index.this, "Before AsyncTask", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(index.this, "Before AsyncTask", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         protected void onPostExecute(List<Map<String, Object>> result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-            if(targetPage>1){
-                positionStart = topicList.size()-1;
-                topicList.addAll(result);
-                MAdapter.setData(topicList);
-                //局部刷新，更好的性能
-                MAdapter.notifyItemRangeChanged(positionStart, MAdapter.getItemCount());
+            if(result!=null && !result.isEmpty()) {
+                if (targetPage > 1) {
+                    positionStart = topicList.size() - 1;
+                    topicList.addAll(result);
+                    MAdapter.setData(topicList);
+                    //局部刷新，更好的性能
+                    MAdapter.notifyItemRangeChanged(positionStart, MAdapter.getItemCount());
+                } else {
+                    topicList = result;
+                    MAdapter.setData(topicList);
+                    //全部刷新
+                    MAdapter.notifyDataSetChanged();
+                }
+                //更新当前页数
+                currentPage = targetPage;
             }else{
-                topicList = result;
-                MAdapter.setData(topicList);
-                //全部刷新
-                MAdapter.notifyDataSetChanged();
+                Toast.makeText(index.this, "Network Error", Toast.LENGTH_SHORT).show();
             }
             //移除刷新控件
             mSwipeRefreshLayout.setRefreshing(false);
-            //更新当前页数
-            currentPage = targetPage;
-            Toast.makeText(index.this, "AsyncTask End", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(index.this, "AsyncTask End", Toast.LENGTH_SHORT).show();
         }
 
         @Override

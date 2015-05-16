@@ -84,6 +84,7 @@ public class HttpUtil {
 
     // 字符串转成集合数据
     public static void resultString2List(List<Map<String, Object>> list, String str, String title) {
+
         try {
             JSONObject jsonObject = new JSONObject(str);
             JSONArray jsonArray = jsonObject.getJSONArray(title);
@@ -108,12 +109,12 @@ public class HttpUtil {
     }
 
     // post方法访问服务器，返回集合数据
-    public static List<Map<String, Object>> getRequest2List(String url, String title) {
+    public static List<Map<String, Object>> getRequest2List(String str, String title) {
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-
-        resultString2List(list, url, title);
-
+        if(null != str){
+            resultString2List(list, str, title);
+        }
         return list;
 
     }
