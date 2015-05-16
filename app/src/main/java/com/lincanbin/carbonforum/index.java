@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +35,7 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TopicAdapter MAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
-    private int currentPage;
+    private int currentPage = 0;
     private List<Map<String,Object>> topicList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,12 +106,47 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
                 R.color.material_light_green_700
         );
         mSwipeRefreshLayout.setOnRefreshListener(this);
+        //底部要显示的进度条
+        final View footerView = LayoutInflater.from(this).inflate(R.layout.progress_bar, null);
         //RecyclerView
         mRecyclerView = (RecyclerView) findViewById(R.id.topic_list);
         //使RecyclerView保持固定的大小，这样会提高RecyclerView的性能
         mRecyclerView.setHasFixedSize(true);
         // 创建一个线性布局管理器
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        //setOnScrollListener已废弃，使用addOnScrollListener需要在使用后用clearOnScrollListeners()移除监听器
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            //用来标记是否正在向最后一个滑动，既是否向右滑动或向下滑动
+            boolean isSlidingToLast = false;
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                // 当不滚动时
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    //获取最后一个完全显示的ItemPosition
+                    int lastVisibleItem = layoutManager.findLastCompletelyVisibleItemPosition();
+                    int totalItemCount = layoutManager.getItemCount();
+                    // 判断是否滚动到底部，并且是向右滚动
+                    if (lastVisibleItem == (totalItemCount - 1)) {
+                        //加载更多功能的代码
+                        loadTopic(currentPage+1);
+                        footerView.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                //dx用来判断横向滑动方向，dy用来判断纵向滑动方向
+                /*
+                if (dx > 0) {
+                    //大于0表示，正在向右滚动
+                } else {
+                    //小于等于0 表示停止或向左滚动
+                }
+                */
+            }
+        });
         // 设置布局管理器
         mRecyclerView.setLayoutManager(layoutManager);
         //设置Item默认动画
@@ -134,13 +170,15 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
             }
         });
         loadTopic(1);
-        loadTopic(2);
-        loadTopic(3);
-        loadTopic(4);
     }
     //加载帖子
     public void loadTopic(int TargetPage) {
-        new indexModel(TargetPage).execute(ApiAddress.HOME_URL + TargetPage);
+        try {
+            new indexModel(TargetPage).execute(ApiAddress.HOME_URL + TargetPage);
+        } catch (Exception e) {
+            mSwipeRefreshLayout.setRefreshing(false);
+            Toast.makeText(index.this, "Network Error", Toast.LENGTH_SHORT).show();
+        }
     }
     //下拉刷新事件
     @Override
@@ -239,6 +277,8 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
             }
             //移除刷新控件
             mSwipeRefreshLayout.setRefreshing(false);
+            //更新当前页数
+            currentPage = targetPage;
             Toast.makeText(index.this, "AsyncTask End", Toast.LENGTH_SHORT).show();
         }
 
