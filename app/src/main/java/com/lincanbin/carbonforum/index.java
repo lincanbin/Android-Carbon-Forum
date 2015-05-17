@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
-public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRefreshListener {//http://stackoverflow.com/questions/28150100/setsupportactionbar-throws-error/28150167
+//http://stackoverflow.com/questions/28150100/setsupportactionbar-throws-error/28150167
+public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRefreshListener {
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private RecyclerView mRecyclerView ;
@@ -43,7 +43,6 @@ public class index extends AppCompatActivity  implements SwipeRefreshLayout.OnRe
         // 设置ToolBar
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
-
             // Title
             mToolbar.setTitle(R.string.app_name);
             //mToolbar.bringToFront();

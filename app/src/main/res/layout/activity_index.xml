@@ -25,7 +25,8 @@
                         android:scrollbars="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        />
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:background="@color/material_grey_50" />
                 </android.support.v4.widget.SwipeRefreshLayout>
             </LinearLayout>
 

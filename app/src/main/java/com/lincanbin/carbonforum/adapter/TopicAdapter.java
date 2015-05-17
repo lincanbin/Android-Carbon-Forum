@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.lincanbin.carbonforum.R;
 import com.lincanbin.carbonforum.config.ApiAddress;
 import com.lincanbin.carbonforum.tools.DownImage;
+import com.lincanbin.carbonforum.util.TimeUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -60,7 +61,8 @@ public class TopicAdapter extends RecyclerView.Adapter{
         Map<String,Object> topic = list.get(i);
         holder.ID.setText(topic.get("ID").toString());
         holder.Title.setText(topic.get("Topic").toString());
-        holder.Description.setText(topic.get("UserName").toString()+" 最后来自 "+topic.get("LastName").toString());
+        holder.Description.setText(topic.get("UserName").toString() + " · " + topic.get("LastName").toString());
+        holder.Time.setText(new TimeUtil().formatTime(Long.parseLong(topic.get("LastTime").toString())));
         //接口回调的方法，完成头像的异步读取与显示
         DownImage downImage = new DownImage(ApiAddress.MIDDLE_AVATAR_URL + (topic.get("UserID").toString()) + ".png");
         downImage.loadImage(new DownImage.ImageCallBack() {
@@ -84,6 +86,7 @@ public class TopicAdapter extends RecyclerView.Adapter{
         TextView ID;
         TextView Title;
         TextView Description;
+        TextView Time;
         public int position;
 
         public topicViewHolder(View itemView) {
@@ -92,6 +95,7 @@ public class TopicAdapter extends RecyclerView.Adapter{
             ID = (TextView) itemView.findViewById(R.id.id);
             Title = (TextView) itemView.findViewById(R.id.title);
             Description = (TextView) itemView.findViewById(R.id.description);
+            Time = (TextView) itemView.findViewById(R.id.time);
             Avatar = (ImageView)itemView.findViewById(R.id.avatar);
 
             rootView = itemView.findViewById(R.id.topic_item);

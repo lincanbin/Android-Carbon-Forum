@@ -19,7 +19,12 @@
     android:id="@+id/topic_item"
     android:padding="10dp"
     android:minHeight="?android:listPreferredItemHeight"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@color/material_grey_50"
+    android:clickable="true"
+    android:focusable="true"
+    android:descendantFocusability="blocksDescendants"
+    android:duplicateParentState="true">
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/avatar"
         android:layout_width="56dp"
@@ -34,7 +39,6 @@
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:orientation="vertical">
-
         <TextView
             android:id="@+id/title"
             android:layout_width="fill_parent"
@@ -42,20 +46,35 @@
             android:layout_marginStart="@dimen/margin_text_view"
             android:layout_marginLeft="@dimen/margin_text_view"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-        <TextView
-            android:id="@+id/description"
+        <RelativeLayout
+            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_marginStart="@dimen/margin_text_view"
             android:layout_marginLeft="@dimen/margin_text_view"
-            android:layout_marginTop="@dimen/margin_text_view"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
-        <TextView
-            android:id="@+id/id"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone" />
+            android:layout_marginTop="@dimen/margin_text_view">
+
+            <TextView
+                android:id="@+id/description"
+                android:ellipsize="end"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+            <TextView
+                android:id="@+id/time"
+                android:gravity="right"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+            <TextView
+                android:id="@+id/id"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
+        </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>
