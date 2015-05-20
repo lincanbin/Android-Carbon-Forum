@@ -18,7 +18,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:rv_color="@color/material_light_blue_200">
+    app:rv_color="@color/material_blue_500"
+    app:rv_rippleDuration="200">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

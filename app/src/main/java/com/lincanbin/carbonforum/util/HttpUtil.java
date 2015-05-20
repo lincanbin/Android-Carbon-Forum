@@ -47,7 +47,7 @@ public class HttpUtil {
             StringBuilder resultBuffer = new StringBuilder();
             String tempLine = null;
 
-            if (httpURLConnection.getResponseCode() >= 300) {
+            if (httpURLConnection.getResponseCode() >= 400) {
                 throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
             }
 
@@ -131,7 +131,7 @@ public class HttpUtil {
                 while (iterator.hasNext()) {
                     key = (String) iterator.next();
                     if (parameterMap.get(key) != null) {
-                        value = (String) parameterMap.get(key);
+                        value = parameterMap.get(key);
                     } else {
                         value = "";
                     }
@@ -171,7 +171,7 @@ public class HttpUtil {
                 outputStreamWriter.write(parameterBuffer.toString());
                 outputStreamWriter.flush();
 
-                if (httpURLConnection.getResponseCode() >= 300) {
+                if (httpURLConnection.getResponseCode() >= 400) {
                     throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
                 }
 
@@ -275,6 +275,6 @@ public class HttpUtil {
     }
 
     public void setCharset(String charset) {
-        this.charset = charset;
+        HttpUtil.charset = charset;
     }
 }

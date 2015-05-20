@@ -53,7 +53,7 @@ public class DownImage {
 
 
 	public interface ImageCallBack{
-		public void getDrawable(Drawable drawable);
+		void getDrawable(Drawable drawable);
 	}
 
 }

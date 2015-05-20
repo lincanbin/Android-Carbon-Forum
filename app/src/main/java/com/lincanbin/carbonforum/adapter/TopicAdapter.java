@@ -39,7 +39,7 @@ public class TopicAdapter extends RecyclerView.Adapter{
     private List<Map<String,Object>> list;
     public TopicAdapter(Context context){
         this.context = context;
-        layoutInflater = layoutInflater.from(context);
+        layoutInflater = LayoutInflater.from(context);
     }
     public void setData(List<Map<String,Object>> list) {
         this.list = list;
@@ -48,7 +48,7 @@ public class TopicAdapter extends RecyclerView.Adapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
 
-        View view = layoutInflater.inflate(R.layout.topic_list_item, null);
+        View view = layoutInflater.inflate(R.layout.item_topic_list, null);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         view.setLayoutParams(lp);
         return new topicViewHolder(view);
@@ -62,7 +62,7 @@ public class TopicAdapter extends RecyclerView.Adapter{
         holder.ID.setText(topic.get("ID").toString());
         holder.Title.setText(topic.get("Topic").toString());
         holder.Description.setText(topic.get("UserName").toString() + " · " + topic.get("LastName").toString());
-        holder.Time.setText(new TimeUtil().formatTime(Long.parseLong(topic.get("LastTime").toString())));
+        holder.Time.setText(TimeUtil.formatTime(Long.parseLong(topic.get("LastTime").toString())));
         //接口回调的方法，完成头像的异步读取与显示
         DownImage downImage = new DownImage(ApiAddress.MIDDLE_AVATAR_URL + (topic.get("UserID").toString()) + ".png");
         downImage.loadImage(new DownImage.ImageCallBack() {

@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by 灿斌 on 5/17/2015.
  */
 public class TimeUtil {
-    public String formatTime(long unixTimeStamp){
+    public static String formatTime(long unixTimeStamp){
         long seconds = System.currentTimeMillis() / 1000 - unixTimeStamp;
         if (seconds < 2592000) {
             // 小于30天如下显示

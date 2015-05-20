@@ -8,20 +8,8 @@
     android:background="@color/material_white_1000"
     android:orientation="vertical"
     android:padding="8dp" >
-    <ImageView
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:contentDescription="@string/avatar"
-        android:src="@drawable/ic_perm_identity_grey600_24dp"/>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/drawerListView" />
-
-    <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_gravity="center_horizontal" />
 </LinearLayout>

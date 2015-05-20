@@ -3,7 +3,7 @@
     <string name="app_name">Carbon Forum</string>
     <string name="drawer_close">drawer_close</string>
     <string name="drawer_open">drawer_open</string>
-
+    <string name="login">Login</string>
     <string name="action_search">Search</string>
     <string name="action_share">Share</string>
     <string name="action_settings">Settings</string>

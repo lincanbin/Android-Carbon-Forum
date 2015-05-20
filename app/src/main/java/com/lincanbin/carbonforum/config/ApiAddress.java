@@ -19,4 +19,7 @@ public class ApiAddress
 	//首页帖子列表API地址
 	public static final String HOME_URL = BASIC_API_URL + "/page/";
 
+	//验证码
+	public static final String VERIFICATION_CODE = BASIC_API_URL + "/seccode.php";
+
 }
