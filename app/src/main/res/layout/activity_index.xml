@@ -30,9 +30,6 @@
                         android:background="@color/material_grey_50" />
                 </android.support.v4.widget.SwipeRefreshLayout>
             </LinearLayout>
-
-            <!-- 侧滑菜单内容 -->
-            <include layout="@layout/drawer" />
         </android.support.v4.widget.DrawerLayout>
     </LinearLayout>
 </RelativeLayout>

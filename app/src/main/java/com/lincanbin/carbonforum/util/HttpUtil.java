@@ -109,7 +109,7 @@ public class HttpUtil {
     }
 
     // post方法访问服务器，返回集合数据
-    public static List<Map<String, Object>> getRequest2List(String str, String title) {
+    public static List<Map<String, Object>> jsonDecode(String str, String title) {
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         if(null != str){

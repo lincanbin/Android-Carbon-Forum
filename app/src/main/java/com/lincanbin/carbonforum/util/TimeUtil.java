@@ -1,5 +1,7 @@
 package com.lincanbin.carbonforum.util;
 
+import com.lincanbin.carbonforum.R;
+
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -12,18 +14,18 @@ public class TimeUtil {
         if (seconds < 2592000) {
             // 小于30天如下显示
             if (seconds >= 86400) {
-                return Long.toString(seconds / 86400) + "天前";
+                return Long.toString(seconds / 86400) + R.string.days_ago;
             } else if (seconds >= 3600) {
-                return Long.toString(seconds / 3600) + "小时前";
+                return Long.toString(seconds / 3600) + R.string.hours_ago;
             } else if (seconds >= 60) {
-                return Long.toString(seconds / 60) + "分钟前";
+                return Long.toString(seconds / 60) + R.string.minutes_ago;
             } else if (seconds < 0) {
-                return "刚刚";
+                return "" + R.string.just_now;
             } else {
-                return Long.toString(seconds + 1)+"秒前";
+                return Long.toString(seconds + 1) + R.string.seconds_ago;
             }
         } else {
-            // 大于一月
+            // 大于30天直接显示日期
             Date nowTime = new Date(unixTimeStamp*1000);
             return DateFormat.getDateInstance().format(nowTime);
         }
