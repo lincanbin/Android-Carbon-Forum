@@ -9,7 +9,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class DownImage {
-
 	public String image_path;
 
 
