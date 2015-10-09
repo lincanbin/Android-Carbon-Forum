@@ -378,7 +378,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
         protected List<Map<String, Object>> doInBackground(String... params) {
             // TODO Auto-generated method stub
             List<Map<String,Object>> list ;
-            String str = HttpUtil.getRequest(params[0]);
+            String str = HttpUtil.getRequest(IndexActivity.this, params[0]);
             //Log.v("JSON", str);
             list = HttpUtil.jsonDecode(str, "TopicsArray");
             //Log.v("List", list.toString());

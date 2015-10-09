@@ -1,5 +1,6 @@
 package com.lincanbin.carbonforum.util;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -31,7 +32,7 @@ public class HttpUtil {
     private Integer proxyPort = null;
 
     // post方法访问服务器，返回json字符串
-    public static String getRequest(String url) {
+    public static String getRequest(Context context, String url) {
         try {
             URL localURL = new URL(url);
 
@@ -120,7 +121,7 @@ public class HttpUtil {
     }
 
     // get方法访问服务器，返回json字符串
-    public static String postRequest(String url, Map<String, String> parameterMap) throws Exception {
+    public static String postRequest(Context context, String url, Map<String, String> parameterMap) throws Exception {
         try{
            /* Translate parameter map to parameter date string */
             StringBuilder parameterBuffer = new StringBuilder();

@@ -26,6 +26,9 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateVisible" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.lincanbin.carbonforum.IndexActivity" />
         </activity>
     </application>
 
