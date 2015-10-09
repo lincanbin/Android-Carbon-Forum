@@ -1,18 +1,15 @@
 package com.lincanbin.carbonforum;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +18,17 @@ import android.widget.Toast;
 import com.lincanbin.carbonforum.adapter.TopicAdapter;
 import com.lincanbin.carbonforum.config.ApiAddress;
 import com.lincanbin.carbonforum.util.HttpUtil;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.holder.StringHolder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.mikepenz.materialdrawer.util.RecyclerViewCacheUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +37,16 @@ import java.util.Map;
 //http://stackoverflow.com/questions/28150100/setsupportactionbar-throws-error/28150167
 public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLayout.OnRefreshListener {
     private Toolbar mToolbar;
-    private DrawerLayout mDrawerLayout;
+    //private DrawerLayout mDrawerLayout;
+    private static final int PROFILE_SETTING = 1;
+    //save our header or result
+    private AccountHeader headerResult = null;
+    private Drawer result = null;
+
     private RecyclerView mRecyclerView ;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TopicAdapter MAdapter;
-    private ActionBarDrawerToggle mDrawerToggle;
+    //private ActionBarDrawerToggle mDrawerToggle;
     private int currentPage = 0;
     private List<Map<String,Object>> topicList = new ArrayList<>();
     @Override
@@ -73,6 +86,110 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
                     return true;
                 }
             });
+            final IProfile profile = new ProfileDrawerItem().withName("Mike Penz").
+                    withEmail("mikepenz@gmail.com").
+                    withIcon("https://avatars3.githubusercontent.com/u/1476232?v=3&s=460").
+                    withIdentifier(100);
+            // Create the AccountHeader
+            headerResult = new AccountHeaderBuilder()
+                    .withActivity(this)
+                    .withHeaderBackground(R.drawable.header)
+                    .addProfiles(
+                            profile,
+                            //don't ask but google uses 14dp for the add account icon in gmail but 20dp for the normal icons (like manage account)
+                            new ProfileSettingDrawerItem().withName("Add Account").
+                                    withDescription("Add new GitHub Account")
+                    )
+                    .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                        @Override
+                        public boolean onProfileChanged(View view, IProfile profile, boolean current) {
+                            //sample usage of the onProfileChanged listener
+                            //if the clicked item has the identifier 1 add a new profile ;)
+                            if (profile instanceof IDrawerItem && ((IDrawerItem) profile).getIdentifier() == PROFILE_SETTING) {
+                                int count = 100 + headerResult.getProfiles().size() + 1;
+                                IProfile newProfile = new ProfileDrawerItem().
+                                        withNameShown(true).
+                                        withName("Batman" + count).
+                                        withEmail("batman" + count + "@gmail.com").
+                                        withIcon(R.drawable.profile).
+                                        withIdentifier(count);
+                                if (headerResult.getProfiles() != null) {
+                                    //we know that there are 2 setting elements. set the new profile above them ;)
+                                    headerResult.addProfile(newProfile, headerResult.getProfiles().size() - 2);
+                                } else {
+                                    headerResult.addProfiles(newProfile);
+                                }
+                            }
+
+                            //false if you have not consumed the event and it should close the drawer
+                            return false;
+                        }
+                    })
+                    .withSavedInstance(savedInstanceState)
+                    .build();
+
+            //Create the drawer
+            result = new DrawerBuilder()
+                    .withActivity(this)
+                    .withToolbar(mToolbar)
+                    .withHasStableIds(true)
+                    .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
+                    .addDrawerItems(
+                            new PrimaryDrawerItem().
+                                    withName(R.string.login).
+                                    withDescription(R.string.login).
+                                    withIcon(R.drawable.ic_perm_identity_grey600_24dp).
+                                    withIdentifier(1).
+                                    withSelectable(false),
+                            new PrimaryDrawerItem().
+                                    withName(R.string.login).
+                                    withDescription(R.string.login).
+                                    withIcon(R.drawable.ic_perm_identity_grey600_24dp).
+                                    withIdentifier(1).
+                                    withSelectable(false)
+                    ) // add the items we want to use with our Drawer
+                    .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                        @Override
+                        public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                            //check if the drawerItem is set.
+                            //there are different reasons for the drawerItem to be null
+                            //--> click on the header
+                            //--> click on the footer
+                            //those items don't contain a drawerItem
+
+                            if (drawerItem != null) {
+                                Intent intent = null;
+                                if (drawerItem.getIdentifier() == 1) {
+                                    intent = new Intent(IndexActivity.this, LoginActivity.class);
+                                } else if (drawerItem.getIdentifier() == 2) {
+                                    intent = new Intent(IndexActivity.this, LoginActivity.class);
+                                }
+                                if (intent != null) {
+                                    IndexActivity.this.startActivity(intent);
+                                }
+                            }
+
+                            return false;
+                        }
+                    })
+                    .withSavedInstance(savedInstanceState)
+                    .withShowDrawerOnFirstLaunch(true)
+                    .build();
+            //if you have many different types of DrawerItems you can magically pre-cache those items to get a better scroll performance
+            //make sure to init the cache after the DrawerBuilder was created as this will first clear the cache to make sure no old elements are in
+            RecyclerViewCacheUtil.getInstance().withCacheSize(2).init(result);
+
+            //only set the active selection or active profile if we do not recreate the activity
+            if (savedInstanceState == null) {
+                // set the selection to the item with the identifier 11
+                result.setSelection(21, false);
+
+                //set the active profile
+                headerResult.setActiveProfile(profile);
+            }
+
+            result.updateBadge(4, new StringHolder(10 + ""));
+            /*
             mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
             mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
             mDrawerToggle = new ActionBarDrawerToggle(
@@ -93,6 +210,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
                 }
             };
             mDrawerLayout.setDrawerListener(mDrawerToggle);
+            */
         }
         //下拉刷新监听器
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_index_swipe_refresh_layout);
@@ -122,7 +240,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
                     // 判断是否滚动到底部，并且是向右滚动
                     if (lastVisibleItem == (totalItemCount - 1)) {
                         //加载更多功能的代码
-                        loadTopic(currentPage+1);
+                        loadTopic(currentPage + 1);
                     }
                 }
             }
@@ -162,7 +280,15 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
                 return true;
             }
         });
+    }
+    @Override
+    public
+    void onWindowFocusChanged(boolean hasFocus) {
+        //TODO Auto-generated method stub
+        super.onWindowFocusChanged(hasFocus);
+        //Activity渲染完毕时加载帖子
         loadTopic(1);
+
     }
     //加载帖子
     public void loadTopic(int TargetPage) {
@@ -177,21 +303,23 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
+        //mDrawerToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
-        mDrawerToggle.onConfigurationChanged(newConfig);
+        //mDrawerToggle.onConfigurationChanged(newConfig);
     }
     @Override
     public void onBackPressed() {
+        /*
         if(mDrawerLayout.isDrawerOpen(Gravity.START|Gravity.LEFT)){
             mDrawerLayout.closeDrawers();
             return;
         }
+        */
         super.onBackPressed();
     }
     @Override
@@ -214,9 +342,11 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        /*
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
+        */
         int id = item.getItemId();
         switch (id) {
             case R.id.action_search:
