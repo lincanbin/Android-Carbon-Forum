@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.lincanbin.carbonforum.adapter.TopicAdapter;
 import com.lincanbin.carbonforum.config.ApiAddress;
 import com.lincanbin.carbonforum.util.HttpUtil;
+import com.lincanbin.carbonforum.util.JSONUtil;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -37,7 +38,6 @@ import java.util.Map;
 //http://stackoverflow.com/questions/28150100/setsupportactionbar-throws-error/28150167
 public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLayout.OnRefreshListener {
     private Toolbar mToolbar;
-    private static final int PROFILE_SETTING = 1;
     //save our header or result
     private AccountHeader headerResult = null;
     private Drawer mDrawer = null;
@@ -378,9 +378,9 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
         protected List<Map<String, Object>> doInBackground(String... params) {
             // TODO Auto-generated method stub
             List<Map<String,Object>> list ;
-            String str = HttpUtil.getRequest(IndexActivity.this, params[0]);
+            String str = HttpUtil.getRequest(IndexActivity.this, params[0], false);
             //Log.v("JSON", str);
-            list = HttpUtil.jsonDecode(str, "TopicsArray");
+            list = JSONUtil.jsonDecode(str, "TopicsArray");
             //Log.v("List", list.toString());
             return list;
         }

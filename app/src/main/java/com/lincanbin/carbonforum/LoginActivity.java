@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = (AutoCompleteTextView) findViewById(R.id.username);
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -144,10 +144,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
+        /*
         } else if (!isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
+         */
         }
 
         if (cancel) {
@@ -162,11 +164,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask.execute((Void) null);
         }
     }
-
+    /*
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
         return email.contains("@");
     }
+    */
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
