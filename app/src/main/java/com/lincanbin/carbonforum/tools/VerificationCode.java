@@ -52,14 +52,14 @@ public class VerificationCode {
                     for (int i=1; (headerName = connection.getHeaderFieldKey(i))!=null; i++) {
                         if (headerName.equals("Set-Cookie")) {
                             String cookie = connection.getHeaderField(i);
-                            cookie = cookie.substring(0, cookie.indexOf(";"));
-                            String cookieName = cookie.substring(0, cookie.indexOf("="));
-                            String cookieValue = cookie.substring(cookie.indexOf("=") + 1, cookie.length());
+                            //cookie = cookie.substring(0, cookie.indexOf(";"));
+                            //String cookieName = cookie.substring(0, cookie.indexOf("="));
+                            //String cookieValue = cookie.substring(cookie.indexOf("=") + 1, cookie.length());
                             //将Cookie保存起来
-                            SharedPreferences mySharedPreferences= context.getSharedPreferences("cookie",
+                            SharedPreferences mySharedPreferences= context.getSharedPreferences("Session",
                                     Activity.MODE_PRIVATE);
                             SharedPreferences.Editor editor = mySharedPreferences.edit();
-                            editor.putString(cookieName, cookieValue);
+                            editor.putString("Cookie", cookie);
                             editor.apply();
                         }
                     }

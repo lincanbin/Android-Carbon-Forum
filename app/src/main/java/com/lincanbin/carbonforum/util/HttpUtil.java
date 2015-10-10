@@ -1,11 +1,12 @@
 package com.lincanbin.carbonforum.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.lincanbin.carbonforum.LoginActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,10 +19,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 public class HttpUtil {
@@ -31,8 +29,33 @@ public class HttpUtil {
     private String proxyHost = null;
     private Integer proxyPort = null;
 
+    //保存与发送Cookie，返回Cookie
+    public static  String getAndSaveCookie(Context context, URLConnection connection){
+        //获取Cookie
+        String headerName=null;
+        for (int i=1; (headerName = connection.getHeaderFieldKey(i))!=null; i++) {
+            if (headerName.equals("Set-Cookie")) {
+                String cookie = connection.getHeaderField(i);
+                //将Cookie保存起来
+                SharedPreferences mySharedPreferences= context.getSharedPreferences("Session",
+                        Activity.MODE_PRIVATE);
+                SharedPreferences.Editor editor = mySharedPreferences.edit();
+                editor.putString("Cookie", cookie);
+                editor.apply();
+            }
+        }
+        //返回Cookie
+        SharedPreferences mySharedPreferences= context.getSharedPreferences("Session",
+                Activity.MODE_PRIVATE);
+        try{
+            return  mySharedPreferences.getString("Cookie", "");
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
     // post方法访问服务器，返回json字符串
-    public static String getRequest(Context context, String url) {
+    public static String getRequest(Context context, String url, Boolean enableSession) {
         try {
             URL localURL = new URL(url);
 
@@ -41,15 +64,25 @@ public class HttpUtil {
 
             httpURLConnection.setRequestProperty("Accept-Charset", charset);
             httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
+            String cookie = getAndSaveCookie(context, connection);
+            if(enableSession && cookie != null){
+                httpURLConnection.setRequestProperty("Cookie", cookie);
+            }
             InputStream inputStream = null;
             InputStreamReader inputStreamReader = null;
             BufferedReader reader = null;
             StringBuilder resultBuffer = new StringBuilder();
             String tempLine = null;
 
-            if (httpURLConnection.getResponseCode() >= 400) {
-                throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
+            switch (httpURLConnection.getResponseCode()){
+                case 200:
+                    break;
+                case 401:
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    context.startActivity(intent);
+                    break;
+                default:
+                    throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
             }
 
             try {
@@ -83,45 +116,8 @@ public class HttpUtil {
         }
     }
 
-    // 字符串转成集合数据
-    public static void resultString2List(List<Map<String, Object>> list, String str, String title) {
-
-        try {
-            JSONObject jsonObject = new JSONObject(str);
-            JSONArray jsonArray = jsonObject.getJSONArray(title);
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject2 = jsonArray.getJSONObject(i);
-                Map<String, Object> map = new HashMap<String, Object>();
-                Iterator<String> iterator = jsonObject2.keys();
-                while (iterator.hasNext()) {
-                    String key = iterator.next();
-                    Object value = jsonObject2.get(key);
-                    map.put(key, value);
-                }
-
-                list.add(map);
-
-            }
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    // post方法访问服务器，返回集合数据
-    public static List<Map<String, Object>> jsonDecode(String str, String title) {
-
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        if(null != str){
-            resultString2List(list, str, title);
-        }
-        return list;
-
-    }
-
     // get方法访问服务器，返回json字符串
-    public static String postRequest(Context context, String url, Map<String, String> parameterMap) throws Exception {
+    public static String postRequest(Context context, String url, Map<String, String> parameterMap, Boolean enableSession) throws Exception {
         try{
            /* Translate parameter map to parameter date string */
             StringBuilder parameterBuffer = new StringBuilder();
@@ -157,6 +153,10 @@ public class HttpUtil {
             httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             httpURLConnection.setRequestProperty("Content-Length", String.valueOf(parameterBuffer.length()));
 
+            String cookie = getAndSaveCookie(context, connection);
+            if(enableSession && cookie != null){
+                httpURLConnection.setRequestProperty("Cookie", cookie);
+            }
             OutputStream outputStream = null;
             OutputStreamWriter outputStreamWriter = null;
             InputStream inputStream = null;
@@ -171,9 +171,15 @@ public class HttpUtil {
 
                 outputStreamWriter.write(parameterBuffer.toString());
                 outputStreamWriter.flush();
-
-                if (httpURLConnection.getResponseCode() >= 400) {
-                    throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
+                switch (httpURLConnection.getResponseCode()){
+                    case 200:
+                        break;
+                    case 401:
+                        Intent intent = new Intent(context, LoginActivity.class);
+                        context.startActivity(intent);
+                        break;
+                    default:
+                        throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
                 }
 
                 inputStream = httpURLConnection.getInputStream();
