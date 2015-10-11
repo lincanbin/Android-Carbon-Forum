@@ -57,6 +57,7 @@ public class HttpUtil {
                 case 200:
                     break;
                 case 401:
+                    context.getSharedPreferences("UserInfo",Activity.MODE_PRIVATE).edit().clear().apply();
                     Intent intent = new Intent(context, LoginActivity.class);
                     context.startActivity(intent);
                     break;
@@ -162,6 +163,7 @@ public class HttpUtil {
                     case 200:
                         break;
                     case 401:
+                        context.getSharedPreferences("UserInfo",Activity.MODE_PRIVATE).edit().clear().apply();
                         Intent intent = new Intent(context, LoginActivity.class);
                         context.startActivity(intent);
                         break;
@@ -223,13 +225,13 @@ public class HttpUtil {
                 Activity.MODE_PRIVATE);
         try{
             return  mySharedPreferences.getString("Cookie", "");
-        } catch (Exception e) {
+        } catch (ClassCastException e) {
             e.printStackTrace();
             return null;
         }
 
     }
-    //保存与发送Cookie，返回Cookie
+    //保存Cookie
     public static Boolean saveCookie(Context context, URLConnection connection){
         //获取Cookie
         String headerName=null;

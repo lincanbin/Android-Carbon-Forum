@@ -3,9 +3,12 @@ package com.lincanbin.carbonforum;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -37,6 +40,7 @@ import com.lincanbin.carbonforum.util.MD5Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,6 +71,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private EditText mVerificationCodeView;
     private ImageView mVerificationCodeImageView;
+    private SharedPreferences mSharedPreferences;
     private View mProgressView;
     private View mLoginFormView;
 
@@ -101,15 +106,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
         mVerificationCodeImageView = (ImageView)  findViewById(R.id.verification_code_img);
-        //接口回调的方法，完成头像的异步读取与显示
-        VerificationCode verficationCodeImage = new VerificationCode(this);
-        verficationCodeImage.loadImage(new VerificationCode.ImageCallBack() {
-            @Override
-            public void getDrawable(Drawable drawable) {
-                // TODO Auto-generated method stub
-                mVerificationCodeImageView.setImageDrawable(drawable);
-            }
-        });
+        refreshVerificationCode();
         Button mUsernameSignInButton = (Button) findViewById(R.id.username_sign_in_button);
         mUsernameSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -120,6 +117,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        mSharedPreferences = (SharedPreferences) this.getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -132,6 +130,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    private void refreshVerificationCode(){
+        //接口回调的方法，完成验证码的异步读取与显示
+        VerificationCode verficationCodeImage = new VerificationCode(this);
+        verficationCodeImage.loadImage(new VerificationCode.ImageCallBack() {
+            @Override
+            public void getDrawable(Drawable drawable) {
+                // TODO Auto-generated method stub
+                mVerificationCodeImageView.setImageDrawable(drawable);
+            }
+        });
     }
     private void populateAutoComplete() {
         getLoaderManager().initLoader(0, null, this);
@@ -266,7 +275,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> usernames = new ArrayList<String>();
+        List<String> usernames = new ArrayList<>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             usernames.add(cursor.getString(ProfileQuery.ADDRESS));
@@ -288,14 +297,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         };
 
         int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
 
     private void addUsernamesToAutoComplete(List<String> usernameAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(LoginActivity.this,
+                new ArrayAdapter<>(LoginActivity.this,
                         android.R.layout.simple_dropdown_item_1line, usernameAddressCollection);
 
         mUsernameView.setAdapter(adapter);
@@ -323,24 +331,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected void onPostExecute(JSONObject result) {
-            Log.v("JSON", result.toString());
             mAuthTask = null;
             showProgress(false);
-            try{
-                if (result.getInt("Status") == 1) {
+            if(result !=null) {
+                try {
                     Log.v("JSON", result.toString());
-                    finish();
-                /*
-                JSONUtil.jsonDecode(result, "UserInfo")
-                 */
-                } else {
-                    Toast.makeText(LoginActivity.this, result.getString("ErrorMessage"), Toast.LENGTH_SHORT).show();
-                    mPasswordView.setError(getString(R.string.error_incorrect_password));
-                    mPasswordView.requestFocus();
+                    if (result.getInt("Status") == 1) {
+                        Log.v("JSON", result.toString());
+
+                        JSONTokener jsonParser = new JSONTokener(result.getString("UserInfo"));
+                        JSONObject userInfo = (JSONObject) jsonParser.nextValue();
+
+                        SharedPreferences.Editor editor = mSharedPreferences.edit();
+                        editor.putString("UserID", result.getString("UserID"));
+                        editor.putString("UserExpirationTime", result.getString("UserExpirationTime"));
+                        editor.putString("UserCode", result.getString("UserCode"));
+                        editor.putString("UserName", userInfo.getString("UserName"));
+                        editor.apply();
+                        //发送广播刷新
+                        Intent intent = new Intent();
+                        intent.setAction("action.refreshDrawer");
+                        sendBroadcast(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, result.getString("ErrorMessage"), Toast.LENGTH_SHORT).show();
+                        refreshVerificationCode();
+                        mPasswordView.setError(getString(R.string.error_incorrect_password));
+                        mPasswordView.requestFocus();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            }catch(JSONException e){
+            }else{
                 Toast.makeText(LoginActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
             }
 
         }

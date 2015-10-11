@@ -14,7 +14,9 @@ public class APIAddress
 	public static final String BASIC_API_URL = "https://api.94cb.com"; // API地址前缀
 
 	//中等头像地址
-	public static final String MIDDLE_AVATAR_URL = DOMAIN_NAME + "/upload/avatar/middle/";
+	public static String MIDDLE_AVATAR_URL(String userID, String avatarSize){
+        return DOMAIN_NAME + "/upload/avatar/"+ avatarSize +"/" + userID +".png";
+    }
 
 	//首页帖子列表API地址
 	public static final String HOME_URL = BASIC_API_URL + "/page/";

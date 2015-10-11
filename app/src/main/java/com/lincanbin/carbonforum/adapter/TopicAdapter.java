@@ -64,7 +64,7 @@ public class TopicAdapter extends RecyclerView.Adapter{
         holder.Description.setText(topic.get("UserName").toString() + " · " + topic.get("LastName").toString());
         holder.Time.setText(TimeUtil.formatTime(context, Long.parseLong(topic.get("LastTime").toString())));
         //接口回调的方法，完成头像的异步读取与显示
-        DownImage downImage = new DownImage(APIAddress.MIDDLE_AVATAR_URL + (topic.get("UserID").toString()) + ".png");
+        DownImage downImage = new DownImage(APIAddress.MIDDLE_AVATAR_URL(topic.get("UserID").toString(), "middle"));
         downImage.loadImage(new DownImage.ImageCallBack() {
             @Override
             public void getDrawable(Drawable drawable) {

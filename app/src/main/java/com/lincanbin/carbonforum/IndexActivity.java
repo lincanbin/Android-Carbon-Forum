@@ -1,6 +1,11 @@
 package com.lincanbin.carbonforum;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,10 +48,10 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
     //save our header or result
     private AccountHeader headerResult = null;
     private Drawer mDrawer = null;
-
     private RecyclerView mRecyclerView ;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TopicAdapter MAdapter;
+    private SharedPreferences mSharedPreferences;
     //private ActionBarDrawerToggle mDrawerToggle;
     private int currentPage = 0;
     private List<Map<String,Object>> topicList = new ArrayList<>();
@@ -54,6 +59,10 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
+        //注册一个广播用来登录时刷新Drawer
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("action.refreshDrawer");
+        registerReceiver(mRefreshDrawerBroadcastReceiver, intentFilter);
         // 设置ToolBar
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
@@ -87,117 +96,8 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
                     return true;
                 }
             });
-            final IProfile profile = new ProfileDrawerItem().withName("Canbin Lin")
-                    .withEmail("i@lincanbin.com")
-                    .withIcon("https://avatars0.githubusercontent.com/u/5785188?v=3&s=460")
-                    .withIdentifier(100);
-            // Create the AccountHeader
-            headerResult = new AccountHeaderBuilder()
-                    .withActivity(this)
-                    .withHeaderBackground(R.drawable.header)
-                    .withSelectionListEnabledForSingleProfile(false)
-                    //.withTranslucentStatusBar(false)
-                    .addProfiles(
-                            profile,
-                            //don't ask but google uses 14dp for the add account icon in gmail but 20dp for the normal icons (like manage account)
-                            new ProfileSettingDrawerItem()
-                                    .withName("Add Account")
-                                    .withDescription("Add new GitHub Account"),
-                            new ProfileSettingDrawerItem()
-                                    .withName("Manage Account")
-                    )
-                    /*
-                    .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-                        @Override
-                        public boolean onProfileChanged(View view, IProfile profile, boolean current) {
-                            //sample usage of the onProfileChanged listener
-                            //if the clicked item has the identifier 1 add a new profile ;)
-                            if (profile instanceof IDrawerItem && ((IDrawerItem) profile).getIdentifier() == PROFILE_SETTING) {
-                                int count = 100 + headerResult.getProfiles().size() + 1;
-                                IProfile newProfile = new ProfileDrawerItem().
-                                        withNameShown(true).
-                                        withName("Batman" + count).
-                                        withEmail("batman" + count + "@lincanbin.com").
-                                        withIcon(R.drawable.profile).
-                                        withIdentifier(count);
-                                if (headerResult.getProfiles() != null) {
-                                    //we know that there are 2 setting elements. set the new profile above them ;)
-                                    headerResult.addProfile(newProfile, headerResult.getProfiles().size() - 2);
-                                } else {
-                                    headerResult.addProfiles(newProfile);
-                                }
-                            }
-
-                            //false if you have not consumed the event and it should close the drawer
-                            return false;
-                        }
-                    })
-                    */
-                    .withSavedInstance(savedInstanceState)
-                    .build();
-            //Create the drawer
-            mDrawer = new DrawerBuilder()
-                    .withActivity(this)
-                    .withActionBarDrawerToggle(true)
-                    .withToolbar(mToolbar)
-                    .withHasStableIds(true)
-                    .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
-                    //.withTranslucentStatusBar(false)
-                    .addDrawerItems(
-                            new PrimaryDrawerItem().
-                                    withName(R.string.login).
-                                    withDescription(R.string.login).
-                                    withIcon(R.drawable.ic_perm_identity_grey600_24dp).
-                                    withIdentifier(1).
-                                    withSelectable(false),
-                            new PrimaryDrawerItem().
-                                    withName(R.string.login).
-                                    withDescription(R.string.login).
-                                    withIcon(R.drawable.ic_perm_identity_grey600_24dp).
-                                    withIdentifier(1).
-                                    withSelectable(false)
-                    ) // add the items we want to use with our Drawer
-                    .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                        @Override
-                        public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                            //check if the drawerItem is set.
-                            //there are different reasons for the drawerItem to be null
-                            //--> click on the header
-                            //--> click on the footer
-                            //those items don't contain a drawerItem
-
-                            if (drawerItem != null) {
-                                Intent intent = null;
-                                if (drawerItem.getIdentifier() == 1) {
-                                    intent = new Intent(IndexActivity.this, LoginActivity.class);
-                                } else if (drawerItem.getIdentifier() == 2) {
-                                    intent = new Intent(IndexActivity.this, LoginActivity.class);
-                                }
-                                if (intent != null) {
-                                    IndexActivity.this.startActivity(intent);
-                                }
-                            }
-
-                            return false;
-                        }
-                    })
-                    .withSavedInstance(savedInstanceState)
-                    .withShowDrawerOnFirstLaunch(true)
-                    .build();
-            //if you have many different types of DrawerItems you can magically pre-cache those items to get a better scroll performance
-            //make sure to init the cache after the DrawerBuilder was created as this will first clear the cache to make sure no old elements are in
-            RecyclerViewCacheUtil.getInstance().withCacheSize(2).init(mDrawer);
-
-            //only set the active selection or active profile if we do not recreate the activity
-            if (savedInstanceState == null) {
-                // set the selection to the item with the identifier 11
-                mDrawer.setSelection(21, false);
-
-                //set the active profile
-                headerResult.setActiveProfile(profile);
-            }
-
-            mDrawer.updateBadge(4, new StringHolder(10 + ""));
+            mSharedPreferences = (SharedPreferences) this.getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
+            refreshDrawer(savedInstanceState);
         }
         //下拉刷新监听器
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_index_swipe_refresh_layout);
@@ -273,6 +173,142 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
     //加载帖子
     public void loadTopic(int TargetPage) {
             new GetTopicsTask(TargetPage).execute();
+    }
+    // broadcast receiver
+    private BroadcastReceiver mRefreshDrawerBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals("action.refreshDrawer")) {
+                refreshDrawer(null);
+            }
+        }
+    };
+        private void refreshDrawer(Bundle savedInstanceState){
+        try{
+            //Log.v("UserID", mSharedPreferences.getString("UserID", "0"));
+            if(Integer.parseInt(mSharedPreferences.getString("UserID", "0")) == 0){
+                final IProfile profile = new ProfileDrawerItem()
+                        .withName("Not logged in")
+                        .withIdentifier(100);
+                // Create the AccountHeader
+                headerResult = new AccountHeaderBuilder()
+                        .withActivity(this)
+                        .withHeaderBackground(R.drawable.header)
+                        .withSelectionListEnabledForSingleProfile(false)
+                        .addProfiles(
+                                profile
+                        )
+                        .withSavedInstance(savedInstanceState)
+                        .build();
+            }else{
+                final IProfile profile = new ProfileDrawerItem().withName(mSharedPreferences.getString("UserName", "lincanbin"))
+                        //.withEmail("i@lincanbin.com")
+                        .withIcon(APIAddress.MIDDLE_AVATAR_URL(mSharedPreferences.getString("UserID", "0"), "middle"))
+                        .withIdentifier(Integer.parseInt(mSharedPreferences.getString("UserID", "0")));
+                // Create the AccountHeader
+                headerResult = new AccountHeaderBuilder()
+                        .withActivity(this)
+                        .withHeaderBackground(R.drawable.header)
+                        .withSelectionListEnabledForSingleProfile(false)
+                                //.withTranslucentStatusBar(false)
+                        .addProfiles(
+                                profile,
+                                //don't ask but google uses 14dp for the add account icon in gmail but 20dp for the normal icons (like manage account)
+                                new ProfileSettingDrawerItem()
+                                        .withName("Change Account")
+                                        .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                                            @Override
+                                            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                                                if (drawerItem != null) {
+                                                    IndexActivity.this.startActivity(new Intent(IndexActivity.this, LoginActivity.class));
+                                                }
+                                                return false;
+                                            }
+                                        }),
+                                new ProfileSettingDrawerItem()
+                                        .withName("Exit")
+                                        .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                                            @Override
+                                            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                                                if (drawerItem != null) {
+                                                    mSharedPreferences.edit().clear().apply();
+                                                    refreshDrawer(null);
+                                                }
+                                                return false;
+                                            }
+                                        })
+                        )
+                        .withSavedInstance(savedInstanceState)
+                        .build();
+            }
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
+
+        //Create the drawer
+        mDrawer = new DrawerBuilder()
+                .withActivity(this)
+                .withActionBarDrawerToggle(true)
+                .withToolbar(mToolbar)
+                .withHasStableIds(true)
+                .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
+                // .withTranslucentStatusBar(false)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().
+                                withName(R.string.login).
+                                withDescription(R.string.login).
+                                withIcon(R.drawable.ic_perm_identity_grey600_24dp).
+                                withIdentifier(1).
+                                withSelectable(false),
+                        new PrimaryDrawerItem().
+                                withName(R.string.refresh).
+                                withDescription(R.string.refresh).
+                                withIcon(R.drawable.ic_perm_identity_grey600_24dp).
+                                withIdentifier(1).
+                                withSelectable(false)
+                ) // add the items we want to use with our Drawer
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        //check if the drawerItem is set.
+                        //there are different reasons for the drawerItem to be null
+                        //--> click on the header
+                        //--> click on the footer
+                        //those items don't contain a drawerItem
+
+                        if (drawerItem != null) {
+                            Intent intent = null;
+                            if (drawerItem.getIdentifier() == 1) {
+                                intent = new Intent(IndexActivity.this, LoginActivity.class);
+                            } else if (drawerItem.getIdentifier() == 2) {
+                                loadTopic(1);
+                            }
+                            if (intent != null) {
+                                IndexActivity.this.startActivity(intent);
+                            }
+                        }
+
+                        return false;
+                    }
+                })
+                .withSavedInstance(savedInstanceState)
+                .withShowDrawerOnFirstLaunch(true)
+                .build();
+        //if you have many different types of DrawerItems you can magically pre-cache those items to get a better scroll performance
+        //make sure to init the cache after the DrawerBuilder was created as this will first clear the cache to make sure no old elements are in
+        RecyclerViewCacheUtil.getInstance().withCacheSize(2).init(mDrawer);
+
+        //only set the active selection or active profile if we do not recreate the activity
+        if (savedInstanceState == null) {
+            // set the selection to the item with the identifier 11
+            mDrawer.setSelection(21, false);
+
+            //set the active profile
+            //headerResult.setActiveProfile(profile);
+        }
+
+        mDrawer.updateBadge(4, new StringHolder(10 + ""));
     }
     //下拉刷新事件
     @Override
