@@ -270,7 +270,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
     }
     //加载帖子
     public void loadTopic(int TargetPage) {
-            new indexModel(TargetPage).execute(ApiAddress.HOME_URL + TargetPage);
+            new IndexModel(TargetPage).execute(ApiAddress.HOME_URL + TargetPage);
     }
     //下拉刷新事件
     @Override
@@ -333,10 +333,10 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
         }
         return super.onOptionsItemSelected(item);
     }
-    public class indexModel extends AsyncTask<String, Void, List<Map<String,Object>>> {
+    public class IndexModel extends AsyncTask<String, Void, List<Map<String,Object>>> {
     	public int targetPage;
         private int positionStart;
-		public indexModel(int targetPage) {
+		public IndexModel(int targetPage) {
 			this.targetPage = targetPage;
 		}
         @Override
@@ -378,7 +378,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
         protected List<Map<String, Object>> doInBackground(String... params) {
             // TODO Auto-generated method stub
             List<Map<String,Object>> list ;
-            String str = HttpUtil.getRequest(IndexActivity.this, params[0], false);
+            String str = HttpUtil.getRequest(IndexActivity.this, params[0], false, false);
             //Log.v("JSON", str);
             list = JSONUtil.jsonDecode(str, "TopicsArray");
             //Log.v("List", list.toString());
