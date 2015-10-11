@@ -1,5 +1,5 @@
 package com.lincanbin.carbonforum.config;
-public class ApiAddress
+public class APIAddress
 {
 	/*
 	//Debug
@@ -21,5 +21,8 @@ public class ApiAddress
 
 	//验证码
 	public static final String VERIFICATION_CODE = BASIC_API_URL + "/seccode.php";
+
+	//登陆
+	public static final String LOGIN_URL = BASIC_API_URL + "/login";
 
 }

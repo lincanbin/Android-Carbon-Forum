@@ -16,7 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.lincanbin.carbonforum.adapter.TopicAdapter;
-import com.lincanbin.carbonforum.config.ApiAddress;
+import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.util.HttpUtil;
 import com.lincanbin.carbonforum.util.JSONUtil;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -30,6 +30,8 @@ import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.RecyclerViewCacheUtil;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -270,7 +272,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
     }
     //加载帖子
     public void loadTopic(int TargetPage) {
-            new IndexModel(TargetPage).execute(ApiAddress.HOME_URL + TargetPage);
+            new GetTopicsTask(TargetPage).execute();
     }
     //下拉刷新事件
     @Override
@@ -333,10 +335,10 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
         }
         return super.onOptionsItemSelected(item);
     }
-    public class IndexModel extends AsyncTask<String, Void, List<Map<String,Object>>> {
+    public class GetTopicsTask extends AsyncTask<Void, Void, List<Map<String,Object>>> {
     	public int targetPage;
         private int positionStart;
-		public IndexModel(int targetPage) {
+		public GetTopicsTask(int targetPage) {
 			this.targetPage = targetPage;
 		}
         @Override
@@ -375,12 +377,12 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
         }
 
         @Override
-        protected List<Map<String, Object>> doInBackground(String... params) {
+        protected List<Map<String, Object>> doInBackground(Void... params) {
             // TODO Auto-generated method stub
-            List<Map<String,Object>> list ;
-            String str = HttpUtil.getRequest(IndexActivity.this, params[0], false, false);
+            List<Map<String,Object>> list;
+            JSONObject jsonObject = HttpUtil.getRequest(IndexActivity.this, APIAddress.HOME_URL + targetPage, false, false);
             //Log.v("JSON", str);
-            list = JSONUtil.jsonDecode(str, "TopicsArray");
+            list = JSONUtil.jsonDecode(jsonObject, "TopicsArray");
             //Log.v("List", list.toString());
             return list;
         }

@@ -8,6 +8,10 @@ import android.util.Log;
 
 import com.lincanbin.carbonforum.LoginActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,8 +33,8 @@ public class HttpUtil {
     private String proxyHost = null;
     private Integer proxyPort = null;
 
-    // get方法访问服务器，返回json字符串
-    public static String getRequest(Context context, String url, Boolean enableSession, Boolean loginRequired) {
+    // get方法访问服务器，返回json对象
+    public static JSONObject getRequest(Context context, String url, Boolean enableSession, Boolean loginRequired) {
         try {
             URL localURL = new URL(url);
 
@@ -39,7 +43,7 @@ public class HttpUtil {
 
             httpURLConnection.setRequestProperty("Accept-Charset", charset);
             httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            String cookie = getAndSaveCookie(context, connection);
+            String cookie = getCookie(context);
             if(enableSession && cookie != null){
                 httpURLConnection.setRequestProperty("Cookie", cookie);
             }
@@ -59,7 +63,9 @@ public class HttpUtil {
                 default:
                     throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
             }
-
+            if(enableSession) {
+                saveCookie(context, httpURLConnection);
+            }
             try {
                 inputStream = httpURLConnection.getInputStream();
                 inputStreamReader = new InputStreamReader(inputStream);
@@ -84,15 +90,21 @@ public class HttpUtil {
                 }
 
             }
-            return resultBuffer.toString();
+            try {
+                JSONTokener jsonParser = new JSONTokener(resultBuffer.toString());
+               return (JSONObject) jsonParser.nextValue();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    // post方法访问服务器，返回json字符串
-    public static String postRequest(Context context, String url, Map<String, String> parameterMap, Boolean enableSession, Boolean loginRequired) throws Exception {
+    // post方法访问服务器，返回json对象
+    public static JSONObject postRequest(Context context, String url, Map<String, String> parameterMap, Boolean enableSession, Boolean loginRequired) {
         try{
            /* Translate parameter map to parameter date string */
             StringBuilder parameterBuffer = new StringBuilder();
@@ -128,7 +140,7 @@ public class HttpUtil {
             httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             httpURLConnection.setRequestProperty("Content-Length", String.valueOf(parameterBuffer.length()));
 
-            String cookie = getAndSaveCookie(context, connection);
+            String cookie = getCookie(context);
             if(enableSession && cookie != null){
                 httpURLConnection.setRequestProperty("Cookie", cookie);
             }
@@ -156,7 +168,9 @@ public class HttpUtil {
                     default:
                         throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
                 }
-
+                if(enableSession) {
+                    saveCookie(context, httpURLConnection);
+                }
                 inputStream = httpURLConnection.getInputStream();
                 inputStreamReader = new InputStreamReader(inputStream);
                 reader = new BufferedReader(inputStreamReader);
@@ -188,29 +202,23 @@ public class HttpUtil {
                 }
 
             }
-            return resultBuffer.toString();
+            String postResult = resultBuffer.toString();
+            try {
+                Log.v("Post Result",postResult);
+                JSONTokener jsonParser = new JSONTokener(postResult);
+                return (JSONObject) jsonParser.nextValue();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    //保存与发送Cookie，返回Cookie
-    public static  String getAndSaveCookie(Context context, URLConnection connection){
-        //获取Cookie
-        String headerName=null;
-        for (int i=1; (headerName = connection.getHeaderFieldKey(i))!=null; i++) {
-            if (headerName.equals("Set-Cookie")) {
-                String cookie = connection.getHeaderField(i);
-                //将Cookie保存起来
-                SharedPreferences mySharedPreferences= context.getSharedPreferences("Session",
-                        Activity.MODE_PRIVATE);
-                SharedPreferences.Editor editor = mySharedPreferences.edit();
-                editor.putString("Cookie", cookie);
-                editor.apply();
-            }
-        }
-        //返回Cookie
+    //获取之前保存的Cookie
+    public static String getCookie(Context context){
         SharedPreferences mySharedPreferences= context.getSharedPreferences("Session",
                 Activity.MODE_PRIVATE);
         try{
@@ -220,6 +228,24 @@ public class HttpUtil {
             return null;
         }
 
+    }
+    //保存与发送Cookie，返回Cookie
+    public static Boolean saveCookie(Context context, URLConnection connection){
+        //获取Cookie
+        String headerName=null;
+        for (int i=1; (headerName = connection.getHeaderFieldKey(i))!=null; i++) {
+            if (headerName.equals("Set-Cookie")) {
+                String cookie = connection.getHeaderField(i);
+                //将Cookie保存起来
+                SharedPreferences mySharedPreferences = context.getSharedPreferences("Session",
+                        Activity.MODE_PRIVATE);
+                SharedPreferences.Editor editor = mySharedPreferences.edit();
+                editor.putString("Cookie", cookie);
+                editor.apply();
+                return true;
+            }
+        }
+        return false;
     }
 
     private URLConnection openConnection(URL localURL) throws IOException {

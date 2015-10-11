@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lincanbin.carbonforum.R;
-import com.lincanbin.carbonforum.config.ApiAddress;
+import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.tools.DownImage;
 import com.lincanbin.carbonforum.util.TimeUtil;
 
@@ -64,7 +64,7 @@ public class TopicAdapter extends RecyclerView.Adapter{
         holder.Description.setText(topic.get("UserName").toString() + " · " + topic.get("LastName").toString());
         holder.Time.setText(TimeUtil.formatTime(context, Long.parseLong(topic.get("LastTime").toString())));
         //接口回调的方法，完成头像的异步读取与显示
-        DownImage downImage = new DownImage(ApiAddress.MIDDLE_AVATAR_URL + (topic.get("UserID").toString()) + ".png");
+        DownImage downImage = new DownImage(APIAddress.MIDDLE_AVATAR_URL + (topic.get("UserID").toString()) + ".png");
         downImage.loadImage(new DownImage.ImageCallBack() {
             @Override
             public void getDrawable(Drawable drawable) {

@@ -28,12 +28,14 @@
                     android:layout_height="wrap_content" android:orientation="vertical">
 
                     <AutoCompleteTextView android:id="@+id/username" android:layout_width="match_parent"
+                        android:textColor="@color/material_grey_600"
                         android:layout_height="wrap_content" android:hint="@string/prompt_username"
                         android:imeOptions="actionNext"
                         android:inputType="text" android:maxLines="1"
                         android:singleLine="true" />
 
                     <EditText android:id="@+id/password" android:layout_width="match_parent"
+                        android:textColor="@color/material_grey_600"
                         android:layout_height="wrap_content" android:hint="@string/prompt_password"
                         android:imeActionId="@+id/login"
                         android:imeActionLabel="@string/action_sign_in_short"
@@ -44,7 +46,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     >
-                    <EditText android:id="@+id/verification_code" android:layout_width="200dp"
+                    <EditText android:id="@+id/verification_code" android:layout_width="180dp"
+                        android:textColor="@color/material_grey_600"
                             android:layout_height="wrap_content" android:hint="@string/prompt_verification_code"
                             android:imeActionId="@+id/login"
                             android:imeActionLabel="@string/action_sign_in_short"

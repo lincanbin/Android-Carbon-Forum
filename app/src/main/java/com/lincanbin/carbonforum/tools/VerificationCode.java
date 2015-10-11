@@ -7,7 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 
-import com.lincanbin.carbonforum.config.ApiAddress;
+import com.lincanbin.carbonforum.config.APIAddress;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +20,6 @@ import java.net.URLConnection;
  * Created by 灿斌 on 5/18/2015.
  */
 public class VerificationCode {
-    public String VerificationCodeURL = ApiAddress.VERIFICATION_CODE;
     Context context;
     public VerificationCode(Context context){this.context = context;}
 
@@ -42,7 +41,7 @@ public class VerificationCode {
             public void run() {
                 // TODO Auto-generated method stub
                 try {
-                    URL localURL = new URL(VerificationCodeURL);
+                    URL localURL = new URL(APIAddress.VERIFICATION_CODE);
                     URLConnection connection = localURL.openConnection();
                     HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
                     InputStream inputStream = null;
