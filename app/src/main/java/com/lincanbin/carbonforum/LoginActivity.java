@@ -16,6 +16,7 @@ import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,11 +28,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.tools.VerificationCode;
+import com.lincanbin.carbonforum.util.HttpUtil;
+import com.lincanbin.carbonforum.util.MD5Util;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -295,52 +305,44 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void,JSONObject> {
 
-        private final String mUsername;
-        private final String mPassword;
-        private final String mVerificationCode;
+        private final Map<String, String> parameter = new HashMap<>();
 
         UserLoginTask(String username, String password, String verification_code) {
-            mUsername = username;
-            mPassword = password;
-            mVerificationCode = verification_code;
+            parameter.put("UserName", username);
+            parameter.put("Password", MD5Util.md5(password));
+            parameter.put("VerifyCode", verification_code);
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected JSONObject doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mUsername)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
+            return HttpUtil.postRequest(LoginActivity.this, APIAddress.LOGIN_URL,parameter, true, false);
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(JSONObject result) {
+            Log.v("JSON", result.toString());
             mAuthTask = null;
             showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+            try{
+                if (result.getInt("Status") == 1) {
+                    Log.v("JSON", result.toString());
+                    finish();
+                /*
+                JSONUtil.jsonDecode(result, "UserInfo")
+                 */
+                } else {
+                    Toast.makeText(LoginActivity.this, result.getString("ErrorMessage"), Toast.LENGTH_SHORT).show();
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
+            }catch(JSONException e){
+                Toast.makeText(LoginActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
             }
+
         }
 
         @Override
