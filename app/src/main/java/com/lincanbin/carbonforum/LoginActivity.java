@@ -36,11 +36,10 @@ import android.widget.Toast;
 import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.tools.VerificationCode;
 import com.lincanbin.carbonforum.util.HttpUtil;
+import com.lincanbin.carbonforum.util.JSONUtil;
 import com.lincanbin.carbonforum.util.MD5Util;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -345,16 +344,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     if (result.getInt("Status") == 1) {
                         Log.v("JSON", result.toString());
 
-                        JSONTokener jsonParser = new JSONTokener(result.getString("UserInfo"));
-                        JSONObject userInfo = (JSONObject) jsonParser.nextValue();
-
                         SharedPreferences.Editor editor = mSharedPreferences.edit();
                         editor.putString("UserID", result.getString("UserID"));
                         editor.putString("UserExpirationTime", result.getString("UserExpirationTime"));
                         editor.putString("UserCode", result.getString("UserCode"));
-                        editor.putString("UserName", userInfo.getString("UserName"));
-                        editor.putString("UserMail", userInfo.getString("UserMail"));
-                        editor.putString("UserIntro", userInfo.getString("UserIntro"));
+
+                        JSONObject userInfo =  JSONUtil.json2Object(result.getString("UserInfo"));
+                        if(userInfo!=null){
+                            editor.putString("UserName", userInfo.getString("UserName"));
+                            editor.putString("UserMail", userInfo.getString("UserMail"));
+                            editor.putString("UserIntro", userInfo.getString("UserIntro"));
+                        }
                         editor.apply();
                         //发送广播刷新
                         Intent intent = new Intent();
@@ -368,7 +368,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         mPasswordView.setError(result.getString("ErrorMessage"));
                         mPasswordView.requestFocus();
                     }
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }else{

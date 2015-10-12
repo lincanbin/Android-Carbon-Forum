@@ -91,13 +91,7 @@ public class HttpUtil {
                 }
 
             }
-            try {
-                JSONTokener jsonParser = new JSONTokener(resultBuffer.toString());
-               return (JSONObject) jsonParser.nextValue();
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return null;
-            }
+            return JSONUtil.json2Object(resultBuffer.toString());
         } catch (Exception e) {
             e.printStackTrace();
             return null;

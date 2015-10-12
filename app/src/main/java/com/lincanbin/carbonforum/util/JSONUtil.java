@@ -3,6 +3,7 @@ package com.lincanbin.carbonforum.util;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 public class JSONUtil {
     // JSON字符串转List
-    public static List<Map<String, Object>> jsonDecode(JSONObject jsonObject, String title) {
+    public static List<Map<String, Object>> json2List(JSONObject jsonObject, String title) {
 
         List<Map<String, Object>> list = new ArrayList<>();
         if(null != jsonObject){
@@ -40,6 +41,15 @@ public class JSONUtil {
                 return null;
             }
         }else{
+            return null;
+        }
+    }
+    public static JSONObject json2Object(String jsonString){
+        try {
+            JSONTokener jsonParser = new JSONTokener(jsonString);
+            return (JSONObject) jsonParser.nextValue();
+        } catch (JSONException e) {
+            e.printStackTrace();
             return null;
         }
     }
