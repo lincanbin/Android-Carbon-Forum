@@ -10,6 +10,8 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -53,10 +55,12 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
     private Drawer mDrawer = null;
     private RecyclerView mRecyclerView ;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private FloatingActionButton mFloatingActionButton;
     private TopicAdapter MAdapter;
     private SharedPreferences mSharedPreferences;
     //private ActionBarDrawerToggle mDrawerToggle;
     private int currentPage = 0;
+    private Boolean enableScrollListener = true;
     private List<Map<String,Object>> topicList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +103,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
                     return true;
                 }
             });
-            mSharedPreferences = (SharedPreferences) this.getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
+            mSharedPreferences = this.getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
             refreshDrawer(savedInstanceState);
         }
         //下拉刷新监听器
@@ -128,7 +132,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
                     int lastVisibleItem = layoutManager.findLastCompletelyVisibleItemPosition();
                     int totalItemCount = layoutManager.getItemCount();
                     // 判断是否滚动到底部，并且是向右滚动
-                    if (lastVisibleItem == (totalItemCount - 1)) {
+                    if (lastVisibleItem == (totalItemCount - 1) && enableScrollListener) {
                         //加载更多功能的代码
                         loadTopic(currentPage + 1, false);
                     }
@@ -168,6 +172,14 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
             public boolean onItemLongClick(int position) {
                 Toast.makeText(IndexActivity.this, "onItemLongClick" + topicList.get(position).get("Topic").toString(), Toast.LENGTH_SHORT).show();
                 return true;
+            }
+        });
+        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         });
         //Activity渲染完毕时加载帖子
@@ -392,8 +404,9 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
+            enableScrollListener = false;
             if(enableCache){
-                topicList = JSONUtil.json2List(JSONUtil.json2Object(cacheSharedPreferences.getString("topicsCache", "{\"TopicsArray\":[]}")), "TopicsArray");;
+                topicList = JSONUtil.json2List(JSONUtil.json2Object(cacheSharedPreferences.getString("topicsCache", "{\"TopicsArray\":[]}")), "TopicsArray");
                 if(topicList != null){
                     MAdapter.setData(topicList);
                     MAdapter.notifyDataSetChanged();
@@ -427,6 +440,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
             }
             //移除刷新控件
             mSwipeRefreshLayout.setRefreshing(false);
+            enableScrollListener = true;
             //Toast.makeText(IndexActivity.this, "AsyncTask End", Toast.LENGTH_SHORT).show();
         }
 
