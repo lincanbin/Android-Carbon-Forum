@@ -130,7 +130,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
                     // 判断是否滚动到底部，并且是向右滚动
                     if (lastVisibleItem == (totalItemCount - 1)) {
                         //加载更多功能的代码
-                        loadTopic(currentPage + 1);
+                        loadTopic(currentPage + 1, false);
                     }
                 }
             }
@@ -171,11 +171,11 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
             }
         });
         //Activity渲染完毕时加载帖子
-        onRefresh();
+        loadTopic(1, true);
     }
     //加载帖子
-    private void loadTopic(int TargetPage) {
-            new GetTopicsTask(TargetPage).execute();
+    private void loadTopic(int targetPage, Boolean enableCache) {
+            new GetTopicsTask(targetPage, enableCache).execute();
     }
     // broadcast receiver
     private BroadcastReceiver mRefreshDrawerBroadcastReceiver = new BroadcastReceiver() {
@@ -288,7 +288,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
                         if (drawerItem != null) {
                             Intent intent = null;
                             if (drawerItem.getIdentifier() == 2) {
-                                loadTopic(1);
+                                loadTopic(1, false);
                             } else if (drawerItem.getIdentifier() == 3) {
                                 intent = new Intent(IndexActivity.this, LoginActivity.class);
                             }
@@ -321,7 +321,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
     //下拉刷新事件
     @Override
     public void onRefresh() {
-        loadTopic(1);
+        loadTopic(1, false);
     }
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -380,15 +380,25 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
         return super.onOptionsItemSelected(item);
     }
     public class GetTopicsTask extends AsyncTask<Void, Void, List<Map<String,Object>>> {
-    	public int targetPage;
+    	private int targetPage;
+        private Boolean enableCache;
         private int positionStart;
-		public GetTopicsTask(int targetPage) {
+        SharedPreferences cacheSharedPreferences = IndexActivity.this.getSharedPreferences("MainCache", Activity.MODE_PRIVATE);
+		public GetTopicsTask(int targetPage, Boolean enableCache) {
 			this.targetPage = targetPage;
+            this.enableCache = enableCache;
 		}
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
+            if(enableCache){
+                topicList = JSONUtil.json2List(JSONUtil.json2Object(cacheSharedPreferences.getString("topicsCache", "{\"TopicsArray\":[]}")), "TopicsArray");;
+                if(topicList != null){
+                    MAdapter.setData(topicList);
+                    MAdapter.notifyDataSetChanged();
+                }
+            }
             mSwipeRefreshLayout.setRefreshing(true);
             //Toast.makeText(IndexActivity.this, "Before AsyncTask", Toast.LENGTH_SHORT).show();
         }
@@ -426,7 +436,16 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
             List<Map<String,Object>> list;
             JSONObject jsonObject = HttpUtil.getRequest(IndexActivity.this, APIAddress.HOME_URL + targetPage, false, false);
             //Log.v("JSON", str);
-            list = JSONUtil.jsonDecode(jsonObject, "TopicsArray");
+            if(jsonObject != null && targetPage == 1){
+                try {
+                    SharedPreferences.Editor cacheEditor = cacheSharedPreferences.edit();
+                    cacheEditor.putString("topicsCache", jsonObject.toString(0));
+                    cacheEditor.apply();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+            list = JSONUtil.json2List(jsonObject, "TopicsArray");
             //Log.v("List", list.toString());
             return list;
         }
