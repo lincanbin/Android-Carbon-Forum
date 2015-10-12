@@ -19,4 +19,5 @@
         <item>Menu 3</item>
         <item>Menu 4</item>
     </string-array>
+    <string name="title_activity_topic">TopicActivity</string>
 </resources>
