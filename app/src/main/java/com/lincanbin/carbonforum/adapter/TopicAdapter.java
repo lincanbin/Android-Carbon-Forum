@@ -1,7 +1,6 @@
 package com.lincanbin.carbonforum.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +9,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.lincanbin.carbonforum.R;
 import com.lincanbin.carbonforum.config.APIAddress;
-import com.lincanbin.carbonforum.tools.DownImage;
 import com.lincanbin.carbonforum.util.TimeUtil;
 
 import java.util.List;
@@ -63,6 +62,8 @@ public class TopicAdapter extends RecyclerView.Adapter{
         holder.Title.setText(topic.get("Topic").toString());
         holder.Description.setText(topic.get("UserName").toString() + " · " + topic.get("LastName").toString());
         holder.Time.setText(TimeUtil.formatTime(context, Long.parseLong(topic.get("LastTime").toString())));
+        Glide.with(context).load(APIAddress.MIDDLE_AVATAR_URL(topic.get("UserID").toString(), "middle")).into(holder.Avatar);
+        /*
         //接口回调的方法，完成头像的异步读取与显示
         DownImage downImage = new DownImage(APIAddress.MIDDLE_AVATAR_URL(topic.get("UserID").toString(), "middle"));
         downImage.loadImage(new DownImage.ImageCallBack() {
@@ -72,6 +73,7 @@ public class TopicAdapter extends RecyclerView.Adapter{
                 holder.Avatar.setImageDrawable(drawable);
             }
         });
+        */
     }
 
     @Override

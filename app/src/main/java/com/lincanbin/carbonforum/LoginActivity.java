@@ -106,6 +106,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
         mVerificationCodeImageView = (ImageView)  findViewById(R.id.verification_code_img);
+        mVerificationCodeImageView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                refreshVerificationCode();
+            }
+        });
         refreshVerificationCode();
         Button mUsernameSignInButton = (Button) findViewById(R.id.username_sign_in_button);
         mUsernameSignInButton.setOnClickListener(new OnClickListener() {
@@ -217,7 +223,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() >= 3;
     }
 
     /**
@@ -347,6 +353,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         editor.putString("UserExpirationTime", result.getString("UserExpirationTime"));
                         editor.putString("UserCode", result.getString("UserCode"));
                         editor.putString("UserName", userInfo.getString("UserName"));
+                        editor.putString("UserMail", userInfo.getString("UserMail"));
+                        editor.putString("UserIntro", userInfo.getString("UserIntro"));
                         editor.apply();
                         //发送广播刷新
                         Intent intent = new Intent();
@@ -356,7 +364,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     } else {
                         Toast.makeText(LoginActivity.this, result.getString("ErrorMessage"), Toast.LENGTH_SHORT).show();
                         refreshVerificationCode();
-                        mPasswordView.setError(getString(R.string.error_incorrect_password));
+                        //TODO: 根据ErrorCode判断Focus的目标
+                        mPasswordView.setError(result.getString("ErrorMessage"));
                         mPasswordView.requestFocus();
                     }
                 } catch (JSONException e) {

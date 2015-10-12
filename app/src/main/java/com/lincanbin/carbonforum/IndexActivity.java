@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -24,11 +25,13 @@ import com.lincanbin.carbonforum.adapter.TopicAdapter;
 import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.util.HttpUtil;
 import com.lincanbin.carbonforum.util.JSONUtil;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.holder.StringHolder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
@@ -168,10 +171,10 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
             }
         });
         //Activity渲染完毕时加载帖子
-        loadTopic(1);
+        onRefresh();
     }
     //加载帖子
-    public void loadTopic(int TargetPage) {
+    private void loadTopic(int TargetPage) {
             new GetTopicsTask(TargetPage).execute();
     }
     // broadcast receiver
@@ -190,7 +193,8 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
             if(Integer.parseInt(mSharedPreferences.getString("UserID", "0")) == 0){
                 final IProfile profile = new ProfileDrawerItem()
                         .withName("Not logged in")
-                        .withIdentifier(100);
+                        .withIcon(R.drawable.profile)
+                        .withIdentifier(0);
                 // Create the AccountHeader
                 headerResult = new AccountHeaderBuilder()
                         .withActivity(this)
@@ -202,39 +206,38 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
                         .withSavedInstance(savedInstanceState)
                         .build();
             }else{
-                final IProfile profile = new ProfileDrawerItem().withName(mSharedPreferences.getString("UserName", "lincanbin"))
-                        //.withEmail("i@lincanbin.com")
-                        .withIcon(APIAddress.MIDDLE_AVATAR_URL(mSharedPreferences.getString("UserID", "0"), "middle"))
-                        .withIdentifier(Integer.parseInt(mSharedPreferences.getString("UserID", "0")));
+                final IProfile profile = new ProfileDrawerItem()
+                        .withName(mSharedPreferences.getString("UserName", "lincanbin"))
+                        .withEmail(mSharedPreferences.getString("UserMail", mSharedPreferences.getString("UserName", "lincanbin")))
+                        .withIcon(Uri.parse(APIAddress.MIDDLE_AVATAR_URL(mSharedPreferences.getString("UserID", "0"), "large")))
+                                .withIdentifier(Integer.parseInt(mSharedPreferences.getString("UserID", "0")));
                 // Create the AccountHeader
                 headerResult = new AccountHeaderBuilder()
                         .withActivity(this)
                         .withHeaderBackground(R.drawable.header)
                         .withSelectionListEnabledForSingleProfile(false)
-                                //.withTranslucentStatusBar(false)
+                        //.withTranslucentStatusBar(false)
                         .addProfiles(
                                 profile,
                                 //don't ask but google uses 14dp for the add account icon in gmail but 20dp for the normal icons (like manage account)
                                 new ProfileSettingDrawerItem()
                                         .withName("Change Account")
+                                        .withIcon(GoogleMaterial.Icon.gmd_person_add)
                                         .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                                             @Override
                                             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                                                if (drawerItem != null) {
                                                     IndexActivity.this.startActivity(new Intent(IndexActivity.this, LoginActivity.class));
-                                                }
                                                 return false;
                                             }
                                         }),
                                 new ProfileSettingDrawerItem()
                                         .withName("Exit")
+                                        .withIcon(GoogleMaterial.Icon.gmd_remove_circle_outline)
                                         .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                                             @Override
                                             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                                                if (drawerItem != null) {
-                                                    mSharedPreferences.edit().clear().apply();
-                                                    refreshDrawer(null);
-                                                }
+                                                mSharedPreferences.edit().clear().apply();
+                                                refreshDrawer(null);
                                                 return false;
                                             }
                                         })
@@ -256,16 +259,21 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
                 // .withTranslucentStatusBar(false)
                 .addDrawerItems(
                         new PrimaryDrawerItem().
-                                withName(R.string.login).
-                                withDescription(R.string.login).
-                                withIcon(R.drawable.ic_perm_identity_grey600_24dp).
+                                withName(R.string.app_name).
+                                withIcon(GoogleMaterial.Icon.gmd_home).
+                                withSetSelected(true).
                                 withIdentifier(1).
-                                withSelectable(false),
+                                withSelectable(true),
                         new PrimaryDrawerItem().
                                 withName(R.string.refresh).
-                                withDescription(R.string.refresh).
-                                withIcon(R.drawable.ic_perm_identity_grey600_24dp).
-                                withIdentifier(1).
+                                withIcon(GoogleMaterial.Icon.gmd_autorenew).
+                                withIdentifier(2).
+                                withSelectable(false),
+                        new DividerDrawerItem(),
+                        new PrimaryDrawerItem().
+                                withName(R.string.login).
+                                withIcon(GoogleMaterial.Icon.gmd_person_add).
+                                withIdentifier(3).
                                 withSelectable(false)
                 ) // add the items we want to use with our Drawer
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -279,10 +287,10 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
 
                         if (drawerItem != null) {
                             Intent intent = null;
-                            if (drawerItem.getIdentifier() == 1) {
-                                intent = new Intent(IndexActivity.this, LoginActivity.class);
-                            } else if (drawerItem.getIdentifier() == 2) {
+                            if (drawerItem.getIdentifier() == 2) {
                                 loadTopic(1);
+                            } else if (drawerItem.getIdentifier() == 3) {
+                                intent = new Intent(IndexActivity.this, LoginActivity.class);
                             }
                             if (intent != null) {
                                 IndexActivity.this.startActivity(intent);
