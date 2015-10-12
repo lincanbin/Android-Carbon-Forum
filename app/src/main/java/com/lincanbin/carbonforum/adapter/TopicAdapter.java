@@ -1,6 +1,7 @@
 package com.lincanbin.carbonforum.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.lincanbin.carbonforum.R;
+import com.lincanbin.carbonforum.TopicActivity;
 import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.util.TimeUtil;
 
@@ -107,9 +109,14 @@ public class TopicAdapter extends RecyclerView.Adapter{
         @Override
         //点击事件
         public void onClick(View v) {
-            if (null != onRecyclerViewListener) {
-                onRecyclerViewListener.onItemClick(position);
-            }
+            //Toast.makeText(context, "onItemClick" + list.get(position).get("Topic").toString(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(context, TopicActivity.class);
+            intent.putExtra("Topic", list.get(position).get("Topic").toString());
+            intent.putExtra("TopicID", list.get(position).get("ID").toString());
+            context.startActivity(intent);
+            //if (null != onRecyclerViewListener) {
+                //onRecyclerViewListener.onItemClick(position);
+            //}
         }
 
         @Override

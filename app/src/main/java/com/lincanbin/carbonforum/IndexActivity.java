@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.util.HttpUtil;
 import com.lincanbin.carbonforum.util.JSONUtil;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -66,22 +68,20 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
-        //注册一个广播用来登录时刷新Drawer
+        //注册一个广播用来登录和退出时刷新Drawer
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("action.refreshDrawer");
         registerReceiver(mRefreshDrawerBroadcastReceiver, intentFilter);
         // 设置ToolBar
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
-            // Title
-            mToolbar.setTitle(R.string.app_name);
-            //mToolbar.bringToFront();
-            // App Logo
-            //toolbar.setLogo(R.drawable.ic_launcher);
-            // Sub Title
-            // toolbar.setSubtitle("Sub title");
             setSupportActionBar(mToolbar);//把Toolbar当做ActionBar给设置了
             getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setTitle(R.string.app_name);
+            //mToolbar.bringToFront();
+            //toolbar.setLogo(R.drawable.ic_launcher);
+            // toolbar.setSubtitle("Sub title");
+
             /* 菜单的监听可以在toolbar里设置，也可以像ActionBar那样，通过Activity的onOptionsItemSelected回调方法来处理 */
 
             mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -161,6 +161,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
         MAdapter.setData(topicList);
         //设置Adapter
         mRecyclerView.setAdapter(MAdapter);
+        /*
         //添加事件监听器
         MAdapter.setOnRecyclerViewListener(new TopicAdapter.OnRecyclerViewListener() {
             @Override
@@ -174,7 +175,9 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
                 return true;
             }
         });
+        */
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+        mFloatingActionButton.setImageDrawable(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_add).color(Color.WHITE));
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -182,7 +185,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
                         .setAction("Action", null).show();
             }
         });
-        //Activity渲染完毕时加载帖子
+        //Activity渲染完毕时加载帖子，使用缓存
         loadTopic(1, true);
     }
     //加载帖子
