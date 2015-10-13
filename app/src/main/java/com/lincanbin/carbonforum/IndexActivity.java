@@ -324,14 +324,14 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
 
         //only set the active selection or active profile if we do not recreate the activity
         if (savedInstanceState == null) {
-            // set the selection to the item with the identifier 11
-            mDrawer.setSelection(21, false);
+            // set the selection to the item with the identifier 1
+            mDrawer.setSelection(1, false);
 
             //set the active profile
             //headerResult.setActiveProfile(profile);
         }
-
-        mDrawer.updateBadge(4, new StringHolder(10 + ""));
+        //添加消息通知
+        //mDrawer.updateBadge(4, new StringHolder(10 + ""));
     }
     //下拉刷新事件
     @Override
@@ -395,7 +395,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
         return super.onOptionsItemSelected(item);
     }
     public class GetTopicsTask extends AsyncTask<Void, Void, List<Map<String,Object>>> {
-    	private int targetPage;
+        private int targetPage;
         private Boolean enableCache;
         private int positionStart;
         SharedPreferences cacheSharedPreferences = IndexActivity.this.getSharedPreferences("MainCache", Activity.MODE_PRIVATE);
@@ -415,8 +415,15 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
                     MAdapter.notifyDataSetChanged();
                 }
             }
-            mSwipeRefreshLayout.setRefreshing(true);
+            mSwipeRefreshLayout.post(new Runnable(){
+                @Override
+                public void run(){
+                	mSwipeRefreshLayout.setRefreshing(true);
+                }
+            });
+            
             //Toast.makeText(IndexActivity.this, "Before AsyncTask", Toast.LENGTH_SHORT).show();
+            
         }
 
         @Override
