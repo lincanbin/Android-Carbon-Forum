@@ -34,7 +34,6 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.holder.StringHolder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
@@ -43,6 +42,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.RecyclerViewCacheUtil;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Map;
 
 //http://stackoverflow.com/questions/28150100/setsupportactionbar-throws-error/28150167
-public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLayout.OnRefreshListener {
+public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     private Toolbar mToolbar;
     //save our header or result
     private AccountHeader headerResult = null;
@@ -58,10 +58,11 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
     private RecyclerView mRecyclerView ;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FloatingActionButton mFloatingActionButton;
-    private TopicAdapter MAdapter;
+    private TopicAdapter mAdapter;
     private SharedPreferences mSharedPreferences;
     //private ActionBarDrawerToggle mDrawerToggle;
     private int currentPage = 0;
+    private int totalPage = 65536;
     private Boolean enableScrollListener = true;
     private List<Map<String,Object>> topicList = new ArrayList<>();
     @Override
@@ -132,7 +133,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
                     int lastVisibleItem = layoutManager.findLastCompletelyVisibleItemPosition();
                     int totalItemCount = layoutManager.getItemCount();
                     // 判断是否滚动到底部，并且是向右滚动
-                    if (lastVisibleItem == (totalItemCount - 1) && enableScrollListener) {
+                    if (lastVisibleItem == (totalItemCount - 1) && enableScrollListener && currentPage < totalPage) {
                         //加载更多功能的代码
                         loadTopic(currentPage + 1, false);
                     }
@@ -157,13 +158,13 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
         //设置Item默认动画
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         //指定数据集
-        MAdapter = new TopicAdapter(this);
-        MAdapter.setData(topicList);
+        mAdapter = new TopicAdapter(this);
+        mAdapter.setData(topicList);
         //设置Adapter
-        mRecyclerView.setAdapter(MAdapter);
+        mRecyclerView.setAdapter(mAdapter);
         /*
         //添加事件监听器
-        MAdapter.setOnRecyclerViewListener(new TopicAdapter.OnRecyclerViewListener() {
+        mAdapter.setOnRecyclerViewListener(new TopicAdapter.OnRecyclerViewListener() {
             @Override
             public void onItemClick(int position) {
                 Toast.makeText(IndexActivity.this, "onItemClick" + topicList.get(position).get("Topic").toString(), Toast.LENGTH_SHORT).show();
@@ -188,7 +189,7 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
         //Activity渲染完毕时加载帖子，使用缓存
         loadTopic(1, true);
     }
-    //加载帖子
+    //加载帖子列表
     private void loadTopic(int targetPage, Boolean enableCache) {
             new GetTopicsTask(targetPage, enableCache).execute();
     }
@@ -405,14 +406,13 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
 		}
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
             enableScrollListener = false;
             if(enableCache){
                 topicList = JSONUtil.json2List(JSONUtil.json2Object(cacheSharedPreferences.getString("topicsCache", "{\"TopicsArray\":[]}")), "TopicsArray");
                 if(topicList != null){
-                    MAdapter.setData(topicList);
-                    MAdapter.notifyDataSetChanged();
+                    mAdapter.setData(topicList);
+                    mAdapter.notifyDataSetChanged();
                 }
             }
             mSwipeRefreshLayout.post(new Runnable(){
@@ -428,20 +428,19 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
 
         @Override
         protected void onPostExecute(List<Map<String, Object>> result) {
-            // TODO Auto-generated method stub
             super.onPostExecute(result);
             if(result!=null && !result.isEmpty()) {
                 if (targetPage > 1) {
                     positionStart = topicList.size() - 1;
                     topicList.addAll(result);
-                    MAdapter.setData(topicList);
+                    mAdapter.setData(topicList);
                     //局部刷新，更好的性能
-                    MAdapter.notifyItemRangeChanged(positionStart, MAdapter.getItemCount());
+                    mAdapter.notifyItemRangeChanged(positionStart, mAdapter.getItemCount());
                 } else {
                     topicList = result;
-                    MAdapter.setData(topicList);
+                    mAdapter.setData(topicList);
                     //全部刷新
-                    MAdapter.notifyDataSetChanged();
+                    mAdapter.notifyDataSetChanged();
                 }
                 //更新当前页数
                 currentPage = targetPage;
@@ -456,17 +455,23 @@ public class IndexActivity extends AppCompatActivity  implements SwipeRefreshLay
 
         @Override
         protected List<Map<String, Object>> doInBackground(Void... params) {
-            // TODO Auto-generated method stub
             List<Map<String,Object>> list;
-            JSONObject jsonObject = HttpUtil.getRequest(IndexActivity.this, APIAddress.HOME_URL + targetPage, false, false);
+            JSONObject jsonObject = HttpUtil.getRequest(IndexActivity.this, APIAddress.HOME_URL(targetPage), false, false);
             //Log.v("JSON", str);
-            if(jsonObject != null && targetPage == 1){
+            if(jsonObject != null){
                 try {
-                    SharedPreferences.Editor cacheEditor = cacheSharedPreferences.edit();
-                    cacheEditor.putString("topicsCache", jsonObject.toString(0));
-                    cacheEditor.apply();
-                }catch(Exception e){
+                    totalPage = jsonObject.getInt("TotalPage");
+                }catch(JSONException e){
                     e.printStackTrace();
+                }
+                if(targetPage == 1){
+                    try {
+                        SharedPreferences.Editor cacheEditor = cacheSharedPreferences.edit();
+                        cacheEditor.putString("topicsCache", jsonObject.toString(0));
+                        cacheEditor.apply();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
             list = JSONUtil.json2List(jsonObject, "TopicsArray");

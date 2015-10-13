@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.lincanbin.carbonforum.LoginActivity;
 
@@ -57,13 +56,17 @@ public class HttpUtil {
             switch (httpURLConnection.getResponseCode()){
                 case 200:
                     break;
+                case 301:
+                    break;
+                case 302:
+                    break;
                 case 401:
                     context.getSharedPreferences("UserInfo",Activity.MODE_PRIVATE).edit().clear().apply();
                     Intent intent = new Intent(context, LoginActivity.class);
                     context.startActivity(intent);
                     return null;
                 case 404:
-                    Toast.makeText(context, "404 Not Found", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "404 Not Found", Toast.LENGTH_SHORT).show();
                     return null;
                 default:
                     throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());

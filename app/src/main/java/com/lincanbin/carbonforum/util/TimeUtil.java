@@ -16,15 +16,15 @@ public class TimeUtil {
         if (seconds < 2592000) {
             // 小于30天如下显示
             if (seconds >= 86400) {
-                return Long.toString(seconds / 86400) + context.getString(R.string.days_ago);
+                return Long.toString(seconds / 86400) + " " + context.getString(R.string.days_ago);
             } else if (seconds >= 3600) {
-                return Long.toString(seconds / 3600) + context.getString(R.string.hours_ago);
+                return Long.toString(seconds / 3600) + " " + context.getString(R.string.hours_ago);
             } else if (seconds >= 60) {
-                return Long.toString(seconds / 60) + context.getString(R.string.minutes_ago);
+                return Long.toString(seconds / 60) + " " + context.getString(R.string.minutes_ago);
             } else if (seconds < 0) {
                 return context.getString(R.string.just_now);
             } else {
-                return Long.toString(seconds + 1) + context.getString(R.string.seconds_ago);
+                return Long.toString(seconds + 1) + " " + context.getString(R.string.seconds_ago);
             }
         } else {
             // 大于30天直接显示日期

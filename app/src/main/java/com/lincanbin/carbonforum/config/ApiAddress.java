@@ -3,9 +3,9 @@ public class APIAddress
 {
 	/*
 	//Debug
-	public static final String DOMAIN_NAME = "http://192.168.137.1:8087"; // PC版域名
-	public static final String MOBILE_DOMAIN_NAME = "http://192.168.137.1:8087"; // 移动版域名
-	public static final String BASIC_API_URL = "http://192.168.137.1:8087"; // API地址前缀
+	public static final String DOMAIN_NAME = "http://192.168.137.1"; // PC版域名
+	public static final String MOBILE_DOMAIN_NAME = "http://192.168.137.1"; // 移动版域名
+	public static final String BASIC_API_URL = "http://192.168.137.1"; // API地址前缀
 	*/
 
 	//Real
@@ -19,7 +19,13 @@ public class APIAddress
     }
 
 	//首页帖子列表API地址
-	public static final String HOME_URL = BASIC_API_URL + "/page/";
+	public static String HOME_URL(int targetPage){
+		return BASIC_API_URL + "/page/"+ targetPage;
+	}
+
+    public static String TOPIC_URL(int topicID, int targetPage){
+        return BASIC_API_URL + "/t/" + topicID + "-" + targetPage;
+    }
 
 	//验证码
 	public static final String VERIFICATION_CODE = BASIC_API_URL + "/seccode.php";

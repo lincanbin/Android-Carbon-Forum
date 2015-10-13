@@ -113,6 +113,7 @@ public class TopicAdapter extends RecyclerView.Adapter{
             Intent intent = new Intent(context, TopicActivity.class);
             intent.putExtra("Topic", list.get(position).get("Topic").toString());
             intent.putExtra("TopicID", list.get(position).get("ID").toString());
+            intent.putExtra("TargetPage", "1");
             context.startActivity(intent);
             //if (null != onRecyclerViewListener) {
                 //onRecyclerViewListener.onItemClick(position);

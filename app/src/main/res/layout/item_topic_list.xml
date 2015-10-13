@@ -26,11 +26,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:foreground="?android:attr/selectableItemBackground"
         android:id="@+id/topic_item"
         android:padding="10dp"
         android:minHeight="?android:listPreferredItemHeight"
         android:orientation="horizontal"
-        android:background="@color/material_grey_50"
         android:clickable="true"
         android:focusable="true"
         android:descendantFocusability="blocksDescendants"
