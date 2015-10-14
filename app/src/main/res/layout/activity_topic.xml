@@ -13,18 +13,19 @@
             android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary" app:popupTheme="@style/AppTheme.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
+    <!--TextView
+        android:id="@+id/title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/material_black_1000"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/-->
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/activity_topic_swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <!--TextView
-            android:id="@+id/title"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" /-->
         <android.support.v7.widget.RecyclerView
             android:id="@+id/post_list"
             android:scrollbars="vertical"

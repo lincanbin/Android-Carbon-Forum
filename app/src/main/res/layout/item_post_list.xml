@@ -18,7 +18,7 @@
     android:id="@+id/topic_item"
     app:cardCornerRadius="8dp"
     app:cardBackgroundColor="@color/material_white_1000"
-    android:layout_margin="4dp"
+    android:layout_margin="8dp"
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
     <LinearLayout
@@ -49,6 +49,7 @@
                 android:src="@drawable/ic_perm_identity_grey600_24dp"/>
                 <LinearLayout
                     android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
