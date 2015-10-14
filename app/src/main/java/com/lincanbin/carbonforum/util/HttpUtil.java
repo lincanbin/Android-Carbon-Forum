@@ -64,10 +64,9 @@ public class HttpUtil {
                     context.getSharedPreferences("UserInfo",Activity.MODE_PRIVATE).edit().clear().apply();
                     Intent intent = new Intent(context, LoginActivity.class);
                     context.startActivity(intent);
-                    return null;
+                    break;
                 case 404:
-                    //Toast.makeText(context, "404 Not Found", Toast.LENGTH_SHORT).show();
-                    return null;
+                    break;
                 default:
                     throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
             }
@@ -98,7 +97,9 @@ public class HttpUtil {
                 }
 
             }
-            return JSONUtil.json2Object(resultBuffer.toString());
+            String getResult = resultBuffer.toString();
+            Log.v("Get Result",getResult);
+            return JSONUtil.json2Object(getResult);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -163,10 +164,16 @@ public class HttpUtil {
                 switch (httpURLConnection.getResponseCode()){
                     case 200:
                         break;
+                    case 301:
+                        break;
+                    case 302:
+                        break;
                     case 401:
                         context.getSharedPreferences("UserInfo",Activity.MODE_PRIVATE).edit().clear().apply();
                         Intent intent = new Intent(context, LoginActivity.class);
                         context.startActivity(intent);
+                        break;
+                    case 404:
                         break;
                     default:
                         throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());

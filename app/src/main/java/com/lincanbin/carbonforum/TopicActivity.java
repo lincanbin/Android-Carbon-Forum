@@ -14,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.lincanbin.carbonforum.adapter.PostAdapter;
 import com.lincanbin.carbonforum.config.APIAddress;
@@ -165,7 +164,8 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
                 //更新当前页数
                 currentPage = targetPage;
             }else{
-                Toast.makeText(TopicActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
+                Snackbar.make(mFloatingActionButton, R.string.network_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                //Toast.makeText(TopicActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
             }
             //移除刷新控件
             mSwipeRefreshLayout.setRefreshing(false);

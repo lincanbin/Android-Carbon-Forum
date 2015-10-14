@@ -34,7 +34,8 @@
         android:clickable="true"
         android:focusable="true"
         android:descendantFocusability="blocksDescendants"
-        android:duplicateParentState="true">
+        android:duplicateParentState="true"
+        android:theme="@android:style/Widget.ListView">
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/avatar"
             android:layout_width="56dp"
@@ -79,11 +80,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"/>
-                <TextView
-                    android:id="@+id/id"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:visibility="gone" />
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>

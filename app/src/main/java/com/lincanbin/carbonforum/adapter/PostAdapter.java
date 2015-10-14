@@ -3,6 +3,7 @@ package com.lincanbin.carbonforum.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.Spanned;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.lincanbin.carbonforum.R;
 import com.lincanbin.carbonforum.config.APIAddress;
+import com.lincanbin.carbonforum.tools.URLImageParser;
 import com.lincanbin.carbonforum.util.TimeUtil;
 
 import java.util.List;
@@ -61,10 +63,11 @@ public class PostAdapter extends RecyclerView.Adapter{
         holder.position = i;
         Map<String,Object> topic = list.get(i);
         holder.UserName.setText(topic.get("UserName").toString());
-        holder.Content.setMovementMethod(ScrollingMovementMethod.getInstance());//滚动
-        holder.Content.setText(Html.fromHtml(topic.get("Content").toString()));
-
         holder.Time.setText(TimeUtil.formatTime(context, Long.parseLong(topic.get("PostTime").toString())));
+        holder.Content.setMovementMethod(ScrollingMovementMethod.getInstance());//滚动
+        URLImageParser mURLImageParser = new URLImageParser(holder.Content, context);
+        Spanned htmlSpan = Html.fromHtml(topic.get("Content").toString().replace("=\"/", "=\"" + APIAddress.DOMAIN_NAME + "/"), mURLImageParser, null);
+        holder.Content.setText(htmlSpan);
         Glide.with(context).load(APIAddress.MIDDLE_AVATAR_URL(topic.get("UserID").toString(), "middle")).into(holder.Avatar);
     }
 

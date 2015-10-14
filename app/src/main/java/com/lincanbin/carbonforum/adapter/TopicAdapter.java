@@ -3,6 +3,7 @@ package com.lincanbin.carbonforum.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,8 +61,7 @@ public class TopicAdapter extends RecyclerView.Adapter{
         final topicViewHolder holder = (topicViewHolder) viewHolder;
         holder.position = i;
         Map<String,Object> topic = list.get(i);
-        holder.ID.setText(topic.get("ID").toString());
-        holder.Title.setText(topic.get("Topic").toString());
+        holder.Title.setText(Html.fromHtml(topic.get("Topic").toString()).toString());
         holder.Description.setText(topic.get("UserName").toString() + " · " + topic.get("LastName").toString());
         holder.Time.setText(TimeUtil.formatTime(context, Long.parseLong(topic.get("LastTime").toString())));
         Glide.with(context).load(APIAddress.MIDDLE_AVATAR_URL(topic.get("UserID").toString(), "middle")).into(holder.Avatar);
@@ -71,7 +71,6 @@ public class TopicAdapter extends RecyclerView.Adapter{
         downImage.loadImage(new DownImage.ImageCallBack() {
             @Override
             public void getDrawable(Drawable drawable) {
-                // TODO Auto-generated method stub
                 holder.Avatar.setImageDrawable(drawable);
             }
         });
@@ -87,7 +86,6 @@ public class TopicAdapter extends RecyclerView.Adapter{
     {
         public View rootView;
         ImageView Avatar;
-        TextView ID;
         TextView Title;
         TextView Description;
         TextView Time;
@@ -96,7 +94,6 @@ public class TopicAdapter extends RecyclerView.Adapter{
         public topicViewHolder(View itemView) {
             super(itemView);
 
-            ID = (TextView) itemView.findViewById(R.id.id);
             Title = (TextView) itemView.findViewById(R.id.title);
             Description = (TextView) itemView.findViewById(R.id.description);
             Time = (TextView) itemView.findViewById(R.id.time);
