@@ -19,8 +19,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.lincanbin.carbonforum.adapter.TopicAdapter;
@@ -81,31 +79,6 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
             //mToolbar.bringToFront();
             //toolbar.setLogo(R.drawable.ic_launcher);
             // toolbar.setSubtitle("Sub title");
-
-            /* 菜单的监听可以在toolbar里设置，也可以像ActionBar那样，通过Activity的onOptionsItemSelected回调方法来处理 */
-
-            mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    switch (item.getItemId()) {
-                        case R.id.action_search:
-                            Snackbar.make(mFloatingActionButton, "Action Search", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                            //Toast.makeText(IndexActivity.this, "action_search", Toast.LENGTH_SHORT).show();
-                            break;
-                        case R.id.action_settings:
-                            Snackbar.make(mFloatingActionButton, "Action Settings", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                            //Toast.makeText(IndexActivity.this, "action_settings", Toast.LENGTH_SHORT).show();
-                            break;
-                        case R.id.action_share:
-                            Snackbar.make(mFloatingActionButton,"Action Share", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                            //Toast.makeText(IndexActivity.this, "action_share", Toast.LENGTH_SHORT).show();
-                            break;
-                        default:
-                            break;
-                    }
-                    return true;
-                }
-            });
             mSharedPreferences = this.getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
             refreshDrawer(savedInstanceState);
         }
@@ -292,6 +265,11 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                                 withName(R.string.login).
                                 withIcon(GoogleMaterial.Icon.gmd_person_add).
                                 withIdentifier(3).
+                                withSelectable(false),
+                        new PrimaryDrawerItem().
+                                withName(R.string.title_activity_settings).
+                                withIcon(GoogleMaterial.Icon.gmd_settings).
+                                withIdentifier(4).
                                 withSelectable(false)
                 ) // add the items we want to use with our Drawer
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -309,6 +287,8 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                                 loadTopic(1, false);
                             } else if (drawerItem.getIdentifier() == 3) {
                                 intent = new Intent(IndexActivity.this, LoginActivity.class);
+                            } else if (drawerItem.getIdentifier() == 4) {
+                                intent = new Intent(IndexActivity.this, SettingsActivity.class);
                             }
                             if (intent != null) {
                                 IndexActivity.this.startActivity(intent);
@@ -360,45 +340,6 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         } else {
             super.onBackPressed();
         }
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_index, menu);
-        /*
-        MenuItem shareItem = menu.findItem(R.id.action_share);
-        MenuItemCompat.setShowAsAction(shareItem,
-                MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
-
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        MenuItemCompat.setShowAsAction(searchItem,
-            MenuItemCompat.SHOW_AS_ACTION_WITH_TEXT);
-        */
-        return true;
-    }
-    @Override
-     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.action_search:
-                Snackbar.make(mFloatingActionButton, "Action Search", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                //Toast.makeText(IndexActivity.this, "action_search", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.action_settings:
-                Snackbar.make(mFloatingActionButton, "Action Settings", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                //Toast.makeText(IndexActivity.this, "action_settings", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.action_share:
-                Snackbar.make(mFloatingActionButton,"Action Share", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                //Toast.makeText(IndexActivity.this, "action_share", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
     public class GetTopicsTask extends AsyncTask<Void, Void, List<Map<String,Object>>> {
         private int targetPage;

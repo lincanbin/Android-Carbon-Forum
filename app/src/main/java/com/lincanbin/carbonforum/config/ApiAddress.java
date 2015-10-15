@@ -1,12 +1,12 @@
 package com.lincanbin.carbonforum.config;
 public class APIAddress
 {
-	/*
+/*
 	//Debug
 	public static final String DOMAIN_NAME = "http://192.168.137.1"; // PC版域名
 	public static final String MOBILE_DOMAIN_NAME = "http://192.168.137.1"; // 移动版域名
 	public static final String BASIC_API_URL = "http://192.168.137.1"; // API地址前缀
-	*/
+*/
 
 	//Real
 	public static final String DOMAIN_NAME = "https://www.94cb.com"; // PC版域名

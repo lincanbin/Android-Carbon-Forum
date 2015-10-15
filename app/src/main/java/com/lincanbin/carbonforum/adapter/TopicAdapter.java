@@ -107,6 +107,7 @@ public class TopicAdapter extends RecyclerView.Adapter{
         //点击事件
         public void onClick(View v) {
             //Toast.makeText(context, "onItemClick" + list.get(position).get("Topic").toString(), Toast.LENGTH_SHORT).show();
+            //v.getBackground().setColorFilter(Color.parseColor("#90A4AE"), PorterDuff.Mode.DARKEN);
             Intent intent = new Intent(context, TopicActivity.class);
             intent.putExtra("Topic", list.get(position).get("Topic").toString());
             intent.putExtra("TopicID", list.get(position).get("ID").toString());
