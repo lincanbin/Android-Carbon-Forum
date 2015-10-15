@@ -168,7 +168,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        this.unregisterReceiver(mRefreshDrawerBroadcastReceiver);
+        unregisterReceiver(mRefreshDrawerBroadcastReceiver);
     }
     //加载帖子列表
     private void loadTopic(int targetPage, Boolean enableCache) {

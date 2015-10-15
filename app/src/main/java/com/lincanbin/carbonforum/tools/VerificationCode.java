@@ -28,7 +28,6 @@ public class VerificationCode {
         final Handler handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                // TODO Auto-generated method stub
                 super.handleMessage(msg);
                 Drawable drawable = (Drawable) msg.obj;
                 callBack.getDrawable(drawable);
@@ -39,7 +38,6 @@ public class VerificationCode {
 
             @Override
             public void run() {
-                // TODO Auto-generated method stub
                 try {
                     URL localURL = new URL(APIAddress.VERIFICATION_CODE);
                     URLConnection connection = localURL.openConnection();
@@ -71,10 +69,8 @@ public class VerificationCode {
                         inputStream.close();
                     }
                 } catch (MalformedURLException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }

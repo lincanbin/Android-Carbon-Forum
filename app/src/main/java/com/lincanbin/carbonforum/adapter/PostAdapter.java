@@ -62,16 +62,8 @@ public class PostAdapter extends RecyclerView.Adapter{
         Map<String,Object> topic = list.get(i);
         holder.UserName.setText(topic.get("UserName").toString());
         holder.Time.setText(TimeUtil.formatTime(context, Long.parseLong(topic.get("PostTime").toString())));
-
         String contentHTML = topic.get("Content").toString().replace("=\"/", "=\"" + APIAddress.DOMAIN_NAME.replace(APIAddress.WEBSITE_PATH, "") + "/");
-/*
-        holder.TextContent.setMovementMethod(ScrollingMovementMethod.getInstance());//滚动
-        URLImageParser mURLImageParser = new URLImageParser(holder.TextContent, context);
-        holder.TextContent.setText(Html.fromHtml(contentHTML, mURLImageParser, null));
-*/
-
         holder.Content.loadDataWithBaseURL(null, contentHTML, "text/html", "utf-8", null);
-
         Glide.with(context).load(APIAddress.MIDDLE_AVATAR_URL(topic.get("UserID").toString(), "middle")).into(holder.Avatar);
     }
 
@@ -87,7 +79,6 @@ public class PostAdapter extends RecyclerView.Adapter{
         TextView Time;
         TextView UserName;
         WebView Content;
-        //TextView TextContent;
         public int position;
 
         public topicViewHolder(View itemView) {
@@ -99,11 +90,6 @@ public class PostAdapter extends RecyclerView.Adapter{
             // http://stackoverflow.com/questions/15133132/android-webview-doesnt-display-web-page-in-some-cases
             Content.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             Content.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//优先使用缓存
-            //Content.getSettings().setLoadWithOverviewMode(true);
-            //Content.getSettings().setUseWideViewPort(true);
-            //Content.setWebChromeClient(new WebChromeClient());
-
-            //TextContent = (TextView) itemView.findViewById(R.id.text_content);
             Time = (TextView) itemView.findViewById(R.id.time);
             Avatar = (ImageView)itemView.findViewById(R.id.avatar);
             rootView = itemView.findViewById(R.id.topic_item);

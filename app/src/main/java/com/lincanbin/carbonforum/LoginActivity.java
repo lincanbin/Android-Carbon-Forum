@@ -126,7 +126,6 @@ public class LoginActivity extends AppCompatActivity {
         verificationCodeImage.loadImage(new VerificationCode.ImageCallBack() {
             @Override
             public void getDrawable(Drawable drawable) {
-                // TODO Auto-generated method stub
                 mVerificationCodeImageView.setImageDrawable(drawable);
             }
         });
@@ -196,13 +195,11 @@ public class LoginActivity extends AppCompatActivity {
     }
     /*
     private boolean isUsernameValid(String username) {
-        //TODO: Replace this with your own logic
         return username.contains("@");
     }
     */
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() >= 3;
     }
 
@@ -259,7 +256,6 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
             return HttpUtil.postRequest(LoginActivity.this, APIAddress.LOGIN_URL,parameter, true, false);
         }
 
