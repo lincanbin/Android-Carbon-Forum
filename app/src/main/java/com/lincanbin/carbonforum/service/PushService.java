@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import com.lincanbin.carbonforum.IndexActivity;
 import com.lincanbin.carbonforum.R;
@@ -45,16 +46,19 @@ public class PushService extends IntentService {
                             R.string.app_name,
                             deleteIntent,
                             PendingIntent.FLAG_UPDATE_CURRENT);
+
                     final Notification.Builder builder = new Notification.Builder(getApplicationContext())
                             .setSmallIcon(R.drawable.ic_launcher)
                             .setContentTitle(getString(R.string.app_name))
                             .setContentText(jsonObject.getString("NewMessage") + " New Messages")
                             .setAutoCancel(true)
                             .setDeleteIntent(mDeletePendingIntent);
-
-                    final Notification notification = builder.build();
                     mNotificationManager.cancelAll();
-                    mNotificationManager.notify(0, notification);
+                    if (Build.VERSION.SDK_INT >= 16) {
+                        mNotificationManager.notify(0, builder.build());
+                    }else{
+                        mNotificationManager.notify(0, builder.getNotification());
+                    }
                     //请求成功，延长请求间隔
                     sleepTime = 30000;
                 }

@@ -165,6 +165,11 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         //Activity渲染完毕时加载帖子，使用缓存
         loadTopic(1, true);
     }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.unregisterReceiver(mRefreshDrawerBroadcastReceiver);
+    }
     //加载帖子列表
     private void loadTopic(int targetPage, Boolean enableCache) {
             new GetTopicsTask(targetPage, enableCache).execute();
