@@ -21,7 +21,6 @@ public class DownImage {
 		final Handler handler = new Handler(){
 			@Override
 			public void handleMessage(Message msg) {
-				// TODO Auto-generated method stub
 				super.handleMessage(msg);
 				Drawable drawable = (Drawable) msg.obj;
 				callBack.getDrawable(drawable);

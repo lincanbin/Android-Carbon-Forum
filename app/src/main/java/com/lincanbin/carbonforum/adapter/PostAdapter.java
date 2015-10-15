@@ -63,7 +63,7 @@ public class PostAdapter extends RecyclerView.Adapter{
         holder.UserName.setText(topic.get("UserName").toString());
         holder.Time.setText(TimeUtil.formatTime(context, Long.parseLong(topic.get("PostTime").toString())));
 
-        String contentHTML = topic.get("Content").toString().replace("=\"/", "=\"" + APIAddress.DOMAIN_NAME + "/");
+        String contentHTML = topic.get("Content").toString().replace("=\"/", "=\"" + APIAddress.DOMAIN_NAME.replace(APIAddress.WEBSITE_PATH, "") + "/");
 /*
         holder.TextContent.setMovementMethod(ScrollingMovementMethod.getInstance());//滚动
         URLImageParser mURLImageParser = new URLImageParser(holder.TextContent, context);

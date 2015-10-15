@@ -1,91 +1,71 @@
 package com.lincanbin.carbonforum.service;
 
 import android.app.IntentService;
-import android.content.Intent;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 
-/**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p/>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
- */
+import com.lincanbin.carbonforum.IndexActivity;
+import com.lincanbin.carbonforum.R;
+import com.lincanbin.carbonforum.config.APIAddress;
+import com.lincanbin.carbonforum.util.HttpUtil;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class PushService extends IntentService {
-    // TODO: Rename actions, choose action names that describe tasks that this
-    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-    private static final String ACTION_FOO = "com.lincanbin.carbonforum.service.action.FOO";
-    private static final String ACTION_BAZ = "com.lincanbin.carbonforum.service.action.BAZ";
-
-    // TODO: Rename parameters
-    private static final String EXTRA_PARAM1 = "com.lincanbin.carbonforum.service.extra.PARAM1";
-    private static final String EXTRA_PARAM2 = "com.lincanbin.carbonforum.service.extra.PARAM2";
-
-    /**
-     * Starts this service to perform action Foo with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionFoo(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, PushService.class);
-        intent.setAction(ACTION_FOO);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
-    }
-
-    /**
-     * Starts this service to perform action Baz with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, PushService.class);
-        intent.setAction(ACTION_BAZ);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
-    }
-
+    private NotificationManager mNotificationManager;
     public PushService() {
         super("PushService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (intent != null) {
-            final String action = intent.getAction();
-            if (ACTION_FOO.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionFoo(param1, param2);
-            } else if (ACTION_BAZ.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionBaz(param1, param2);
+        getNotification();
+
+    }
+    private void getNotification(){
+        int sleepTime = 3000;
+        final Map<String, String> parameter = new HashMap<>();
+        JSONObject jsonObject = HttpUtil.postRequest(getApplicationContext(), APIAddress.PUSHSERVICE_URL, parameter, false, true);
+        try {
+            if(jsonObject != null && jsonObject.getInt("Status") == 1){
+                //请求成功，延长请求间隔
+                if(jsonObject.getInt("NewMessage") > 0){
+                    //消息数量大于0，发送通知栏消息
+                    mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    Intent deleteIntent = new Intent(this, IndexActivity.class);
+                    deleteIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+                    PendingIntent mDeletePendingIntent = PendingIntent.getActivity(
+                            getApplicationContext(),
+                            R.string.app_name,
+                            deleteIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+                    final Notification.Builder builder = new Notification.Builder(getApplicationContext())
+                            .setSmallIcon(R.drawable.ic_launcher)
+                            .setContentTitle(getString(R.string.app_name))
+                            .setContentText(jsonObject.getString("NewMessage") + " New Messages")
+                            .setAutoCancel(true)
+                            .setDeleteIntent(mDeletePendingIntent);
+
+                    final Notification notification = builder.build();
+                    mNotificationManager.cancelAll();
+                    mNotificationManager.notify(0, notification);
+                    //请求成功，延长请求间隔
+                    sleepTime = 30000;
+                }
+            }else{
+                //请求失败，延长请求间隔
+                sleepTime = 30000;
             }
+            Thread.sleep(sleepTime);
+        }catch(Exception e){
+            e.printStackTrace();
         }
-    }
-
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionFoo(String param1, String param2) {
-        // TODO: Handle action Foo
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
+        startService(new Intent(this, PushService.class));
     }
 }

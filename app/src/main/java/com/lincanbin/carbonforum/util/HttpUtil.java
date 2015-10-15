@@ -109,6 +109,12 @@ public class HttpUtil {
     // post方法访问服务器，返回json对象
     public static JSONObject postRequest(Context context, String url, Map<String, String> parameterMap, Boolean enableSession, Boolean loginRequired) {
         try{
+            if(loginRequired){
+                SharedPreferences mySharedPreferences= context.getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
+                parameterMap.put("AuthUserID", mySharedPreferences.getString("UserID", ""));
+                parameterMap.put("AuthUserExpirationTime", mySharedPreferences.getString("UserExpirationTime", ""));
+                parameterMap.put("AuthUserCode", mySharedPreferences.getString("UserCode", ""));
+            }
            /* Translate parameter map to parameter date string */
             StringBuilder parameterBuffer = new StringBuilder();
             if (parameterMap != null) {
@@ -129,7 +135,6 @@ public class HttpUtil {
                     }
                 }
             }
-
             Log.v("POST parameter : ", parameterBuffer.toString());
 
             URL localURL = new URL(url);

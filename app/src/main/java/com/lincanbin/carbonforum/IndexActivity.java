@@ -23,6 +23,7 @@ import android.view.View;
 
 import com.lincanbin.carbonforum.adapter.TopicAdapter;
 import com.lincanbin.carbonforum.config.APIAddress;
+import com.lincanbin.carbonforum.service.PushService;
 import com.lincanbin.carbonforum.util.HttpUtil;
 import com.lincanbin.carbonforum.util.JSONUtil;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -235,6 +236,8 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                         )
                         .withSavedInstance(savedInstanceState)
                         .build();
+                //开启推送
+                startService(new Intent(IndexActivity.this, PushService.class));
             }
         } catch (ClassCastException e) {
             e.printStackTrace();
