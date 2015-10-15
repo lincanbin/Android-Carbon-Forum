@@ -1,3 +1,0 @@
-TASK com.lincanbin.carbonforum id=784
-  ACTIVITY com.lincanbin.carbonforum/.index 2d8a9e78 pid=7233
-    Failure while dumping the activity: java.io.IOException: Timeout
