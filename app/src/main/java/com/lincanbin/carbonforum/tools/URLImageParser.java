@@ -57,15 +57,19 @@ public class URLImageParser implements Html.ImageGetter {
 
         @Override
         protected void onPostExecute(Drawable result) {
-            // set the correct bound according to the result from HTTP call
-            urlDrawable.setBounds(0, 0, 0 + result.getIntrinsicWidth(), 0 + result.getIntrinsicHeight());
+            try {
+                // set the correct bound according to the result from HTTP call
+                urlDrawable.setBounds(0, 0, result.getIntrinsicWidth(), result.getIntrinsicHeight());
 
-            // change the reference of the current drawable to the result
-            // from the HTTP call
-            urlDrawable.drawable = result;
+                // change the reference of the current drawable to the result
+                // from the HTTP call
+                urlDrawable.drawable = result;
 
-            // redraw the image by invalidating the container
-            URLImageParser.this.container.invalidate();
+                // redraw the image by invalidating the container
+                URLImageParser.this.container.invalidate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         /***
@@ -78,7 +82,7 @@ public class URLImageParser implements Html.ImageGetter {
                 InputStream is = fetch(urlString);
                 Drawable drawable = Drawable.createFromStream(is, "src");
                 Log.v("ImageSize", drawable.getIntrinsicWidth() + "," + drawable.getIntrinsicHeight());
-                drawable.setBounds(0, 0, 0 +  drawable.getIntrinsicWidth(), 0 + drawable.getIntrinsicHeight());
+                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                 return drawable;
             } catch (Exception e) {
                 return null;

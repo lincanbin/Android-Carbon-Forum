@@ -2,12 +2,11 @@ package com.lincanbin.carbonforum.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.Spanned;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.lincanbin.carbonforum.R;
 import com.lincanbin.carbonforum.config.APIAddress;
-import com.lincanbin.carbonforum.tools.URLImageParser;
 import com.lincanbin.carbonforum.util.TimeUtil;
 
 import java.util.List;
@@ -64,10 +62,16 @@ public class PostAdapter extends RecyclerView.Adapter{
         Map<String,Object> topic = list.get(i);
         holder.UserName.setText(topic.get("UserName").toString());
         holder.Time.setText(TimeUtil.formatTime(context, Long.parseLong(topic.get("PostTime").toString())));
-        holder.Content.setMovementMethod(ScrollingMovementMethod.getInstance());//滚动
-        URLImageParser mURLImageParser = new URLImageParser(holder.Content, context);
-        Spanned htmlSpan = Html.fromHtml(topic.get("Content").toString().replace("=\"/", "=\"" + APIAddress.DOMAIN_NAME + "/"), mURLImageParser, null);
-        holder.Content.setText(htmlSpan);
+
+        String contentHTML = topic.get("Content").toString().replace("=\"/", "=\"" + APIAddress.DOMAIN_NAME + "/");
+/*
+        holder.TextContent.setMovementMethod(ScrollingMovementMethod.getInstance());//滚动
+        URLImageParser mURLImageParser = new URLImageParser(holder.TextContent, context);
+        holder.TextContent.setText(Html.fromHtml(contentHTML, mURLImageParser, null));
+*/
+
+        holder.Content.loadDataWithBaseURL(null, contentHTML, "text/html", "utf-8", null);
+
         Glide.with(context).load(APIAddress.MIDDLE_AVATAR_URL(topic.get("UserID").toString(), "middle")).into(holder.Avatar);
     }
 
@@ -82,14 +86,24 @@ public class PostAdapter extends RecyclerView.Adapter{
         ImageView Avatar;
         TextView Time;
         TextView UserName;
-        TextView Content;
+        WebView Content;
+        //TextView TextContent;
         public int position;
 
         public topicViewHolder(View itemView) {
             super(itemView);
 
             UserName = (TextView) itemView.findViewById(R.id.username);
-            Content = (TextView) itemView.findViewById(R.id.content);
+
+            Content = (WebView) itemView.findViewById(R.id.content);
+            // http://stackoverflow.com/questions/15133132/android-webview-doesnt-display-web-page-in-some-cases
+            Content.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            Content.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//优先使用缓存
+            //Content.getSettings().setLoadWithOverviewMode(true);
+            //Content.getSettings().setUseWideViewPort(true);
+            //Content.setWebChromeClient(new WebChromeClient());
+
+            //TextContent = (TextView) itemView.findViewById(R.id.text_content);
             Time = (TextView) itemView.findViewById(R.id.time);
             Avatar = (ImageView)itemView.findViewById(R.id.avatar);
             rootView = itemView.findViewById(R.id.topic_item);

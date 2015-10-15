@@ -108,7 +108,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                     int lastVisibleItem = layoutManager.findLastCompletelyVisibleItemPosition();
                     int totalItemCount = layoutManager.getItemCount();
                     // 判断是否滚动到底部，并且是向右滚动
-                    if (lastVisibleItem == (totalItemCount - 1) && enableScrollListener && currentPage < totalPage) {
+                    if (lastVisibleItem >= (totalItemCount - 5) && enableScrollListener && currentPage < totalPage) {
                         //加载更多功能的代码
                         loadTopic(currentPage + 1, false);
                     }

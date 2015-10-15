@@ -45,6 +45,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.lincanbin.carbonforum.IndexActivity" />
         </activity>
+
+        <service
+            android:name=".service.PushService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

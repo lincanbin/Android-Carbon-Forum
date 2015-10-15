@@ -83,7 +83,7 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     int lastVisibleItem = layoutManager.findLastCompletelyVisibleItemPosition();
                     int totalItemCount = layoutManager.getItemCount();
-                    if (lastVisibleItem == (totalItemCount - 1) && enableScrollListener && currentPage < totalPage) {
+                    if (lastVisibleItem >= (totalItemCount - 5) && enableScrollListener && currentPage < totalPage) {
                         loadPost(currentPage + 1);
                     }
                 }
