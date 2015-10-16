@@ -50,6 +50,9 @@
             android:name=".service.PushService"
             android:exported="false" >
         </service>
+
+        <activity android:name=".ReplyActivity" >
+        </activity>
     </application>
 
 </manifest>

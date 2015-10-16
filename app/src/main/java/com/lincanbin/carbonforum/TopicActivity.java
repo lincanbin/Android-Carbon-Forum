@@ -57,8 +57,9 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(mTopic);
-
+        if(mTopic != null) {
+            getSupportActionBar().setTitle(mTopic);
+        }
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_topic_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.material_light_blue_700,
@@ -152,6 +153,8 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
             if(jsonObject != null){
                 try {
                     totalPage = jsonObject.getInt("TotalPage");
+                    JSONObject topicInfo = JSONUtil.json2Object(jsonObject.getString("TopicInfo"));
+                    getSupportActionBar().setTitle(topicInfo.getString("Title"));
                 }catch(JSONException e){
                     e.printStackTrace();
                 }
@@ -159,6 +162,7 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
             List<Map<String,Object>> list = JSONUtil.json2List(jsonObject, "PostsArray");
             //Log.v("List", list.toString());
             if(list!=null && !list.isEmpty()) {
+
                 if (targetPage > 1) {
                     positionStart = postList.size() - 1;
                     postList.addAll(list);

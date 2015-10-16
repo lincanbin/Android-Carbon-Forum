@@ -6,7 +6,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 
 import com.lincanbin.carbonforum.IndexActivity;
 import com.lincanbin.carbonforum.R;
@@ -38,6 +40,7 @@ public class PushService extends IntentService {
                 //请求成功，延长请求间隔
                 if(jsonObject.getInt("NewMessage") > 0){
                     //消息数量大于0，发送通知栏消息
+                    //TODO: 保存当前消息数，每次判断消息数量与之前不一致才发送通知。
                     mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     Intent deleteIntent = new Intent(this, IndexActivity.class);
                     deleteIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -59,6 +62,7 @@ public class PushService extends IntentService {
                     }else{
                         mNotificationManager.notify(0, builder.getNotification());
                     }
+                    //TODO: 根据设置震动手机以及响铃
                     //请求成功，延长请求间隔
                     sleepTime = 30000;
                 }
@@ -70,6 +74,12 @@ public class PushService extends IntentService {
         }catch(Exception e){
             e.printStackTrace();
         }
-        startService(new Intent(this, PushService.class));
+        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean notifications_new_message = mSharedPreferences.getBoolean("notifications_new_message", true);
+        if(notifications_new_message) {
+            startService(new Intent(this, PushService.class));
+        }else {
+            stopSelf();
+        }
     }
 }

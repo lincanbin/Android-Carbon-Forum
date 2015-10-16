@@ -16,6 +16,9 @@
         <item name="android:textColorPrimary">@color/material_grey_700</item>
         <!--item name="android:navigationBarColor">@color/material_blue_700</item-->
         <item name="android:windowBackground">@color/material_white_1000</item>
+        <!-- this makes sure the action mode is painted over not above the action bar -->
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeBackground">@color/material_blue_500</item>
     </style>
     <style name="MySearchViewStyle" parent="Widget.AppCompat.SearchView">
         <!--

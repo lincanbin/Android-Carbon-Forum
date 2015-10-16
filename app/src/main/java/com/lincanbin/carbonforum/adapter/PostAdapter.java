@@ -62,7 +62,9 @@ public class PostAdapter extends RecyclerView.Adapter{
         Map<String,Object> topic = list.get(i);
         holder.UserName.setText(topic.get("UserName").toString());
         holder.Time.setText(TimeUtil.formatTime(context, Long.parseLong(topic.get("PostTime").toString())));
-        String contentHTML = topic.get("Content").toString().replace("=\"/", "=\"" + APIAddress.DOMAIN_NAME.replace(APIAddress.WEBSITE_PATH, "") + "/");
+        String contentHTML = "<span style=\"color:#616161;\">";
+        contentHTML += topic.get("Content").toString().replace("=\"/", "=\"" + APIAddress.DOMAIN_NAME.replace(APIAddress.WEBSITE_PATH, "") + "/");
+        contentHTML += "</span>";
         holder.Content.loadDataWithBaseURL(null, contentHTML, "text/html", "utf-8", null);
         Glide.with(context).load(APIAddress.MIDDLE_AVATAR_URL(topic.get("UserID").toString(), "middle")).into(holder.Avatar);
     }
