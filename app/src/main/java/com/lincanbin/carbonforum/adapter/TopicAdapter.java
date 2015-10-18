@@ -90,6 +90,7 @@ public class TopicAdapter extends RecyclerView.Adapter{
             Avatar = (ImageView)itemView.findViewById(R.id.avatar);
 
             rootView = itemView.findViewById(R.id.topic_item);
+            //rootView.setClickable(true);
             rootView.setOnClickListener(this);
             rootView.setOnLongClickListener(this);
         }

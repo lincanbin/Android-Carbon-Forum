@@ -114,7 +114,9 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
     //下拉刷新事件
     @Override
     public void onRefresh() {
-        loadPost(1);
+        //if(!mSwipeRefreshLayout.isRefreshing()){
+            loadPost(1);
+        //}
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

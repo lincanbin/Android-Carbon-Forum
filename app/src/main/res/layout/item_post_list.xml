@@ -47,10 +47,12 @@
                 android:layout_height="36dp"
                 android:contentDescription="@string/avatar"
                 android:src="@drawable/ic_perm_identity_grey600_24dp"/>
+            <RelativeLayout android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
                 <LinearLayout
                     android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
@@ -65,6 +67,28 @@
                         android:layout_height="fill_parent"
                         android:textAppearance="?android:attr/textAppearanceSmall"/>
                 </LinearLayout>
+                <com.andexert.library.RippleView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    app:rv_color="@color/colorPrimary"
+                    app:rv_rippleDuration="100"
+                    android:focusable="true"
+                    android:clickable="true">
+                    <com.mikepenz.iconics.view.IconicsImageView
+                        android:padding="4dp"
+                        android:layout_margin="2dp"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:gravity="end"
+                        android:clickable="true"
+                        app:iiv_color="@color/material_grey_500"
+                        app:iiv_icon="gmd-reply" />
+                </com.andexert.library.RippleView>
+            </RelativeLayout>
         </LinearLayout>
         <WebView
             android:layout_width="match_parent"

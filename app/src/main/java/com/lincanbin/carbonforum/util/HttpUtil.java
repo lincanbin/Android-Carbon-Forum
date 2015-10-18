@@ -98,6 +98,7 @@ public class HttpUtil {
 
             }
             String getResult = resultBuffer.toString();
+            Log.v("Get URL : ", url);
             Log.v("Get Result",getResult);
             return JSONUtil.json2Object(getResult);
         } catch (Exception e) {
@@ -135,6 +136,7 @@ public class HttpUtil {
                     }
                 }
             }
+            Log.v("POST URL : ", url);
             Log.v("POST parameter : ", parameterBuffer.toString());
 
             URL localURL = new URL(url);

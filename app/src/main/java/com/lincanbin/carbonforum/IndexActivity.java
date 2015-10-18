@@ -327,7 +327,10 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
     //下拉刷新事件
     @Override
     public void onRefresh() {
-        loadTopic(1, false);
+
+        //if(!mSwipeRefreshLayout.isRefreshing()){
+            loadTopic(1, false);
+        //}
     }
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {

@@ -19,7 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:rv_color="@color/colorPrimary"
-    app:rv_rippleDuration="200"
+    app:rv_rippleDuration="100"
     android:focusable="true"
     android:clickable="true">
     <LinearLayout
