@@ -66,10 +66,8 @@ public class LoginActivity extends AppCompatActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
-            // Title
             mToolbar.setTitle(R.string.login);
             setSupportActionBar(mToolbar);
-            //Your toolbar is now an action bar and you can use it like you always do, for example:
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         // Set up the login form.

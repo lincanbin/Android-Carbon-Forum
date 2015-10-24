@@ -4,9 +4,9 @@ public class APIAddress
     public static final String WEBSITE_PATH = ""; //网站路径，不以"/"结尾，默认留空
 
 	//Debug
-	public static final String DOMAIN_NAME = "http://192.168.137.1" + WEBSITE_PATH; // PC版域名
-	public static final String MOBILE_DOMAIN_NAME = "http://192.168.137.1" + WEBSITE_PATH; // 移动版域名
-	public static final String BASIC_API_URL = "http://192.168.137.1" + WEBSITE_PATH; // API地址前缀
+	public static final String DOMAIN_NAME = "http://192.168.191.1" + WEBSITE_PATH; // PC版域名
+	public static final String MOBILE_DOMAIN_NAME = "http://192.168.191.1" + WEBSITE_PATH; // 移动版域名
+	public static final String BASIC_API_URL = "http://192.168.191.1" + WEBSITE_PATH; // API地址前缀
 
 /*
 	//Real

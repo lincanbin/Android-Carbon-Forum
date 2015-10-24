@@ -156,7 +156,7 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
                 try {
                     totalPage = jsonObject.getInt("TotalPage");
                     JSONObject topicInfo = JSONUtil.json2Object(jsonObject.getString("TopicInfo"));
-                    getSupportActionBar().setTitle(topicInfo.getString("Title"));
+                    getSupportActionBar().setTitle(topicInfo.getString("Topic"));
                 }catch(JSONException e){
                     e.printStackTrace();
                 }

@@ -3,8 +3,11 @@ package com.lincanbin.carbonforum;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 public class ReplyActivity extends AppCompatActivity {
+    Toolbar mToolbar;
     String mTopicID;
     String mPostID;
     String mPostFloor;
@@ -20,5 +23,23 @@ public class ReplyActivity extends AppCompatActivity {
         mPostFloor = intent.getStringExtra("PostFloor");
         mUserName = intent.getStringExtra("UserName");
         setContentView(R.layout.activity_reply);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (mToolbar != null) {
+            mToolbar.setTitle(R.string.action_reply_to + "#" + mPostFloor + " @" + mUserName);
+            setSupportActionBar(mToolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // API 5+ solution
+                onBackPressed();
+                //NavUtils.navigateUpFromSameTask(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

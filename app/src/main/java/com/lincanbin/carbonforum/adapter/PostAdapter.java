@@ -1,6 +1,7 @@
 package com.lincanbin.carbonforum.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.lincanbin.carbonforum.R;
+import com.lincanbin.carbonforum.ReplyActivity;
 import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.util.TimeUtil;
 
@@ -59,14 +61,26 @@ public class PostAdapter extends RecyclerView.Adapter{
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
         final topicViewHolder holder = (topicViewHolder) viewHolder;
         holder.position = i;
-        Map<String,Object> topic = list.get(i);
-        holder.UserName.setText(topic.get("UserName").toString());
-        holder.Time.setText(TimeUtil.formatTime(context, Long.parseLong(topic.get("PostTime").toString())));
+        final Map<String,Object> post = list.get(i);
+        holder.UserName.setText(post.get("UserName").toString());
+        holder.Time.setText(TimeUtil.formatTime(context, Long.parseLong(post.get("PostTime").toString())));
+        holder.PostFloor.setText("#" + post.get("PostFloor").toString());
         String contentHTML = "<span style=\"color:#616161;\">";
-        contentHTML += topic.get("Content").toString().replace("=\"/", "=\"" + APIAddress.DOMAIN_NAME.replace(APIAddress.WEBSITE_PATH, "") + "/");
+        contentHTML += post.get("Content").toString().replace("=\"/", "=\"" + APIAddress.DOMAIN_NAME.replace(APIAddress.WEBSITE_PATH, "") + "/");
         contentHTML += "</span>";
         holder.Content.loadDataWithBaseURL(null, contentHTML, "text/html", "utf-8", null);
-        Glide.with(context).load(APIAddress.MIDDLE_AVATAR_URL(topic.get("UserID").toString(), "middle")).into(holder.Avatar);
+        Glide.with(context).load(APIAddress.MIDDLE_AVATAR_URL(post.get("UserID").toString(), "middle")).into(holder.Avatar);
+        holder.ReplyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ReplyActivity.class);
+                intent.putExtra("TopicID", post.get("TopicID").toString());
+                intent.putExtra("PostID", post.get("ID").toString());
+                intent.putExtra("PostFloor", post.get("PostFloor").toString());
+                intent.putExtra("UserName", post.get("UserName").toString());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -80,6 +94,8 @@ public class PostAdapter extends RecyclerView.Adapter{
         ImageView Avatar;
         TextView Time;
         TextView UserName;
+        TextView PostFloor;
+        ImageView ReplyButton;
         WebView Content;
         public int position;
 
@@ -87,7 +103,8 @@ public class PostAdapter extends RecyclerView.Adapter{
             super(itemView);
 
             UserName = (TextView) itemView.findViewById(R.id.username);
-
+            PostFloor = (TextView) itemView.findViewById(R.id.floor);
+            ReplyButton = (ImageView)itemView.findViewById(R.id.reply_button);
             Content = (WebView) itemView.findViewById(R.id.content);
             // http://stackoverflow.com/questions/15133132/android-webview-doesnt-display-web-page-in-some-cases
             Content.setLayerType(View.LAYER_TYPE_SOFTWARE, null);

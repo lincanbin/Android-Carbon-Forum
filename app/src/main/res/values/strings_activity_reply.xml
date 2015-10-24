@@ -1,0 +1,5 @@
+<resources>
+    <string name="title_activity_reply">Reply</string>
+    <string name="reply_content">Content</string>
+    <string name="action_reply_to">Reply to</string>
+</resources>
