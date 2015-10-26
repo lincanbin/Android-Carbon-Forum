@@ -3,6 +3,7 @@ package com.lincanbin.carbonforum.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,9 +67,12 @@ public class PostAdapter extends RecyclerView.Adapter{
         holder.Time.setText(TimeUtil.formatTime(context, Long.parseLong(post.get("PostTime").toString())));
         holder.PostFloor.setText("#" + post.get("PostFloor").toString());
         String contentHTML = "<span style=\"color:#616161;\">";
-        contentHTML += post.get("Content").toString().replace("=\"/", "=\"" + APIAddress.DOMAIN_NAME.replace(APIAddress.WEBSITE_PATH, "") + "/");
+        //String uploadDomain = APIAddress.WEBSITE_PATH.length() > 0 ? APIAddress.DOMAIN_NAME.replace(APIAddress.WEBSITE_PATH, "") : APIAddress.DOMAIN_NAME;
+        //contentHTML += post.get("Content").toString().replace("=\"/", "=\"" + uploadDomain + "/");
+        contentHTML += post.get("Content").toString();
         contentHTML += "</span>";
-        holder.Content.loadDataWithBaseURL(null, contentHTML, "text/html", "utf-8", null);
+        Log.v("Post"+ post.get("ID").toString(), contentHTML);
+        holder.Content.loadDataWithBaseURL(APIAddress.DOMAIN_NAME, contentHTML, "text/html", "utf-8", null);
         Glide.with(context).load(APIAddress.MIDDLE_AVATAR_URL(post.get("UserID").toString(), "middle")).into(holder.Avatar);
         holder.ReplyButton.setOnClickListener(new View.OnClickListener() {
             @Override

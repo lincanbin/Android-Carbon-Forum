@@ -1,8 +1,8 @@
 package com.lincanbin.carbonforum;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -25,7 +25,7 @@ public class ReplyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reply);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
-            mToolbar.setTitle(R.string.action_reply_to + "#" + mPostFloor + " @" + mUserName);
+            mToolbar.setTitle(getString(R.string.action_reply_to) + "#" + mPostFloor + " @" + mUserName);
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
