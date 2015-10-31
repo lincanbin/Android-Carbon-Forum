@@ -288,9 +288,23 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(LoginActivity.this, result.getString("ErrorMessage"), Toast.LENGTH_SHORT).show();
                         refreshVerificationCode();
-                        //TODO: 根据ErrorCode判断Focus的目标
-                        mPasswordView.setError(result.getString("ErrorMessage"));
-                        mPasswordView.requestFocus();
+                        switch(result.getInt("ErrorCode")){
+                            case 101001:
+                            case 101003:
+                                mUsernameView.setError(result.getString("ErrorMessage"));
+                                mUsernameView.requestFocus();
+                                break;
+                            case 101004:
+                                mPasswordView.setError(result.getString("ErrorMessage"));
+                                mPasswordView.requestFocus();
+                                break;
+                            case 101002:
+                                mVerificationCodeView.setError(result.getString("ErrorMessage"));
+                                mVerificationCodeView.requestFocus();
+                                break;
+                            default:
+                        }
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
