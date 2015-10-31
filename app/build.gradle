@@ -8,6 +8,7 @@ android {
     defaultConfig {
         applicationId "com.lincanbin.carbonforum"
         minSdkVersion 15
+        multiDexEnabled true
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"

@@ -187,7 +187,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         private void refreshDrawer(Bundle savedInstanceState){
         try{
             //Log.v("UserID", mSharedPreferences.getString("UserID", "0"));
-            if(Integer.parseInt(mSharedPreferences.getString("UserID", "0")) == 0){
+            if(Integer.parseInt(mSharedPreferences.getString("UserID", "0")) == 0){ //未登录
                 final IProfile profile = new ProfileDrawerItem()
                         .withName("Not logged in")
                         .withIcon(R.drawable.profile)
@@ -202,7 +202,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                         )
                         .withSavedInstance(savedInstanceState)
                         .build();
-            }else{
+            }else{ //已登录
                 final IProfile profile = new ProfileDrawerItem()
                         .withName(mSharedPreferences.getString("UserName", "lincanbin"))
                         .withEmail(mSharedPreferences.getString("UserMail", mSharedPreferences.getString("UserName", "lincanbin")))
@@ -249,66 +249,74 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         }
 
         //Create the drawer
-        mDrawer = new DrawerBuilder()
-                .withActivity(this)
-                .withActionBarDrawerToggle(true)
-                .withToolbar(mToolbar)
-                .withHasStableIds(true)
-                .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
-                // .withTranslucentStatusBar(false)
-                .addDrawerItems(
-                        new PrimaryDrawerItem().
-                                withName(R.string.app_name).
-                                withIcon(GoogleMaterial.Icon.gmd_home).
-                                withSetSelected(true).
-                                withIdentifier(1).
-                                withSelectable(true),
-                        new PrimaryDrawerItem().
-                                withName(R.string.refresh).
-                                withIcon(GoogleMaterial.Icon.gmd_autorenew).
-                                withIdentifier(2).
-                                withSelectable(false),
-                        new DividerDrawerItem(),
+        DrawerBuilder mDrawerBuilder = new DrawerBuilder()
+            .withActivity(this)
+            .withActionBarDrawerToggle(true)
+            .withToolbar(mToolbar)
+            .withHasStableIds(true)
+            .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
+            .withSavedInstance(savedInstanceState)
+            .withShowDrawerOnFirstLaunch(true)
+            // .withTranslucentStatusBar(false)
+            .addDrawerItems(
+                    new PrimaryDrawerItem().
+                            withName(R.string.app_name).
+                            withIcon(GoogleMaterial.Icon.gmd_home).
+                            withSetSelected(true).
+                            withIdentifier(1).
+                            withSelectable(true),
+                    new PrimaryDrawerItem().
+                            withName(R.string.refresh).
+                            withIcon(GoogleMaterial.Icon.gmd_autorenew).
+                            withIdentifier(2).
+                            withSelectable(false),
+                    new DividerDrawerItem()
+            ) // add the items we want to use with our Drawer
+            .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                        @Override
+                        public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                            //check if the drawerItem is set.
+                            //there are different reasons for the drawerItem to be null
+                            //--> click on the header
+                            //--> click on the footer
+                            //those items don't contain a drawerItem
+                            if (drawerItem != null) {
+                                Intent intent = null;
+                                if (drawerItem.getIdentifier() == 2) {
+                                    loadTopic(1, false);
+                                } else if (drawerItem.getIdentifier() == 3) {
+                                    intent = new Intent(IndexActivity.this, LoginActivity.class);
+                                } else if (drawerItem.getIdentifier() == 4) {
+                                    intent = new Intent(IndexActivity.this, SettingsActivity.class);
+                                }
+                                if (intent != null) {
+                                    IndexActivity.this.startActivity(intent);
+                                }
+                            }
+
+                    return false;
+                }
+            });
+
+
+            if(Integer.parseInt(mSharedPreferences.getString("UserID", "0")) == 0) { //未登录
+                mDrawerBuilder.addDrawerItems(
                         new PrimaryDrawerItem().
                                 withName(R.string.login).
                                 withIcon(GoogleMaterial.Icon.gmd_person_add).
                                 withIdentifier(3).
-                                withSelectable(false),
+                                withSelectable(false)
+                );
+            }else{ //已登录
+                mDrawerBuilder.addDrawerItems(
                         new PrimaryDrawerItem().
                                 withName(R.string.title_activity_settings).
                                 withIcon(GoogleMaterial.Icon.gmd_settings).
                                 withIdentifier(4).
                                 withSelectable(false)
-                ) // add the items we want to use with our Drawer
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        //check if the drawerItem is set.
-                        //there are different reasons for the drawerItem to be null
-                        //--> click on the header
-                        //--> click on the footer
-                        //those items don't contain a drawerItem
-
-                        if (drawerItem != null) {
-                            Intent intent = null;
-                            if (drawerItem.getIdentifier() == 2) {
-                                loadTopic(1, false);
-                            } else if (drawerItem.getIdentifier() == 3) {
-                                intent = new Intent(IndexActivity.this, LoginActivity.class);
-                            } else if (drawerItem.getIdentifier() == 4) {
-                                intent = new Intent(IndexActivity.this, SettingsActivity.class);
-                            }
-                            if (intent != null) {
-                                IndexActivity.this.startActivity(intent);
-                            }
-                        }
-
-                        return false;
-                    }
-                })
-                .withSavedInstance(savedInstanceState)
-                .withShowDrawerOnFirstLaunch(true)
-                .build();
+                );
+            }
+            mDrawer = mDrawerBuilder.build();
         //if you have many different types of DrawerItems you can magically pre-cache those items to get a better scroll performance
         //make sure to init the cache after the DrawerBuilder was created as this will first clear the cache to make sure no old elements are in
         RecyclerViewCacheUtil.getInstance().withCacheSize(2).init(mDrawer);
