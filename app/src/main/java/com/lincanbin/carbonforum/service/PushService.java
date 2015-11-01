@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PushService extends IntentService {
-    private NotificationManager mNotificationManager;
     public PushService() {
         super("PushService");
     }
@@ -41,7 +40,7 @@ public class PushService extends IntentService {
                 if(jsonObject.getInt("NewMessage") > 0){
                     //消息数量大于0，发送通知栏消息
                     //TODO: 保存当前消息数，每次判断消息数量与之前不一致才发送通知。
-                    mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     Intent deleteIntent = new Intent(this, IndexActivity.class);
                     deleteIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
                     PendingIntent mDeletePendingIntent = PendingIntent.getActivity(
@@ -56,11 +55,11 @@ public class PushService extends IntentService {
                             .setContentText(jsonObject.getString("NewMessage") + " New Messages")
                             .setAutoCancel(true)
                             .setDeleteIntent(mDeletePendingIntent);
-                    mNotificationManager.cancelAll();
+                    mNotificationManager.cancel(105);
                     if (Build.VERSION.SDK_INT >= 16) {
-                        mNotificationManager.notify(0, builder.build());
+                        mNotificationManager.notify(105, builder.build());
                     }else{
-                        mNotificationManager.notify(0, builder.getNotification());
+                        mNotificationManager.notify(105, builder.getNotification());
                     }
                     //TODO: 根据设置震动手机以及响铃
                     //请求成功，延长请求间隔
