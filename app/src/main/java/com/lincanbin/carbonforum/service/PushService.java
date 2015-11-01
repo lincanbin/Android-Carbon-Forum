@@ -3,14 +3,12 @@ package com.lincanbin.carbonforum.service;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
-import com.lincanbin.carbonforum.IndexActivity;
 import com.lincanbin.carbonforum.R;
 import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.util.HttpUtil;
@@ -41,6 +39,7 @@ public class PushService extends IntentService {
                     //消息数量大于0，发送通知栏消息
                     //TODO: 保存当前消息数，每次判断消息数量与之前不一致才发送通知。
                     NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    /*
                     Intent deleteIntent = new Intent(this, IndexActivity.class);
                     deleteIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
                     PendingIntent mDeletePendingIntent = PendingIntent.getActivity(
@@ -48,13 +47,13 @@ public class PushService extends IntentService {
                             R.string.app_name,
                             deleteIntent,
                             PendingIntent.FLAG_UPDATE_CURRENT);
-
+                    */
                     final Notification.Builder builder = new Notification.Builder(getApplicationContext())
                             .setSmallIcon(R.drawable.ic_launcher)
                             .setContentTitle(getString(R.string.app_name))
                             .setContentText(jsonObject.getString("NewMessage") + " New Messages")
-                            .setAutoCancel(true)
-                            .setDeleteIntent(mDeletePendingIntent);
+                            .setAutoCancel(true);
+                            //.setDeleteIntent(mDeletePendingIntent)
                     mNotificationManager.cancel(105);
                     if (Build.VERSION.SDK_INT >= 16) {
                         mNotificationManager.notify(105, builder.build());
