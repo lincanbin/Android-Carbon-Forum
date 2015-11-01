@@ -53,6 +53,11 @@
 
         <activity android:name=".ReplyActivity" >
         </activity>
+
+        <service
+            android:name=".service.ReplyService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

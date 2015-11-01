@@ -36,4 +36,7 @@ public class APIAddress
 
 	//推送接口，维护一个长连接
 	public static final String PUSHSERVICE_URL = BASIC_API_URL + "/json/get_notifications";
+
+	//回复接口
+	public static final String REPLY_URL = BASIC_API_URL + "/reply";
 }
