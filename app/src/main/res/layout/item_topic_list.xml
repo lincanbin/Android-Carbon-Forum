@@ -19,7 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:rv_color="@color/colorPrimary"
-    app:rv_rippleDuration="100"
+    app:rv_rippleDuration="300"
     android:focusable="true"
     android:clickable="true">
     <LinearLayout
@@ -34,7 +34,8 @@
         android:focusable="true"
         android:descendantFocusability="blocksDescendants"
         android:duplicateParentState="true"
-        android:theme="@android:style/Widget.ListView">
+        android:theme="@android:style/Widget.ListView"
+        android:background="?selectableItemBackground">
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/avatar"
             android:layout_width="56dp"

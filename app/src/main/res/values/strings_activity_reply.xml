@@ -2,4 +2,6 @@
     <string name="title_activity_reply">Reply</string>
     <string name="reply_content">Content</string>
     <string name="action_reply_to">Reply to</string>
+    <string name="replying">Replying</string>
+    <string name="reply_success">Reply success</string>
 </resources>
