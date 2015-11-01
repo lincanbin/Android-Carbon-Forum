@@ -1,6 +1,9 @@
 package com.lincanbin.carbonforum;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -47,6 +50,10 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //注册一个广播用于回复成功时，刷新主题
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("action.refreshTopic");
+        registerReceiver(mRefreshTopicBroadcastReceiver, intentFilter);
         //取得启动该Activity的Intent对象
         Intent intent =getIntent();
         //取出Intent中附加的数据
@@ -97,12 +104,17 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
         mRecyclerView.setAdapter(mAdapter);
 
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
-        mFloatingActionButton.setImageDrawable(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_reply).color(Color.WHITE));
+        mFloatingActionButton.setImageDrawable(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_reply_all).color(Color.WHITE));
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(TopicActivity.this, ReplyActivity.class);
+                intent.putExtra("TopicID", mTopicID);
+                intent.putExtra("PostID", "0");
+                intent.putExtra("PostFloor", "0");
+                intent.putExtra("UserName", "0");
+                intent.putExtra("DefaultContent", "");
+                startActivity(intent);
             }
         });
         loadPost(Integer.parseInt(mTopicPage));
@@ -110,6 +122,21 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
     //加载帖子
     private void loadPost(int targetPage) {
         new GetPostTask(targetPage).execute();
+    }
+    // broadcast receiver
+    private BroadcastReceiver mRefreshTopicBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals("action.refreshDrawer")) {
+                 new GetPostTask(intent.getIntExtra("TargetPage",1)).execute();
+            }
+        }
+    };
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mRefreshTopicBroadcastReceiver);
     }
     //下拉刷新事件
     @Override
