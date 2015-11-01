@@ -82,6 +82,7 @@ public class PostAdapter extends RecyclerView.Adapter{
                 intent.putExtra("PostID", post.get("ID").toString());
                 intent.putExtra("PostFloor", post.get("PostFloor").toString());
                 intent.putExtra("UserName", post.get("UserName").toString());
+                intent.putExtra("DefaultContent", "");
                 context.startActivity(intent);
             }
         });

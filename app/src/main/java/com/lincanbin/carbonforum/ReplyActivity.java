@@ -5,6 +5,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
+
+import com.lincanbin.carbonforum.service.ReplyService;
 
 public class ReplyActivity extends AppCompatActivity {
     Toolbar mToolbar;
@@ -12,6 +17,8 @@ public class ReplyActivity extends AppCompatActivity {
     String mPostID;
     String mPostFloor;
     String mUserName;
+    String defaultContent;
+    EditText mContent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,13 +29,29 @@ public class ReplyActivity extends AppCompatActivity {
         mPostID = intent.getStringExtra("PostID");
         mPostFloor = intent.getStringExtra("PostFloor");
         mUserName = intent.getStringExtra("UserName");
+        defaultContent = intent.getStringExtra("DefaultContent");
         setContentView(R.layout.activity_reply);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mContent = (EditText) findViewById(R.id.content);
+        mContent.setText(defaultContent);
         if (mToolbar != null) {
             mToolbar.setTitle(getString(R.string.action_reply_to) + "#" + mPostFloor + " @" + mUserName);
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            ImageButton imageButton = (ImageButton) mToolbar.findViewById(R.id.reply_button);
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ReplyActivity.this, ReplyService.class);
+                    intent.putExtra("TopicID", mTopicID);
+                    intent.putExtra("Content", mContent.getText().toString());
+                    startService(intent);
+                    onBackPressed();
+                }
+            });
         }
+
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
