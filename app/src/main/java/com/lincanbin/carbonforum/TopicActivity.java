@@ -128,8 +128,9 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals("action.refreshDrawer")) {
-                 new GetPostTask(intent.getIntExtra("TargetPage",1)).execute();
+            int tempTargetPage = intent.getIntExtra("TargetPage",1);
+            if (action.equals("action.refreshTopic") && tempTargetPage == 1) {
+                loadPost(1);
             }
         }
     };

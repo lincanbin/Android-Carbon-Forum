@@ -60,7 +60,13 @@ public class ReplyService extends IntentService {
                 if (jsonObject.getInt("Status") == 1){
                     //回帖成功，移除“发送中”通知，并发送广播告知成功
                     mNotificationManager.cancel(102);
-                    Toast.makeText(getApplicationContext(), getString(R.string.reply_success), Toast.LENGTH_SHORT).show();
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), getString(R.string.reply_success), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                     //发送广播刷新帖子（如果还在看那个帖子的话）
                     Intent intent = new Intent();
                     intent.putExtra("TargetPage", jsonObject.getInt("Page"));
