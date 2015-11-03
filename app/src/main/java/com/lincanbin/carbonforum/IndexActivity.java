@@ -158,8 +158,9 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(IndexActivity.this, NewActivity.class);
+                startActivity(intent);
+
             }
         });
         //Activity渲染完毕时加载帖子，使用缓存

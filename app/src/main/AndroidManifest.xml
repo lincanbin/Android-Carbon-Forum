@@ -58,6 +58,16 @@
             android:name=".service.ReplyService"
             android:exported="false" >
         </service>
+
+        <activity
+            android:name=".NewActivity"
+            android:label="@string/title_activity_new"
+            android:parentActivityName=".IndexActivity"
+            android:theme="@style/AppTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.lincanbin.carbonforum.IndexActivity" />
+        </activity>
     </application>
 
 </manifest>
