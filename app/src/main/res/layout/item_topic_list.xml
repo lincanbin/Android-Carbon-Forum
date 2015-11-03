@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright (C) 2014 The Android Open Source Project
 
@@ -26,6 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:foreground="?android:attr/selectableItemBackground"
+        android:background="?selectableItemBackground"
         android:id="@+id/topic_item"
         android:padding="10dp"
         android:minHeight="?android:listPreferredItemHeight"
@@ -35,7 +37,7 @@
         android:descendantFocusability="blocksDescendants"
         android:duplicateParentState="true"
         android:theme="@android:style/Widget.ListView"
-        android:background="?selectableItemBackground">
+        >
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/avatar"
             android:layout_width="56dp"
