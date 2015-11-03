@@ -66,11 +66,13 @@ public class PostAdapter extends RecyclerView.Adapter{
         holder.UserName.setText(post.get("UserName").toString());
         holder.Time.setText(TimeUtil.formatTime(context, Long.parseLong(post.get("PostTime").toString())));
         holder.PostFloor.setText("#" + post.get("PostFloor").toString());
-        String contentHTML = "<span style=\"color:#616161;\">";
+        String contentHTML = "<style>" +
+                "p{color:#616161;}" +
+                "img, video{display: inline; height: auto; max-width: 100%;}" +
+                "</style>";
         //String uploadDomain = APIAddress.WEBSITE_PATH.length() > 0 ? APIAddress.DOMAIN_NAME.replace(APIAddress.WEBSITE_PATH, "") : APIAddress.DOMAIN_NAME;
         //contentHTML += post.get("Content").toString().replace("=\"/", "=\"" + uploadDomain + "/");
         contentHTML += post.get("Content").toString();
-        contentHTML += "</span>";
         Log.v("Post"+ post.get("ID").toString(), contentHTML);
         holder.Content.loadDataWithBaseURL(APIAddress.DOMAIN_NAME, contentHTML, "text/html", "utf-8", null);
         Glide.with(context).load(APIAddress.MIDDLE_AVATAR_URL(post.get("UserID").toString(), "middle")).into(holder.Avatar);

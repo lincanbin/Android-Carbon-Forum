@@ -25,13 +25,13 @@ public class ReplyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //取得启动该Activity的Intent对象
-        Intent intent =getIntent();
+        Intent mIntent =getIntent();
         //取出Intent中附加的数据
-        mTopicID = intent.getStringExtra("TopicID");
-        mPostID = intent.getStringExtra("PostID");
-        mPostFloor = intent.getStringExtra("PostFloor");
-        mUserName = intent.getStringExtra("UserName");
-        defaultContent = intent.getStringExtra("DefaultContent");
+        mTopicID = mIntent.getStringExtra("TopicID");
+        mPostID = mIntent.getStringExtra("PostID");
+        mPostFloor = mIntent.getStringExtra("PostFloor");
+        mUserName = mIntent.getStringExtra("UserName");
+        defaultContent = mIntent.getStringExtra("DefaultContent");
         setContentView(R.layout.activity_reply);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mContent = (EditText) findViewById(R.id.content);

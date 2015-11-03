@@ -55,11 +55,11 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
         intentFilter.addAction("action.refreshTopic");
         registerReceiver(mRefreshTopicBroadcastReceiver, intentFilter);
         //取得启动该Activity的Intent对象
-        Intent intent =getIntent();
+        Intent mIntent = getIntent();
         //取出Intent中附加的数据
-        mTopic = intent.getStringExtra("Topic");
-        mTopicID = intent.getStringExtra("TopicID");
-        mTopicPage = intent.getStringExtra("TargetPage");
+        mTopic = mIntent.getStringExtra("Topic");
+        mTopicID = mIntent.getStringExtra("TopicID");
+        mTopicPage = mIntent.getStringExtra("TargetPage");
         setContentView(R.layout.activity_topic);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
