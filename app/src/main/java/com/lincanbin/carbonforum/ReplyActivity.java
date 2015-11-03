@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.lincanbin.carbonforum.service.ReplyService;
+import com.lincanbin.carbonforum.util.markdown.MarkdownProcessor;
 
 public class ReplyActivity extends AppCompatActivity {
     Toolbar mToolbar;
@@ -18,6 +19,7 @@ public class ReplyActivity extends AppCompatActivity {
     String mPostFloor;
     String mUserName;
     String defaultContent;
+    String contentHTML;
     EditText mContent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +37,12 @@ public class ReplyActivity extends AppCompatActivity {
         mContent = (EditText) findViewById(R.id.content);
         mContent.setText(defaultContent);
         if (mToolbar != null) {
-            mToolbar.setTitle(getString(R.string.action_reply_to) + "#" + mPostFloor + " @" + mUserName);
+            //mToolbar.setTitle(getString(R.string.title_activity_reply));
+            if(Integer.parseInt(mPostFloor) == 0){
+                mToolbar.setTitle(getString(R.string.title_activity_reply));
+            }else{
+                mToolbar.setTitle(getString(R.string.action_reply_to) + " #" + mPostFloor + " @" + mUserName);
+            }
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -43,23 +50,29 @@ public class ReplyActivity extends AppCompatActivity {
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    MarkdownProcessor mMarkdownProcessor = new MarkdownProcessor();
+                    if(Integer.parseInt(mPostFloor) == 0){
+                        contentHTML = mMarkdownProcessor.markdown(mContent.getText().toString());
+                    }else{
+                        contentHTML = "<p>\n" + getString(R.string.action_reply_to) +
+                                " <a href=\"/t/" + mTopicID + "#Post" + mPostID + "\">#" + mPostFloor + "</a> @" + mUserName + " :<br/>\n" +
+                                "</p><p>" + mMarkdownProcessor.markdown(mContent.getText().toString()) + "</p>";
+                    }
                     Intent intent = new Intent(ReplyActivity.this, ReplyService.class);
                     intent.putExtra("TopicID", mTopicID);
-                    intent.putExtra("Content", mContent.getText().toString());
+                    intent.putExtra("Content", contentHTML);
                     startService(intent);
                     onBackPressed();
                 }
             });
         }
-
+        //TODO: 根据草稿恢复现场
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // API 5+ solution
                 onBackPressed();
-                //NavUtils.navigateUpFromSameTask(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
