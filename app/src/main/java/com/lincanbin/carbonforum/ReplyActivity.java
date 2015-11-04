@@ -1,11 +1,13 @@
 package com.lincanbin.carbonforum;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -36,6 +38,13 @@ public class ReplyActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mContent = (EditText) findViewById(R.id.content);
         mContent.setText(defaultContent);
+        //自动弹出键盘
+        mContent.setFocusable(true);
+        mContent.setFocusableInTouchMode(true);
+        mContent.requestFocus();
+        InputMethodManager mInputManager = (InputMethodManager)mContent.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        mInputManager.showSoftInput(mContent, 0);
+
         if (mToolbar != null) {
             //mToolbar.setTitle(getString(R.string.title_activity_reply));
             if(Integer.parseInt(mPostFloor) == 0){
