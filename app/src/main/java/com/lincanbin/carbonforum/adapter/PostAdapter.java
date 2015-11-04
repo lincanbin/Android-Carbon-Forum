@@ -67,8 +67,22 @@ public class PostAdapter extends RecyclerView.Adapter{
         holder.Time.setText(TimeUtil.formatTime(context, Long.parseLong(post.get("PostTime").toString())));
         holder.PostFloor.setText("#" + post.get("PostFloor").toString());
         String contentHTML = "<style>" +
-                "p{color:#616161;}" +
-                "img, video{display: inline; height: auto; max-width: 100%;}" +
+                "a, a:link, a:visited, a:active {" +
+                "   color: #555555;" +
+                "   text-decoration: none;" +
+                "   word-wrap: break-word;" +
+                "}" +
+                "a:hover {" +
+                "   color: #7aa1b0;" +
+                "}" +
+                "p{" +
+                "   color:#616161;" +
+                "}" +
+                "img, video{" +
+                "   display: inline;" +
+                "   height: auto;" +
+                "   max-width: 100%;" +
+                "}" +
                 "</style>";
         //String uploadDomain = APIAddress.WEBSITE_PATH.length() > 0 ? APIAddress.DOMAIN_NAME.replace(APIAddress.WEBSITE_PATH, "") : APIAddress.DOMAIN_NAME;
         //contentHTML += post.get("Content").toString().replace("=\"/", "=\"" + uploadDomain + "/");
@@ -115,6 +129,7 @@ public class PostAdapter extends RecyclerView.Adapter{
             Content = (WebView) itemView.findViewById(R.id.content);
             // http://stackoverflow.com/questions/15133132/android-webview-doesnt-display-web-page-in-some-cases
             Content.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            //Content.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             Content.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//优先使用缓存
             Time = (TextView) itemView.findViewById(R.id.time);
             Avatar = (ImageView)itemView.findViewById(R.id.avatar);
