@@ -36,7 +36,10 @@ public class PushService extends IntentService {
             if(jsonObject != null && jsonObject.getInt("Status") == 1){
                 //请求成功，延长请求间隔
                 if(jsonObject.getInt("NewMessage") > 0){
-                    //消息数量大于0，发送通知栏消息
+                    //消息数量大于0，发送通知栏消息，发送广播刷新Drawer
+                    Intent intent = new Intent();
+                    intent.setAction("action.refreshDrawer");
+                    sendBroadcast(intent);
                     //TODO: 保存当前消息数，每次判断消息数量与之前不一致才发送通知。
                     NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     /*

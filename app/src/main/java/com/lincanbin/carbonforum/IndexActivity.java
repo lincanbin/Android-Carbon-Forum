@@ -219,17 +219,17 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                                 profile,
                                 //don't ask but google uses 14dp for the add account icon in gmail but 20dp for the normal icons (like manage account)
                                 new ProfileSettingDrawerItem()
-                                        .withName("Change Account")
+                                        .withName(getString(R.string.change_account))
                                         .withIcon(GoogleMaterial.Icon.gmd_person_add)
                                         .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                                             @Override
                                             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                                                    IndexActivity.this.startActivity(new Intent(IndexActivity.this, LoginActivity.class));
+                                                IndexActivity.this.startActivity(new Intent(IndexActivity.this, LoginActivity.class));
                                                 return false;
                                             }
                                         }),
                                 new ProfileSettingDrawerItem()
-                                        .withName("Exit")
+                                        .withName(getString(R.string.log_out))
                                         .withIcon(GoogleMaterial.Icon.gmd_remove_circle_outline)
                                         .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                                             @Override
@@ -288,6 +288,8 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                                 } else if (drawerItem.getIdentifier() == 3) {
                                     intent = new Intent(IndexActivity.this, LoginActivity.class);
                                 } else if (drawerItem.getIdentifier() == 4) {
+                                    intent = new Intent(IndexActivity.this, NotificationsActivity.class);
+                                } else if (drawerItem.getIdentifier() == 5) {
                                     intent = new Intent(IndexActivity.this, SettingsActivity.class);
                                 }
                                 if (intent != null) {
@@ -311,9 +313,14 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
             }else{ //已登录
                 mDrawerBuilder.addDrawerItems(
                         new PrimaryDrawerItem().
+                                withName(R.string.title_activity_notifications).
+                                withIcon(GoogleMaterial.Icon.gmd_notifications).
+                                withIdentifier(4).
+                                withSelectable(false),
+                        new PrimaryDrawerItem().
                                 withName(R.string.title_activity_settings).
                                 withIcon(GoogleMaterial.Icon.gmd_settings).
-                                withIdentifier(4).
+                                withIdentifier(5).
                                 withSelectable(false)
                 );
             }
@@ -330,6 +337,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
             //set the active profile
             //headerResult.setActiveProfile(profile);
         }
+        //TODO:根据消息数量刷新Notification
         //添加消息通知
         //mDrawer.updateBadge(4, new StringHolder(10 + ""));
     }
