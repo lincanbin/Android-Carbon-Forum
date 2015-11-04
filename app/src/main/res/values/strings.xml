@@ -3,10 +3,13 @@
     <string name="app_name">Carbon Forum</string>
     <string name="login">Login</string>
     <string name="refresh">Refresh</string>
+    <string name="change_account">Change Account</string>
+    <string name="log_out">Log Out</string>
     <string name="action_search">Search</string>
     <string name="action_share">Share</string>
     <string name="avatar">Avatar</string>
     <string name="network_error">Network Error</string>
+
     <string name="just_now">top</string>
     <string name="seconds_ago">seconds ago</string>
     <string name="minutes_ago">minutes ago</string>
@@ -81,4 +84,5 @@
     <string name="title_activity_new">NewActivity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_notifications">Notifications</string>
 </resources>
