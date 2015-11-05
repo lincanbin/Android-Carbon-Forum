@@ -32,6 +32,8 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.holder.BadgeStyle;
+import com.mikepenz.materialdrawer.holder.StringHolder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
@@ -58,6 +60,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
     private FloatingActionButton mFloatingActionButton;
     private TopicAdapter mAdapter;
     private SharedPreferences mSharedPreferences;
+    private SharedPreferences cacheSharedPreferences;
     //private ActionBarDrawerToggle mDrawerToggle;
     private int currentPage = 0;
     private int totalPage = 65536;
@@ -71,6 +74,9 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("action.refreshDrawer");
         registerReceiver(mRefreshDrawerBroadcastReceiver, intentFilter);
+        //获取缓存与用户数据
+        cacheSharedPreferences = getSharedPreferences("MainCache", Activity.MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
         // 设置ToolBar
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
@@ -80,7 +86,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
             //mToolbar.bringToFront();
             //toolbar.setLogo(R.drawable.ic_launcher);
             // toolbar.setSubtitle("Sub title");
-            mSharedPreferences = this.getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
+
             refreshDrawer(savedInstanceState);
         }
         //下拉刷新监听器
@@ -173,7 +179,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
     }
     //加载帖子列表
     private void loadTopic(int targetPage, Boolean enableCache) {
-            new GetTopicsTask(targetPage, enableCache).execute();
+        new GetTopicsTask(targetPage, enableCache).execute();
     }
     // broadcast receiver
     private BroadcastReceiver mRefreshDrawerBroadcastReceiver = new BroadcastReceiver() {
@@ -185,7 +191,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
             }
         }
     };
-        private void refreshDrawer(Bundle savedInstanceState){
+    private void refreshDrawer(Bundle savedInstanceState){
         try{
             //Log.v("UserID", mSharedPreferences.getString("UserID", "0"));
             if(Integer.parseInt(mSharedPreferences.getString("UserID", "0")) == 0){ //未登录
@@ -208,13 +214,13 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                         .withName(mSharedPreferences.getString("UserName", "lincanbin"))
                         .withEmail(mSharedPreferences.getString("UserMail", mSharedPreferences.getString("UserName", "lincanbin")))
                         .withIcon(Uri.parse(APIAddress.MIDDLE_AVATAR_URL(mSharedPreferences.getString("UserID", "0"), "large")))
-                                .withIdentifier(Integer.parseInt(mSharedPreferences.getString("UserID", "0")));
+                        .withIdentifier(Integer.parseInt(mSharedPreferences.getString("UserID", "0")));
                 // Create the AccountHeader
                 headerResult = new AccountHeaderBuilder()
                         .withActivity(this)
                         .withHeaderBackground(R.drawable.header)
                         .withSelectionListEnabledForSingleProfile(false)
-                        //.withTranslucentStatusBar(false)
+                                //.withTranslucentStatusBar(false)
                         .addProfiles(
                                 profile,
                                 //don't ask but google uses 14dp for the add account icon in gmail but 20dp for the normal icons (like manage account)
@@ -251,80 +257,81 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
 
         //Create the drawer
         DrawerBuilder mDrawerBuilder = new DrawerBuilder()
-            .withActivity(this)
-            .withActionBarDrawerToggle(true)
-            .withToolbar(mToolbar)
-            .withHasStableIds(true)
-            .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
-            .withSavedInstance(savedInstanceState)
-            .withShowDrawerOnFirstLaunch(true)
-            // .withTranslucentStatusBar(false)
-            .addDrawerItems(
-                    new PrimaryDrawerItem().
-                            withName(R.string.app_name).
-                            withIcon(GoogleMaterial.Icon.gmd_home).
-                            withSetSelected(true).
-                            withIdentifier(1).
-                            withSelectable(true),
-                    new PrimaryDrawerItem().
-                            withName(R.string.refresh).
-                            withIcon(GoogleMaterial.Icon.gmd_autorenew).
-                            withIdentifier(2).
-                            withSelectable(false),
-                    new DividerDrawerItem()
-            ) // add the items we want to use with our Drawer
-            .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                        @Override
-                        public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                            //check if the drawerItem is set.
-                            //there are different reasons for the drawerItem to be null
-                            //--> click on the header
-                            //--> click on the footer
-                            //those items don't contain a drawerItem
-                            if (drawerItem != null) {
-                                Intent intent = null;
-                                if (drawerItem.getIdentifier() == 2) {
-                                    loadTopic(1, false);
-                                } else if (drawerItem.getIdentifier() == 3) {
-                                    intent = new Intent(IndexActivity.this, LoginActivity.class);
-                                } else if (drawerItem.getIdentifier() == 4) {
-                                    intent = new Intent(IndexActivity.this, NotificationsActivity.class);
-                                } else if (drawerItem.getIdentifier() == 5) {
-                                    intent = new Intent(IndexActivity.this, SettingsActivity.class);
-                                }
-                                if (intent != null) {
-                                    IndexActivity.this.startActivity(intent);
-                                }
-                            }
-
-                    return false;
-                }
-            });
-
-
-            if(Integer.parseInt(mSharedPreferences.getString("UserID", "0")) == 0) { //未登录
-                mDrawerBuilder.addDrawerItems(
+                .withActivity(this)
+                .withActionBarDrawerToggle(true)
+                .withToolbar(mToolbar)
+                .withHasStableIds(true)
+                .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
+                .withSavedInstance(savedInstanceState)
+                .withShowDrawerOnFirstLaunch(true)
+                        // .withTranslucentStatusBar(false)
+                .addDrawerItems(
                         new PrimaryDrawerItem().
-                                withName(R.string.login).
-                                withIcon(GoogleMaterial.Icon.gmd_person_add).
-                                withIdentifier(3).
-                                withSelectable(false)
-                );
-            }else{ //已登录
-                mDrawerBuilder.addDrawerItems(
+                                withName(R.string.app_name).
+                                withIcon(GoogleMaterial.Icon.gmd_home).
+                                withSetSelected(true).
+                                withIdentifier(1).
+                                withSelectable(true),
                         new PrimaryDrawerItem().
-                                withName(R.string.title_activity_notifications).
-                                withIcon(GoogleMaterial.Icon.gmd_notifications).
-                                withIdentifier(4).
+                                withName(R.string.refresh).
+                                withIcon(GoogleMaterial.Icon.gmd_autorenew).
+                                withIdentifier(2).
                                 withSelectable(false),
-                        new PrimaryDrawerItem().
-                                withName(R.string.title_activity_settings).
-                                withIcon(GoogleMaterial.Icon.gmd_settings).
-                                withIdentifier(5).
-                                withSelectable(false)
-                );
-            }
-            mDrawer = mDrawerBuilder.build();
+                        new DividerDrawerItem()
+                ) // add the items we want to use with our Drawer
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        //check if the drawerItem is set.
+                        //there are different reasons for the drawerItem to be null
+                        //--> click on the header
+                        //--> click on the footer
+                        //those items don't contain a drawerItem
+                        if (drawerItem != null) {
+                            Intent intent = null;
+                            if (drawerItem.getIdentifier() == 2) {
+                                loadTopic(1, false);
+                            } else if (drawerItem.getIdentifier() == 3) {
+                                intent = new Intent(IndexActivity.this, LoginActivity.class);
+                            } else if (drawerItem.getIdentifier() == 4) {
+                                intent = new Intent(IndexActivity.this, NotificationsActivity.class);
+                            } else if (drawerItem.getIdentifier() == 5) {
+                                intent = new Intent(IndexActivity.this, SettingsActivity.class);
+                            }
+                            if (intent != null) {
+                                IndexActivity.this.startActivity(intent);
+                            }
+                        }
+
+                        return false;
+                    }
+                });
+
+
+        if(Integer.parseInt(mSharedPreferences.getString("UserID", "0")) == 0) { //未登录
+            mDrawerBuilder.addDrawerItems(
+                    new PrimaryDrawerItem().
+                            withName(R.string.login).
+                            withIcon(GoogleMaterial.Icon.gmd_person_add).
+                            withIdentifier(3).
+                            withSelectable(false)
+            );
+        }else{ //已登录
+            mDrawerBuilder.addDrawerItems(
+                    new PrimaryDrawerItem()
+                            .withName(R.string.title_activity_notifications)
+                            .withIcon(GoogleMaterial.Icon.gmd_notifications)
+                            .withIdentifier(4)
+                            .withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.md_red_700))
+                            .withSelectable(false),
+                    new PrimaryDrawerItem()
+                            .withName(R.string.title_activity_settings)
+                            .withIcon(GoogleMaterial.Icon.gmd_settings)
+                            .withIdentifier(5)
+                            .withSelectable(false)
+            );
+        }
+        mDrawer = mDrawerBuilder.build();
         //if you have many different types of DrawerItems you can magically pre-cache those items to get a better scroll performance
         //make sure to init the cache after the DrawerBuilder was created as this will first clear the cache to make sure no old elements are in
         RecyclerViewCacheUtil.getInstance().withCacheSize(2).init(mDrawer);
@@ -338,15 +345,19 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
             //headerResult.setActiveProfile(profile);
         }
         //TODO:根据消息数量刷新Notification
-        //添加消息通知
-        //mDrawer.updateBadge(4, new StringHolder(10 + ""));
+        int notificationsNumber = Integer.parseInt(cacheSharedPreferences.getString("notificationsNumber", "0"));
+        if(notificationsNumber>0){
+            //添加消息通知
+            mDrawer.updateBadge(4, new StringHolder(notificationsNumber + ""));
+        }
+
     }
     //下拉刷新事件
     @Override
     public void onRefresh() {
 
         //if(!mSwipeRefreshLayout.isRefreshing()){
-            loadTopic(1, false);
+        loadTopic(1, false);
         //}
     }
     @Override
@@ -373,11 +384,10 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         private int targetPage;
         private Boolean enableCache;
         private int positionStart;
-        SharedPreferences cacheSharedPreferences = IndexActivity.this.getSharedPreferences("MainCache", Activity.MODE_PRIVATE);
-		public GetTopicsTask(int targetPage, Boolean enableCache) {
-			this.targetPage = targetPage;
+        public GetTopicsTask(int targetPage, Boolean enableCache) {
+            this.targetPage = targetPage;
             this.enableCache = enableCache;
-		}
+        }
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -392,12 +402,12 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
             mSwipeRefreshLayout.post(new Runnable(){
                 @Override
                 public void run(){
-                	mSwipeRefreshLayout.setRefreshing(true);
+                    mSwipeRefreshLayout.setRefreshing(true);
                 }
             });
-            
+
             //Toast.makeText(IndexActivity.this, "Before AsyncTask", Toast.LENGTH_SHORT).show();
-            
+
         }
 
         @Override
