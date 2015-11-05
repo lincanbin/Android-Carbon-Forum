@@ -2,6 +2,7 @@ package com.lincanbin.carbonforum.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -84,9 +85,9 @@ public class PostAdapter extends RecyclerView.Adapter{
                 "   max-width: 100%;" +
                 "}" +
                 "</style>";
-        //String uploadDomain = APIAddress.WEBSITE_PATH.length() > 0 ? APIAddress.DOMAIN_NAME.replace(APIAddress.WEBSITE_PATH, "") : APIAddress.DOMAIN_NAME;
-        //contentHTML += post.get("Content").toString().replace("=\"/", "=\"" + uploadDomain + "/");
-        contentHTML += post.get("Content").toString();
+        String uploadDomain = APIAddress.WEBSITE_PATH.length() > 0 ? APIAddress.DOMAIN_NAME.replace(APIAddress.WEBSITE_PATH, "") : APIAddress.DOMAIN_NAME;
+        contentHTML += post.get("Content").toString().replace("=\"/", "=\"" + uploadDomain + "/");
+        //contentHTML += post.get("Content").toString();
         Log.v("Post"+ post.get("ID").toString(), contentHTML);
         holder.Content.loadDataWithBaseURL(APIAddress.DOMAIN_NAME, contentHTML, "text/html", "utf-8", null);
         Glide.with(context).load(APIAddress.MIDDLE_AVATAR_URL(post.get("UserID").toString(), "middle")).into(holder.Avatar);
@@ -127,10 +128,17 @@ public class PostAdapter extends RecyclerView.Adapter{
             PostFloor = (TextView) itemView.findViewById(R.id.floor);
             ReplyButton = (ImageView)itemView.findViewById(R.id.reply_button);
             Content = (WebView) itemView.findViewById(R.id.content);
-            // http://stackoverflow.com/questions/15133132/android-webview-doesnt-display-web-page-in-some-cases
-            Content.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            //Content.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            if(Build.VERSION.SDK_INT <= 19) {
+                // http://stackoverflow.com/questions/15133132/android-webview-doesnt-display-web-page-in-some-cases
+                Content.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                //Content.getSettings().setLoadsImagesAutomatically(true);
+            } else {
+                Content.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                //Content.getSettings().setLoadsImagesAutomatically(false);
+            }
             Content.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//优先使用缓存
+            // http://stackoverflow.com/questions/3099344/can-androids-webview-automatically-resize-huge-images/12327010#12327010
+            Content.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);//自动缩放图片
             Time = (TextView) itemView.findViewById(R.id.time);
             Avatar = (ImageView)itemView.findViewById(R.id.avatar);
             rootView = itemView.findViewById(R.id.topic_item);
