@@ -6,9 +6,10 @@ Android Client for Carbon Forum with Material Design.
 Build your Carbon Forum android client
 ------------
 1. Rename the package name form ```com.lincanbin.carbonforum``` to ```com.yourname.carbonforum```.
-2. Edit domain configuration in ```config/APIAddress.java```.
-3. Modified the icon ```ic_launcher.png``` as you like. (Optional)
-4. Build and enjoy it.
+2. Edit ```app_name``` in ```res/values/string.xml```. (Optional)
+3. Edit domain configuration in ```config/APIAddress.java```.
+4. Modified the icon ```ic_launcher.png``` as you like. (Optional)
+5. Build and enjoy it.
 
 Features
 ------------
