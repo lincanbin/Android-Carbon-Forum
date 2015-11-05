@@ -3,6 +3,7 @@ package com.lincanbin.carbonforum.service;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -38,56 +39,78 @@ public class ReplyService extends IntentService {
     }
 
     private void reply() {
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         final Map<String, String> parameter = new HashMap<>();
         parameter.put("TopicID", mTopicID);
         parameter.put("Content", mContent);
         //显示“回复中”提示
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String shortContent = mContent.replaceAll("<!--.*?-->", "").replaceAll("<[^>]+>", "");//移除HTML标签
         final Notification.Builder builder = new Notification.Builder(getApplicationContext())
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(getString(R.string.replying))
-                .setAutoCancel(false);
+                .setContentInfo(shortContent.subSequence(0, shortContent.length()))
+                .setOngoing(true);
         if (Build.VERSION.SDK_INT >= 16) {
-            mNotificationManager.notify(102, builder.build());
+            mNotificationManager.notify(102001, builder.build());
         }else{
-            mNotificationManager.notify(102, builder.getNotification());
+            mNotificationManager.notify(102001, builder.getNotification());
         }
-        //TODO: 保存草稿
         final JSONObject jsonObject = HttpUtil.postRequest(getApplicationContext(), APIAddress.REPLY_URL, parameter, false, true);
+        // 移除“回复中”通知
+        mNotificationManager.cancel(102001);
         try {
-            if(jsonObject != null) {
-                if (jsonObject.getInt("Status") == 1){
-                    //回帖成功，移除“发送中”通知，并发送广播告知成功
-                    mNotificationManager.cancel(102);
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), getString(R.string.reply_success), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    //发送广播刷新帖子（如果还在看那个帖子的话）
-                    Intent intent = new Intent();
-                    intent.putExtra("TargetPage", jsonObject.getInt("Page"));
-                    intent.setAction("action.refreshTopic");
-                    sendBroadcast(intent);
-                    //TODO 移除草稿
+            if(jsonObject != null && jsonObject.getInt("Status") == 1) {
+                //回帖成功，并发送广播告知成功
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), getString(R.string.reply_success), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                //发送广播刷新帖子（如果还在看那个帖子的话）
+                Intent intent = new Intent();
+                intent.putExtra("TargetPage", jsonObject.getInt("Page"));
+                intent.setAction("action.refreshTopic");
+                sendBroadcast(intent);
+
+            } else {
+                //回帖不成功，Toast，并添加重发的通知栏通知
+                PendingIntent mPendingIntent = PendingIntent.getService(
+                        getApplicationContext(),
+                        0,
+                        new Intent(getApplicationContext(), ReplyService.class).putExtra("TopicID", mTopicID).putExtra("Content", mContent),
+                        0
+                );
+                final Notification.Builder failBuilder = new Notification.Builder(getApplicationContext())
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle(getString(R.string.app_name))
+                        .setContentText(getString(R.string.resend_reply))
+                        .setContentIntent(mPendingIntent)
+                        .setAutoCancel(true);
+                if (Build.VERSION.SDK_INT >= 16) {
+                    mNotificationManager.notify(102003, failBuilder.build());
                 }else{
-                    //TODO: 回帖不成功，Toast并StartActivity，返回回复页面。备选方案，报警。
-                    //Toast.makeText(getApplicationContext(), jsonObject.getString("ErrorMessage"), Toast.LENGTH_SHORT).show();
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
+                    mNotificationManager.notify(102003, failBuilder.getNotification());
+                }
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if(jsonObject != null) {
                             try {
                                 Toast.makeText(getApplicationContext(), jsonObject.getString("ErrorMessage"), Toast.LENGTH_SHORT).show();
                             }catch(JSONException e){
                                 e.printStackTrace();
                             }
+                        }else{
+                            Toast.makeText(getApplicationContext(), getApplicationContext().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
                         }
-                    });
-                }
+
+                    }
+                });
             }
         }catch(JSONException e){
             e.printStackTrace();

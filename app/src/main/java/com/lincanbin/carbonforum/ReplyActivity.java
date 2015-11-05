@@ -3,6 +3,7 @@ package com.lincanbin.carbonforum;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -58,20 +59,25 @@ public class ReplyActivity extends AppCompatActivity {
             ImageButton imageButton = (ImageButton) mToolbar.findViewById(R.id.reply_button);
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    MarkdownProcessor mMarkdownProcessor = new MarkdownProcessor();
-                    if(Integer.parseInt(mPostFloor) == 0){
-                        contentHTML = mMarkdownProcessor.markdown(mContent.getText().toString());
+                public void onClick(View view) {
+                    if(mContent.getText().toString().length() > 0) {
+                        MarkdownProcessor mMarkdownProcessor = new MarkdownProcessor();
+                        if (Integer.parseInt(mPostFloor) == 0) {
+                            contentHTML = mMarkdownProcessor.markdown(mContent.getText().toString());
+                        } else {
+                            contentHTML = "<p>\n" + getString(R.string.action_reply_to) +
+                                    " <a href=\"/t/" + mTopicID + "#Post" + mPostID + "\">#" + mPostFloor + "</a> @" + mUserName + " :<br/>\n" +
+                                    "</p><p>" + mMarkdownProcessor.markdown(mContent.getText().toString()) + "</p>";
+                        }
+                        Intent intent = new Intent(ReplyActivity.this, ReplyService.class);
+                        intent.putExtra("TopicID", mTopicID);
+                        intent.putExtra("Content", contentHTML);
+                        startService(intent);
+                        onBackPressed();
                     }else{
-                        contentHTML = "<p>\n" + getString(R.string.action_reply_to) +
-                                " <a href=\"/t/" + mTopicID + "#Post" + mPostID + "\">#" + mPostFloor + "</a> @" + mUserName + " :<br/>\n" +
-                                "</p><p>" + mMarkdownProcessor.markdown(mContent.getText().toString()) + "</p>";
+                        Snackbar.make(view, getString(R.string.content_empty), Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
                     }
-                    Intent intent = new Intent(ReplyActivity.this, ReplyService.class);
-                    intent.putExtra("TopicID", mTopicID);
-                    intent.putExtra("Content", contentHTML);
-                    startService(intent);
-                    onBackPressed();
                 }
             });
         }
