@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.lincanbin.carbonforum.LoginActivity;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -23,6 +22,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -67,6 +67,9 @@ public class HttpUtil {
                     break;
                 case 404:
                     break;
+                case 500:
+                    Log.v("Post Result","Code 500");
+                    return null;
                 default:
                     throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
             }
@@ -82,8 +85,14 @@ public class HttpUtil {
                     resultBuffer.append(tempLine);
                 }
 
+                String getResult = resultBuffer.toString();
+                Log.v("Get URL : ", url);
+                Log.v("Get Result",getResult);
+                return JSONUtil.json2Object(getResult);
+            }  catch (Exception e) {
+                e.printStackTrace();
+                return null;
             } finally {
-
                 if (reader != null) {
                     reader.close();
                 }
@@ -95,12 +104,7 @@ public class HttpUtil {
                 if (inputStream != null) {
                     inputStream.close();
                 }
-
             }
-            String getResult = resultBuffer.toString();
-            Log.v("Get URL : ", url);
-            Log.v("Get Result",getResult);
-            return JSONUtil.json2Object(getResult);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -125,7 +129,7 @@ public class HttpUtil {
                 while (iterator.hasNext()) {
                     key = (String) iterator.next();
                     if (parameterMap.get(key) != null) {
-                        value = parameterMap.get(key);
+                        value = URLEncoder.encode(parameterMap.get(key), "UTF-8");
                     } else {
                         value = "";
                     }
@@ -182,6 +186,9 @@ public class HttpUtil {
                         break;
                     case 404:
                         break;
+                    case 500:
+                        Log.v("Post Result","Code 500");
+                        return null;
                     default:
                         throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
                 }
@@ -196,8 +203,15 @@ public class HttpUtil {
                     resultBuffer.append(tempLine);
                 }
 
+                String postResult = resultBuffer.toString();
+                Log.v("Post Result",postResult);
+                JSONTokener jsonParser = new JSONTokener(postResult);
+                return (JSONObject) jsonParser.nextValue();
+            } catch (Exception e) {
+                Log.v("No Network", "No Network");
+                e.printStackTrace();
+                return null;
             } finally {
-
                 if (outputStreamWriter != null) {
                     outputStreamWriter.close();
                 }
@@ -217,16 +231,6 @@ public class HttpUtil {
                 if (inputStream != null) {
                     inputStream.close();
                 }
-
-            }
-            String postResult = resultBuffer.toString();
-            try {
-                Log.v("Post Result",postResult);
-                JSONTokener jsonParser = new JSONTokener(postResult);
-                return (JSONObject) jsonParser.nextValue();
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return null;
             }
         } catch (Exception e) {
             e.printStackTrace();
