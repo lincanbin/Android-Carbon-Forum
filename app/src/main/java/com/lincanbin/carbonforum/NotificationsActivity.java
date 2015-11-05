@@ -2,13 +2,13 @@ package com.lincanbin.carbonforum;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.preference.PreferenceActivity;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -17,6 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class NotificationsActivity extends AppCompatActivity {
 
@@ -34,6 +38,8 @@ public class NotificationsActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private List<Map<String,Object>> replyList = new ArrayList<>();
+    private List<Map<String,Object>> mentionList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,18 +57,10 @@ public class NotificationsActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        //mSectionsPagerAdapter.notifyDataSetChanged();
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
     }
 
 
@@ -79,7 +77,9 @@ public class NotificationsActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.action_settings:
-                Intent intent = new Intent(NotificationsActivity.this, SettingsActivity.NotificationPreferenceFragment.class);
+                Intent intent = new Intent(NotificationsActivity.this, SettingsActivity.class);
+                intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, SettingsActivity.NotificationPreferenceFragment.class.getName());
+                intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
                 startActivity(intent);
                 return true;
             default:
@@ -106,7 +106,7 @@ public class NotificationsActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
+            // Show 2 total pages.
             return 2;
         }
 
@@ -114,9 +114,9 @@ public class NotificationsActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "SECTION 1";
+                    return getString(R.string.notifications_replied_to_me);
                 case 1:
-                    return "SECTION 2";
+                    return  getString(R.string.notifications_mentioned_me);
             }
             return null;
         }
@@ -152,6 +152,21 @@ public class NotificationsActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_notifications, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+
+            SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_notifications_swipe_refresh_layout);
+            mSwipeRefreshLayout.setColorSchemeResources(
+                    R.color.material_light_blue_700,
+                    R.color.material_red_700,
+                    R.color.material_orange_700,
+                    R.color.material_light_green_700
+            );
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+                @Override
+                public void onRefresh(){
+                    //TODO:refresh
+                }
+            });
+
             return rootView;
         }
     }
