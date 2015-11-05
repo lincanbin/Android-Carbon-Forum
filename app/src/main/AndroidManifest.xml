@@ -3,13 +3,16 @@
     package="com.lincanbin.carbonforum" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:name=".application.CustomApplication"
         android:allowBackup="true"
+        android:fullBackupOnly="true"
+        android:fullBackupContent="@xml/mybackupscheme"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".IndexActivity"
             android:label="@string/app_name" >
