@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.lincanbin.carbonforum.LoginActivity;
+import com.lincanbin.carbonforum.application.CarbonForumApplication;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -56,17 +57,14 @@ public class HttpUtil {
 
             switch (httpURLConnection.getResponseCode()){
                 case 200:
-                    break;
                 case 301:
-                    break;
                 case 302:
+                case 404:
                     break;
                 case 401:
                     context.getSharedPreferences("UserInfo",Activity.MODE_PRIVATE).edit().clear().apply();
                     Intent intent = new Intent(context, LoginActivity.class);
                     context.startActivity(intent);
-                    break;
-                case 404:
                     break;
                 case 500:
                     Log.v("Post Result","Code 500");
@@ -116,11 +114,13 @@ public class HttpUtil {
     public static JSONObject postRequest(Context context, String url, Map<String, String> parameterMap, Boolean enableSession, Boolean loginRequired) {
         try{
             if(loginRequired){
-                if(parameterMap==null) parameterMap = new HashMap<>();
-                SharedPreferences mySharedPreferences= context.getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
-                parameterMap.put("AuthUserID", mySharedPreferences.getString("UserID", ""));
-                parameterMap.put("AuthUserExpirationTime", mySharedPreferences.getString("UserExpirationTime", ""));
-                parameterMap.put("AuthUserCode", mySharedPreferences.getString("UserCode", ""));
+                if(parameterMap==null) {
+                    parameterMap = new HashMap<>();
+                }
+                //SharedPreferences mySharedPreferences= context.getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
+                parameterMap.put("AuthUserID", CarbonForumApplication.userInfo.getString("UserID", ""));
+                parameterMap.put("AuthUserExpirationTime", CarbonForumApplication.userInfo.getString("UserExpirationTime", ""));
+                parameterMap.put("AuthUserCode", CarbonForumApplication.userInfo.getString("UserCode", ""));
             }
            /* Translate parameter map to parameter date string */
             StringBuilder parameterBuffer = new StringBuilder();
@@ -177,17 +177,14 @@ public class HttpUtil {
                 outputStreamWriter.flush();
                 switch (httpURLConnection.getResponseCode()){
                     case 200:
-                        break;
                     case 301:
-                        break;
                     case 302:
+                    case 404:
                         break;
                     case 401:
                         context.getSharedPreferences("UserInfo",Activity.MODE_PRIVATE).edit().clear().apply();
                         Intent intent = new Intent(context, LoginActivity.class);
                         context.startActivity(intent);
-                        break;
-                    case 404:
                         break;
                     case 500:
                         Log.v("Post Result","Code 500");

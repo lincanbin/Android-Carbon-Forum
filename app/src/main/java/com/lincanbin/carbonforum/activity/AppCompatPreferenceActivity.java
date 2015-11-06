@@ -1,13 +1,21 @@
 package com.lincanbin.carbonforum.activity;
 
+import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.AppCompatCheckedTextView;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatRadioButton;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -53,7 +61,7 @@ public abstract class AppCompatPreferenceActivity extends PreferenceActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    /*
+
     @Override
     public View onCreateView(String name, Context context, AttributeSet attrs) {
         // Allow super to try and create a view first
@@ -81,7 +89,7 @@ public abstract class AppCompatPreferenceActivity extends PreferenceActivity {
 
         return null;
     }
-    */
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);

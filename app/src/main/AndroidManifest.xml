@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
-        android:name=".application.CustomApplication"
+        android:name=".application.CarbonForumApplication"
         android:allowBackup="true"
         android:fullBackupOnly="true"
         android:fullBackupContent="@xml/mybackupscheme"

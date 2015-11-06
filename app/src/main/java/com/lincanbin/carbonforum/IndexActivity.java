@@ -22,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.lincanbin.carbonforum.adapter.TopicAdapter;
+import com.lincanbin.carbonforum.application.CarbonForumApplication;
 import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.service.PushService;
 import com.lincanbin.carbonforum.util.HttpUtil;
@@ -59,7 +60,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FloatingActionButton mFloatingActionButton;
     private TopicAdapter mAdapter;
-    private SharedPreferences mSharedPreferences;
+    //private SharedPreferences mSharedPreferences;
     private SharedPreferences cacheSharedPreferences;
     //private ActionBarDrawerToggle mDrawerToggle;
     private int currentPage = 0;
@@ -76,7 +77,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         registerReceiver(mRefreshDrawerBroadcastReceiver, intentFilter);
         //获取缓存与用户数据
         cacheSharedPreferences = getSharedPreferences("MainCache", Activity.MODE_PRIVATE);
-        mSharedPreferences = getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
+        //mSharedPreferences = getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
         // 设置ToolBar
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
@@ -194,7 +195,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
     private void refreshDrawer(Bundle savedInstanceState){
         try{
             //Log.v("UserID", mSharedPreferences.getString("UserID", "0"));
-            if(Integer.parseInt(mSharedPreferences.getString("UserID", "0")) == 0){ //未登录
+            if(!CarbonForumApplication.isLoggedIn()){ //未登录
                 final IProfile profile = new ProfileDrawerItem()
                         .withName("Not logged in")
                         .withIcon(R.drawable.profile)
@@ -211,10 +212,10 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                         .build();
             }else{ //已登录
                 final IProfile profile = new ProfileDrawerItem()
-                        .withName(mSharedPreferences.getString("UserName", "lincanbin"))
-                        .withEmail(mSharedPreferences.getString("UserMail", mSharedPreferences.getString("UserName", "lincanbin")))
-                        .withIcon(Uri.parse(APIAddress.MIDDLE_AVATAR_URL(mSharedPreferences.getString("UserID", "0"), "large")))
-                        .withIdentifier(Integer.parseInt(mSharedPreferences.getString("UserID", "0")));
+                        .withName(CarbonForumApplication.userInfo.getString("UserName", "lincanbin"))
+                        .withEmail(CarbonForumApplication.userInfo.getString("UserMail", CarbonForumApplication.userInfo.getString("UserName", "lincanbin")))
+                        .withIcon(Uri.parse(APIAddress.MIDDLE_AVATAR_URL(CarbonForumApplication.userInfo.getString("UserID", "0"), "large")))
+                        .withIdentifier(Integer.parseInt(CarbonForumApplication.userInfo.getString("UserID", "0")));
                 // Create the AccountHeader
                 headerResult = new AccountHeaderBuilder()
                         .withActivity(this)
@@ -240,7 +241,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                                         .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                                             @Override
                                             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                                                mSharedPreferences.edit().clear().apply();
+                                                CarbonForumApplication.userInfo.edit().clear().apply();
                                                 refreshDrawer(null);
                                                 return false;
                                             }
@@ -308,7 +309,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                 });
 
 
-        if(Integer.parseInt(mSharedPreferences.getString("UserID", "0")) == 0) { //未登录
+        if(!CarbonForumApplication.isLoggedIn()) { //未登录
             mDrawerBuilder.addDrawerItems(
                     new PrimaryDrawerItem().
                             withName(R.string.login).

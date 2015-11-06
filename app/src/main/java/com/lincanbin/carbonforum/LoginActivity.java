@@ -3,7 +3,6 @@ package com.lincanbin.carbonforum;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -26,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lincanbin.carbonforum.application.CarbonForumApplication;
 import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.tools.VerificationCode;
 import com.lincanbin.carbonforum.util.HttpUtil;
@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private EditText mVerificationCodeView;
     private ImageView mVerificationCodeImageView;
-    private SharedPreferences mSharedPreferences;
+    //private SharedPreferences mSharedPreferences;
     private View mProgressView;
     private View mLoginFormView;
 
@@ -87,9 +87,9 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         mVerificationCodeImageView = (ImageView)  findViewById(R.id.verification_code_img);
-        mVerificationCodeImageView.setOnClickListener(new View.OnClickListener(){
+        mVerificationCodeImageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 refreshVerificationCode();
             }
         });
@@ -104,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-        mSharedPreferences = (SharedPreferences) this.getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
+        //mSharedPreferences = getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -267,7 +267,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (result.getInt("Status") == 1) {
                         Log.v("JSON", result.toString());
 
-                        SharedPreferences.Editor editor = mSharedPreferences.edit();
+                        SharedPreferences.Editor editor = CarbonForumApplication.userInfo.edit();
                         editor.putString("UserID", result.getString("UserID"));
                         editor.putString("UserExpirationTime", result.getString("UserExpirationTime"));
                         editor.putString("UserCode", result.getString("UserCode"));

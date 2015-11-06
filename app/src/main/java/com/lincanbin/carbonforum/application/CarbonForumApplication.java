@@ -1,7 +1,9 @@
 package com.lincanbin.carbonforum.application;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.widget.ImageView;
@@ -16,12 +18,18 @@ import com.mikepenz.materialdrawer.util.DrawerUIUtils;
 /**
  * Created by 灿斌 on 10/12/2015.
  */
-public class CustomApplication extends Application {
+public class CarbonForumApplication extends Application {
+
+    public static SharedPreferences userInfo;
+
+    public static Boolean isLoggedIn(){
+        return Integer.parseInt(userInfo.getString("UserID", "0")) > 0;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-
+        userInfo = getApplicationContext().getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
         /*
         //initialize and create the image loader logic
         DrawerImageLoader.init(new AbstractDrawerImageLoader() {

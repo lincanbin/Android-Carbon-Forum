@@ -220,7 +220,7 @@ public class NotificationsActivity extends AppCompatActivity{
                 List<Map<String, Object>> list;
                 //TODO: Cache support
                 //防止异步任务未完成时，用户按下返回造成NullPointer
-                if(mRecyclerView != null && mSwipeRefreshLayout !=null && rootView != null) {
+                if(mRecyclerView != null && mSwipeRefreshLayout !=null && rootView != null && getActivity() != null) {
                     switch (type) {
                         case 1:
                             list = JSONUtil.json2List(jsonObject, "MentionArray");
