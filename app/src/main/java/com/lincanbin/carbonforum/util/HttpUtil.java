@@ -23,6 +23,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -115,6 +116,7 @@ public class HttpUtil {
     public static JSONObject postRequest(Context context, String url, Map<String, String> parameterMap, Boolean enableSession, Boolean loginRequired) {
         try{
             if(loginRequired){
+                if(parameterMap==null) parameterMap = new HashMap<>();
                 SharedPreferences mySharedPreferences= context.getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
                 parameterMap.put("AuthUserID", mySharedPreferences.getString("UserID", ""));
                 parameterMap.put("AuthUserExpirationTime", mySharedPreferences.getString("UserExpirationTime", ""));
@@ -140,6 +142,7 @@ public class HttpUtil {
                     }
                 }
             }
+
             Log.v("POST URL : ", url);
             Log.v("POST parameter : ", parameterBuffer.toString());
 

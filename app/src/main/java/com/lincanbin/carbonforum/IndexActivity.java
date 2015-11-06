@@ -441,7 +441,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         @Override
         protected List<Map<String, Object>> doInBackground(Void... params) {
             List<Map<String,Object>> list;
-            JSONObject jsonObject = HttpUtil.getRequest(IndexActivity.this, APIAddress.HOME_URL(targetPage), false, false);
+            JSONObject jsonObject = HttpUtil.postRequest(IndexActivity.this, APIAddress.HOME_URL(targetPage), null, false, false);
             //Log.v("JSON", str);
             if(jsonObject != null){
                 try {

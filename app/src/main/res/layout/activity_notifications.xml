@@ -23,8 +23,13 @@
             android:layout_width="match_parent" android:layout_height="wrap_content" />
 
     </android.support.design.widget.AppBarLayout>
-
-    <android.support.v4.view.ViewPager android:id="@+id/container"
-        android:layout_width="match_parent" android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/activity_notifications_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <android.support.v4.view.ViewPager android:id="@+id/container"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.design.widget.CoordinatorLayout>

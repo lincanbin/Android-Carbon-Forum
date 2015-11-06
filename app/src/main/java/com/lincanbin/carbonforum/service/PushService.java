@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
+import com.lincanbin.carbonforum.NotificationsActivity;
 import com.lincanbin.carbonforum.R;
 import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.util.HttpUtil;
@@ -51,7 +52,7 @@ public class PushService extends IntentService {
                     PendingIntent mPendingIntent = PendingIntent.getActivity(
                             getApplicationContext(),
                             0,
-                            new Intent(getApplicationContext(), PushService.class),
+                            new Intent(getApplicationContext(), NotificationsActivity.class),
                             0
                     );
                     final Notification.Builder builder = new Notification.Builder(getApplicationContext())

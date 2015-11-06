@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +65,8 @@ public class PostAdapter extends RecyclerView.Adapter{
         final Map<String,Object> post = list.get(i);
         holder.UserName.setText(post.get("UserName").toString());
         holder.Time.setText(TimeUtil.formatTime(context, Long.parseLong(post.get("PostTime").toString())));
-        holder.PostFloor.setText("#" + post.get("PostFloor").toString());
+        if(!post.get("PostFloor").toString().equals("0"))
+            holder.PostFloor.setText("#" + post.get("PostFloor").toString());
         String contentHTML = "<style>" +
                 "a, a:link, a:visited, a:active {" +
                 "   color: #555555;" +
@@ -85,11 +85,11 @@ public class PostAdapter extends RecyclerView.Adapter{
                 "   max-width: 100%;" +
                 "}" +
                 "</style>";
-        String uploadDomain = APIAddress.WEBSITE_PATH.length() > 0 ? APIAddress.DOMAIN_NAME.replace(APIAddress.WEBSITE_PATH, "") : APIAddress.DOMAIN_NAME;
-        contentHTML += post.get("Content").toString().replace("=\"/", "=\"" + uploadDomain + "/");
-        //contentHTML += post.get("Content").toString();
-        Log.v("Post"+ post.get("ID").toString(), contentHTML);
-        holder.Content.loadDataWithBaseURL(APIAddress.DOMAIN_NAME, contentHTML, "text/html", "utf-8", null);
+        //String uploadDomain = APIAddress.WEBSITE_PATH.length() > 0 ? APIAddress.DOMAIN_NAME.replace(APIAddress.WEBSITE_PATH, "") : APIAddress.DOMAIN_NAME;
+        //contentHTML += post.get("Content").toString().replace("=\"/", "=\"" + uploadDomain + "/");
+        contentHTML += post.get("Content").toString();
+        //Log.v("Post"+ post.get("ID").toString(), contentHTML);
+        holder.Content.loadDataWithBaseURL(APIAddress.MOBILE_DOMAIN_NAME, contentHTML, "text/html", "utf-8", null);
         Glide.with(context).load(APIAddress.MIDDLE_AVATAR_URL(post.get("UserID").toString(), "middle")).into(holder.Avatar);
         holder.ReplyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,20 +131,28 @@ public class PostAdapter extends RecyclerView.Adapter{
             if(Build.VERSION.SDK_INT <= 19) {
                 // http://stackoverflow.com/questions/15133132/android-webview-doesnt-display-web-page-in-some-cases
                 Content.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-                //Content.getSettings().setLoadsImagesAutomatically(true);
             } else {
                 Content.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                //Content.getSettings().setLoadsImagesAutomatically(false);
             }
             Content.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//优先使用缓存
             // http://stackoverflow.com/questions/3099344/can-androids-webview-automatically-resize-huge-images/12327010#12327010
             Content.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);//自动缩放图片
+            // Use WideViewport and Zoom out if there is no viewport defined
+            //Content.getSettings().setUseWideViewPort(true);
+            /*
+            // Enable remote debugging via chrome://inspect
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                WebView.setWebContentsDebuggingEnabled(true);
+            }
+            */
             Time = (TextView) itemView.findViewById(R.id.time);
             Avatar = (ImageView)itemView.findViewById(R.id.avatar);
             rootView = itemView.findViewById(R.id.topic_item);
             rootView.setOnClickListener(this);
             rootView.setOnLongClickListener(this);
         }
+
+
         @Override
         //点击事件
         public void onClick(View v) {

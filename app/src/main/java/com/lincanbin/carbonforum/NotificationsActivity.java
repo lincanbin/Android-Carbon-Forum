@@ -1,8 +1,10 @@
 package com.lincanbin.carbonforum;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,19 +12,27 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.lincanbin.carbonforum.adapter.PostAdapter;
+import com.lincanbin.carbonforum.config.APIAddress;
+import com.lincanbin.carbonforum.util.HttpUtil;
+import com.lincanbin.carbonforum.util.JSONUtil;
+
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.Map;
 
-public class NotificationsActivity extends AppCompatActivity {
+public class NotificationsActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -38,8 +48,7 @@ public class NotificationsActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private List<Map<String,Object>> replyList = new ArrayList<>();
-    private List<Map<String,Object>> mentionList = new ArrayList<>();
+    private static SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +62,45 @@ public class NotificationsActivity extends AppCompatActivity {
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_notifications_swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeResources(
+                R.color.material_light_blue_700,
+                R.color.material_red_700,
+                R.color.material_orange_700,
+                R.color.material_light_green_700
+        );
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        //http://stackoverflow.com/questions/25978462/swiperefreshlayout-viewpager-limit-horizontal-scroll-only
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float v, int i1) {
+            }
 
+            @Override
+            public void onPageSelected(int position) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                enableDisableSwipeRefresh( state == ViewPager.SCROLL_STATE_IDLE );
+            }
+        } );
         //mSectionsPagerAdapter.notifyDataSetChanged();
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
     }
-
-
+    protected void enableDisableSwipeRefresh(boolean enable) {
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setEnabled(enable);
+        }
+    }
+    @Override
+    public void onRefresh(){
+        onCreate(null);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -114,9 +151,9 @@ public class NotificationsActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return getString(R.string.notifications_replied_to_me);
-                case 1:
                     return  getString(R.string.notifications_mentioned_me);
+                case 1:
+                    return getString(R.string.notifications_replied_to_me);
             }
             return null;
         }
@@ -131,7 +168,9 @@ public class NotificationsActivity extends AppCompatActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
-
+        private static View rootView;
+        private static RecyclerView mRecyclerView;
+        private static PostAdapter mAdapter;
         /**
          * Returns a new instance of this fragment for the given section
          * number.
@@ -149,25 +188,90 @@ public class NotificationsActivity extends AppCompatActivity {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_notifications, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-
-            SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_notifications_swipe_refresh_layout);
-            mSwipeRefreshLayout.setColorSchemeResources(
-                    R.color.material_light_blue_700,
-                    R.color.material_red_700,
-                    R.color.material_orange_700,
-                    R.color.material_light_green_700
-            );
-            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+            rootView = inflater.inflate(R.layout.fragment_notifications, container, false);
+            //RecyclerView
+            mRecyclerView = (RecyclerView) rootView.findViewById(R.id.notifications_list);
+            mRecyclerView.setHasFixedSize(true);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+            mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
-                public void onRefresh(){
-                    //TODO:refresh
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    //TODO 加载更多提醒
                 }
             });
-
+            mRecyclerView.setLayoutManager(layoutManager);
+            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            //TODO 把上面的View作为参数传给Task，以期待解决Bug
+            new GetNotificationsTask(getArguments().getInt(ARG_SECTION_NUMBER), true, mRecyclerView, 1).execute();
             return rootView;
         }
+
+
+
+        public class GetNotificationsTask extends AsyncTask<Void, Void, JSONObject> {
+            private int targetPage;
+            private int type;
+            private Boolean enableCache;
+            private RecyclerView mRecyclerView;
+            public GetNotificationsTask(int type,
+                                        Boolean enableCache,
+                                        RecyclerView mRecyclerView,
+                                        int targetPage) {
+                this.targetPage = targetPage;
+                this.type = type;
+                this.enableCache = enableCache;
+                this.mRecyclerView = mRecyclerView;
+            }
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                //enableScrollListener = false;
+                mSwipeRefreshLayout.post(new Runnable(){
+                    @Override
+                    public void run(){
+                        mSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject jsonObject) {
+                super.onPostExecute(jsonObject);
+                List<Map<String,Object>> list;
+                switch(type){
+                    case 1:
+                        list = JSONUtil.json2List(jsonObject, "MentionArray");
+                        break;
+                    case 2:
+                    default:
+                        list = JSONUtil.json2List(jsonObject, "ReplyArray");
+                }
+                //textView.setText(getString(R.string.section_format, type));
+                //Log.v("List", list.toString());
+                if(list != null && !list.isEmpty()) {
+                    mAdapter = new PostAdapter(getActivity());
+                    mRecyclerView.setAdapter(mAdapter);
+                    mAdapter.setData(list);
+                    mAdapter.notifyDataSetChanged();
+
+                }else{
+                    Snackbar.make(rootView, R.string.network_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                }
+                //移除刷新控件
+                mSwipeRefreshLayout.setRefreshing(false);
+                //enableScrollListener = true;
+                //Toast.makeText(IndexActivity.this, "AsyncTask End", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            protected JSONObject doInBackground(Void... params) {
+
+                JSONObject temp = HttpUtil.postRequest(getActivity(), APIAddress.NOTIFICATIONS_URL, null, false, true);
+                //Log.v("TopicJSON", temp.toString());
+                return temp;
+            }
+
+        }
     }
+
 }

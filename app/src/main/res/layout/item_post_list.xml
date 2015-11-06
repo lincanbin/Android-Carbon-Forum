@@ -80,8 +80,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
-                    android:layout_marginRight="72dp"
-                    android:layout_marginEnd="72dp"
+                    android:layout_marginRight="64dp"
+                    android:layout_marginEnd="64dp"
                     android:gravity="center"
                     android:textColor="@color/colorPrimary"
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
@@ -102,8 +102,8 @@
         <WebView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hardwareAccelerated="true"
             android:id="@+id/content"
             />
+        <!--android:hardwareAccelerated="true"-->
     </LinearLayout>
 </android.support.v7.widget.CardView>
