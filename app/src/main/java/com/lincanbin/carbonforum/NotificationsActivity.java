@@ -217,30 +217,33 @@ public class NotificationsActivity extends AppCompatActivity{
             @Override
             protected void onPostExecute(JSONObject jsonObject) {
                 super.onPostExecute(jsonObject);
-                List<Map<String,Object>> list;
-                switch(type){
-                    case 1:
-                        list = JSONUtil.json2List(jsonObject, "MentionArray");
-                        break;
-                    case 2:
-                    default:
-                        list = JSONUtil.json2List(jsonObject, "ReplyArray");
-                }
-                //textView.setText(getString(R.string.section_format, type));
-                //Log.v("List", list.toString());
-                if(list != null && !list.isEmpty()) {
-                    mAdapter = new PostAdapter(getActivity());
-                    mRecyclerView.setAdapter(mAdapter);
-                    mAdapter.setData(list);
-                    mAdapter.notifyDataSetChanged();
+                List<Map<String, Object>> list;
+                //TODO: Cache support
+                //防止异步任务未完成时，用户按下返回造成NullPointer
+                if(mRecyclerView != null && mSwipeRefreshLayout !=null && rootView != null) {
+                    switch (type) {
+                        case 1:
+                            list = JSONUtil.json2List(jsonObject, "MentionArray");
+                            break;
+                        case 2:
+                        default:
+                            list = JSONUtil.json2List(jsonObject, "ReplyArray");
+                    }
+                    //textView.setText(getString(R.string.section_format, type));
+                    //Log.v("List", list.toString());
+                    if (list != null && !list.isEmpty()) {
+                        mAdapter = new PostAdapter(getActivity());
+                        mRecyclerView.setAdapter(mAdapter);
+                        mAdapter.setData(list);
+                        mAdapter.notifyDataSetChanged();
 
-                }else{
-                    Snackbar.make(rootView, R.string.network_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    } else {
+                        Snackbar.make(rootView, R.string.network_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    }
+                    //移除刷新控件
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    //enableScrollListener = true;
                 }
-                //移除刷新控件
-                mSwipeRefreshLayout.setRefreshing(false);
-                //enableScrollListener = true;
-                //Toast.makeText(IndexActivity.this, "AsyncTask End", Toast.LENGTH_SHORT).show();
             }
 
             @Override

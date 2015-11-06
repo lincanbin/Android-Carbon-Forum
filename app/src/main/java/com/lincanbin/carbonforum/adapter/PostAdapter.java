@@ -132,7 +132,8 @@ public class PostAdapter extends RecyclerView.Adapter{
                 // http://stackoverflow.com/questions/15133132/android-webview-doesnt-display-web-page-in-some-cases
                 Content.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             } else {
-                Content.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                // Content.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                Content.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }
             Content.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//优先使用缓存
             // http://stackoverflow.com/questions/3099344/can-androids-webview-automatically-resize-huge-images/12327010#12327010
