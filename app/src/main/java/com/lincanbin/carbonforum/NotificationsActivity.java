@@ -128,7 +128,7 @@ public class NotificationsActivity extends AppCompatActivity{
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+    public static class PlaceholderFragment extends Fragment{
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -175,14 +175,14 @@ public class NotificationsActivity extends AppCompatActivity{
             });
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-            //TODO 把上面的View作为参数传给Task，以期待解决Bug
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    new GetNotificationsTask(getArguments().getInt(ARG_SECTION_NUMBER), false, mSwipeRefreshLayout, mRecyclerView, 1).execute();
+                }
+            });
             new GetNotificationsTask(getArguments().getInt(ARG_SECTION_NUMBER), true, mSwipeRefreshLayout, mRecyclerView, 1).execute();
             return rootView;
-        }
-
-        @Override
-        public void onRefresh(){
-            onCreate(null);
         }
 
         public class GetNotificationsTask extends AsyncTask<Void, Void, JSONObject> {
