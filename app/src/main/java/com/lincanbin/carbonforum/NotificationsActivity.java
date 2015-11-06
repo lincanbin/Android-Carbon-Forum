@@ -32,7 +32,7 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Map;
 
-public class NotificationsActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
+public class NotificationsActivity extends AppCompatActivity{
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -48,7 +48,6 @@ public class NotificationsActivity extends AppCompatActivity implements SwipeRef
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private static SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,45 +60,12 @@ public class NotificationsActivity extends AppCompatActivity implements SwipeRef
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_notifications_swipe_refresh_layout);
-        mSwipeRefreshLayout.setColorSchemeResources(
-                R.color.material_light_blue_700,
-                R.color.material_red_700,
-                R.color.material_orange_700,
-                R.color.material_light_green_700
-        );
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        //http://stackoverflow.com/questions/25978462/swiperefreshlayout-viewpager-limit-horizontal-scroll-only
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float v, int i1) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                enableDisableSwipeRefresh( state == ViewPager.SCROLL_STATE_IDLE );
-            }
-        } );
-        //mSectionsPagerAdapter.notifyDataSetChanged();
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-    }
-    protected void enableDisableSwipeRefresh(boolean enable) {
-        if (mSwipeRefreshLayout != null) {
-            mSwipeRefreshLayout.setEnabled(enable);
-        }
-    }
-    @Override
-    public void onRefresh(){
-        onCreate(null);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -162,13 +128,14 @@ public class NotificationsActivity extends AppCompatActivity implements SwipeRef
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
         private static View rootView;
+        private static SwipeRefreshLayout mSwipeRefreshLayout;
         private static RecyclerView mRecyclerView;
         private static PostAdapter mAdapter;
         /**
@@ -189,6 +156,13 @@ public class NotificationsActivity extends AppCompatActivity implements SwipeRef
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             rootView = inflater.inflate(R.layout.fragment_notifications, container, false);
+            mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_notifications_swipe_refresh_layout);
+            mSwipeRefreshLayout.setColorSchemeResources(
+                    R.color.material_light_blue_700,
+                    R.color.material_red_700,
+                    R.color.material_orange_700,
+                    R.color.material_light_green_700
+            );
             //RecyclerView
             mRecyclerView = (RecyclerView) rootView.findViewById(R.id.notifications_list);
             mRecyclerView.setHasFixedSize(true);
@@ -202,24 +176,30 @@ public class NotificationsActivity extends AppCompatActivity implements SwipeRef
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setItemAnimator(new DefaultItemAnimator());
             //TODO 把上面的View作为参数传给Task，以期待解决Bug
-            new GetNotificationsTask(getArguments().getInt(ARG_SECTION_NUMBER), true, mRecyclerView, 1).execute();
+            new GetNotificationsTask(getArguments().getInt(ARG_SECTION_NUMBER), true, mSwipeRefreshLayout, mRecyclerView, 1).execute();
             return rootView;
         }
 
-
+        @Override
+        public void onRefresh(){
+            onCreate(null);
+        }
 
         public class GetNotificationsTask extends AsyncTask<Void, Void, JSONObject> {
             private int targetPage;
             private int type;
             private Boolean enableCache;
+            private SwipeRefreshLayout mSwipeRefreshLayout;
             private RecyclerView mRecyclerView;
             public GetNotificationsTask(int type,
                                         Boolean enableCache,
+                                        SwipeRefreshLayout mSwipeRefreshLayout,
                                         RecyclerView mRecyclerView,
                                         int targetPage) {
                 this.targetPage = targetPage;
                 this.type = type;
                 this.enableCache = enableCache;
+                this.mSwipeRefreshLayout = mSwipeRefreshLayout;
                 this.mRecyclerView = mRecyclerView;
             }
             @Override

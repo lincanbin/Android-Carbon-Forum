@@ -3,9 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.lincanbin.carbonforum.NotificationsActivity$PlaceholderFragment">
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/activity_notifications_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/notifications_list"
             android:scrollbars="vertical"
@@ -15,4 +20,5 @@
             android:paddingRight="@dimen/list_item_padding"
             android:foreground="?android:attr/selectableItemBackground"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>
