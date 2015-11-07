@@ -1,0 +1,11 @@
+<resources>
+    <string name="title_activity_new">Create New Topic</string>
+    <string name="new_title">Title</string>
+    <string name="new_tag">Tag (using \",\" to separate multiple tags.)</string>
+    <string name="new_content">Content</string>
+    <string name="content_empty">Content can\'t be empty.</string>
+    <string name="action_send">Send</string>
+    <string name="sending">Sending</string>
+    <string name="send_success">Send topic success</string>
+    <string name="resend_topic">Click this to resend topic</string>
+</resources>
