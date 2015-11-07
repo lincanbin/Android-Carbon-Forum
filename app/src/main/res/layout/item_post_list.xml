@@ -65,7 +65,7 @@ Hack: Add FrameLayout to make CardView margin work.
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:contentDescription="@string/avatar"
-                    android:src="@drawable/ic_perm_identity_grey600_24dp"/>
+                    android:src="@drawable/ic_perm_identity_24dp"/>
                 <RelativeLayout android:layout_width="fill_parent"
                     android:layout_height="fill_parent">
                     <LinearLayout
