@@ -3,6 +3,11 @@ Android-Carbon-Forum
 Android Client for Carbon Forum with Material Design.
 
 
+Requirements
+------------
+* Android Studio version 1.4 or higher.
+
+
 Build your Carbon Forum android client
 ------------
 1. Rename the package name form ```com.lincanbin.carbonforum``` to ```com.yourname.carbonforum```.
@@ -10,6 +15,7 @@ Build your Carbon Forum android client
 3. Edit domain configuration in ```config/APIAddress.java```.
 4. Modified the icon ```ic_launcher.png``` as you like. (Optional)
 5. Build and enjoy it.
+
 
 Features
 ------------
