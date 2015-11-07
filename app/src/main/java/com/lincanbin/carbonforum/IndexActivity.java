@@ -28,7 +28,6 @@ import com.lincanbin.carbonforum.service.PushService;
 import com.lincanbin.carbonforum.util.HttpUtil;
 import com.lincanbin.carbonforum.util.JSONUtil;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -145,23 +144,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         mAdapter.setData(topicList);
         //设置Adapter
         mRecyclerView.setAdapter(mAdapter);
-        /*
-        //添加事件监听器
-        mAdapter.setOnRecyclerViewListener(new TopicAdapter.OnRecyclerViewListener() {
-            @Override
-            public void onItemClick(int position) {
-                Toast.makeText(IndexActivity.this, "onItemClick" + topicList.get(position).get("Topic").toString(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public boolean onItemLongClick(int position) {
-                Toast.makeText(IndexActivity.this, "onItemLongClick" + topicList.get(position).get("Topic").toString(), Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
-        */
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
-        mFloatingActionButton.setImageDrawable(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_add).color(Color.WHITE));
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

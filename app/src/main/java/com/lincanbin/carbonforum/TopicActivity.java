@@ -104,7 +104,6 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
         mRecyclerView.setAdapter(mAdapter);
 
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
-        mFloatingActionButton.setImageDrawable(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_reply_all).color(Color.WHITE));
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
