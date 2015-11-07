@@ -51,7 +51,7 @@ public class ReplyActivity extends AppCompatActivity {
             if(Integer.parseInt(mPostFloor) == 0){
                 mToolbar.setTitle(getString(R.string.title_activity_reply));
             }else{
-                mToolbar.setTitle(getString(R.string.action_reply_to) + " #" + mPostFloor + " @" + mUserName);
+                mToolbar.setTitle(getString(R.string.action_reply_to) + " @" + mUserName);
             }
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -62,11 +62,12 @@ public class ReplyActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     if(mContent.getText().toString().length() > 0) {
                         MarkdownProcessor mMarkdownProcessor = new MarkdownProcessor();
-                        if (Integer.parseInt(mPostFloor) == 0) {
+                        int currentPostFloor = Integer.parseInt(mPostFloor);
+                        if (currentPostFloor == 0) {
                             contentHTML = mMarkdownProcessor.markdown(mContent.getText().toString());
                         } else {
                             contentHTML = "<p>\n" + getString(R.string.action_reply_to) +
-                                    " <a href=\"/t/" + mTopicID + "#Post" + mPostID + "\">#" + mPostFloor + "</a> @" + mUserName + " :<br/>\n" +
+                                    " <a href=\"/t/" + mTopicID + "#Post" + mPostID + "\">#" + (currentPostFloor == -1 ? "0" : mPostFloor) + "</a> @" + mUserName + " :<br/>\n" +
                                     "</p><p>" + mMarkdownProcessor.markdown(mContent.getText().toString()) + "</p>";
                         }
                         Intent intent = new Intent(ReplyActivity.this, ReplyService.class);

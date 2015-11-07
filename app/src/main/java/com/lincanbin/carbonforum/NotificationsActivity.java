@@ -232,7 +232,7 @@ public class NotificationsActivity extends AppCompatActivity{
                     //textView.setText(getString(R.string.section_format, type));
                     //Log.v("List", list.toString());
                     if (list != null && !list.isEmpty()) {
-                        mAdapter = new PostAdapter(getActivity());
+                        mAdapter = new PostAdapter(getActivity(), true);
                         mRecyclerView.setAdapter(mAdapter);
                         mAdapter.setData(list);
                         mAdapter.notifyDataSetChanged();

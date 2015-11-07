@@ -99,7 +99,7 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
         });
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new PostAdapter(this);
+        mAdapter = new PostAdapter(this, false);
         mAdapter.setData(postList);
         mRecyclerView.setAdapter(mAdapter);
 
