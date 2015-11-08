@@ -1,11 +1,13 @@
 language: android
 jdk:
   - oraclejdk8
- # Turn off caching to avoid any caching problems
+# Turn off caching to avoid any caching problems
 cache: false
 # Use the Travis Container-Based Infrastructure
 sudo: false
-
+branches:
+  only:
+    - master
 
 android:
   components:
