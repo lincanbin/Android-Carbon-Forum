@@ -1,7 +1,7 @@
-Android-Carbon-Forum
+Android-Carbon-Forum    [![Build Status](https://travis-ci.org/lincanbin/Android-Carbon-Forum.svg)](https://travis-ci.org/lincanbin/Android-Carbon-Forum)
 ============
 Android Client for Carbon Forum with Material Design.
-[![Build Status](https://travis-ci.org/lincanbin/Android-Carbon-Forum.svg)](https://travis-ci.org/lincanbin/Android-Carbon-Forum)
+
 
 
 Requirements
