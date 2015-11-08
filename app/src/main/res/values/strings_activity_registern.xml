@@ -1,0 +1,11 @@
+<resources>
+    <string name="prompt_email">Email</string>
+    <string name="title_activity_register">Register</string>
+
+    <string name="action_register">Register</string>
+    <string name="action_register_short">Register</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+</resources>
