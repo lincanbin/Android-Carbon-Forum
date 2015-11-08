@@ -13,7 +13,7 @@ public class APIAddress
 	public static final String DOMAIN_NAME = "https://www.94cb.com" + WEBSITE_PATH; // PC版域名
 	public static final String MOBILE_DOMAIN_NAME = "https://m.94cb.com" + WEBSITE_PATH; // 移动版域名
 	public static final String BASIC_API_URL = "https://api.94cb.com" + WEBSITE_PATH; // API地址前缀
-*/
+ */
 	//中等头像地址
 	public static String MIDDLE_AVATAR_URL(String userID, String avatarSize){
 		return DOMAIN_NAME + "/upload/avatar/"+ avatarSize +"/" + userID +".png";

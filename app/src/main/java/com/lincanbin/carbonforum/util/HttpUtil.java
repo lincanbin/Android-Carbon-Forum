@@ -182,7 +182,7 @@ public class HttpUtil {
                     case 404:
                         break;
                     case 401:
-                        context.getSharedPreferences("UserInfo",Activity.MODE_PRIVATE).edit().clear().apply();
+                        CarbonForumApplication.userInfo.edit().clear().apply();
                         Intent intent = new Intent(context, LoginActivity.class);
                         context.startActivity(intent);
                         break;

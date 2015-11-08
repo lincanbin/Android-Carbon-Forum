@@ -184,10 +184,10 @@ public class PostAdapter extends RecyclerView.Adapter{
         @Override
         //长按事件
         public boolean onLongClick(View v) {
-            ReplyButton.callOnClick();
-            //if(null != onRecyclerViewListener){
-            //    return onRecyclerViewListener.onItemLongClick(position);
-            //}
+            //ReplyButton.callOnClick();
+            if(null != onRecyclerViewListener){
+                return onRecyclerViewListener.onItemLongClick(position);
+            }
             return false;
         }
     }

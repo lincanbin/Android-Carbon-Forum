@@ -20,6 +20,7 @@
                 android:layout_gravity="end"
                 android:layout_marginRight="8dp"
                 android:layout_marginEnd="8dp"
+                android:contentDescription="@string/action_send"
                 android:background="?selectableItemBackground"
                 android:id="@+id/new_button" />
         </android.support.v7.widget.Toolbar>
@@ -33,33 +34,46 @@
                 android:id="@+id/new_form"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="@dimen/activity_vertical_margin"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
                 tools:context="com.lincanbin.carbonforum.NewActivity">
-                <EditText android:id="@+id/title"
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_text_view"
-                    android:hint="@string/new_title"
-                    android:gravity="top|start"
-                    android:inputType="text"
-                    android:singleLine="true" />
-                <EditText android:id="@+id/tag"
+                    android:layout_height="wrap_content">
+                    <EditText android:id="@+id/title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_text_view"
+                        android:hint="@string/new_title"
+                        android:gravity="top|start"
+                        android:inputType="text"
+                        android:singleLine="true" />
+                </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_text_view"
-                    android:hint="@string/new_tag"
-                    android:gravity="top|start"
-                    android:inputType="text"
-                    android:singleLine="true" />
-                <EditText android:id="@+id/content"
+                    android:layout_height="wrap_content">
+                    <EditText android:id="@+id/tag"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_text_view"
+                        android:hint="@string/new_tag"
+                        android:gravity="top|start"
+                        android:inputType="text"
+                        android:singleLine="true" />
+                </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_margin="@dimen/margin_text_view"
-                    android:hint="@string/new_content"
-                    android:gravity="top|start"
-                    android:inputType="textMultiLine"
-                    android:singleLine="false" />
+                    android:layout_height="fill_parent">
+                    <EditText android:id="@+id/content"
+                        android:layout_width="match_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_margin="@dimen/margin_text_view"
+                        android:hint="@string/new_content"
+                        android:gravity="top|start"
+                        android:inputType="textMultiLine"
+                        android:singleLine="false" />
+                </android.support.design.widget.TextInputLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

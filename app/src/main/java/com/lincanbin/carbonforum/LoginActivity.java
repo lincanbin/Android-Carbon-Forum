@@ -43,7 +43,6 @@ import java.util.Map;
  */
 public class LoginActivity extends AppCompatActivity {
 
-
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -55,7 +54,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private EditText mVerificationCodeView;
     private ImageView mVerificationCodeImageView;
-    //private SharedPreferences mSharedPreferences;
     private View mProgressView;
     private View mLoginFormView;
 
@@ -104,15 +102,12 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-        //mSharedPreferences = getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // API 5+ solution
                 onBackPressed();
-                //NavUtils.navigateUpFromSameTask(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
