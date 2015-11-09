@@ -40,8 +40,6 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-;
-
 public class CharacterProtector {
     private final ConcurrentMap<String, String> protectMap = new ConcurrentHashMap<String, String>();
     private final ConcurrentMap<String, String> unprotectMap = new ConcurrentHashMap<String, String>();
