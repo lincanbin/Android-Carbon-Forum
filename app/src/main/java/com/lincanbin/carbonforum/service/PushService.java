@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 
 import com.lincanbin.carbonforum.NotificationsActivity;
 import com.lincanbin.carbonforum.R;
+import com.lincanbin.carbonforum.application.CarbonForumApplication;
 import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.util.HttpUtil;
 
@@ -30,8 +31,9 @@ public class PushService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        getNotification();
-
+        if(CarbonForumApplication.isLoggedIn()) {
+            getNotification();
+        }
     }
     private void getNotification(){
         int sleepTime = 3000;

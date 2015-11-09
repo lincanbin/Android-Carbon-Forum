@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.lincanbin.carbonforum.R;
 import com.lincanbin.carbonforum.ReplyActivity;
 import com.lincanbin.carbonforum.TopicActivity;
+import com.lincanbin.carbonforum.application.CarbonForumApplication;
 import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.util.TimeUtil;
 import com.lincanbin.carbonforum.view.CarbonWebView;
@@ -110,6 +111,9 @@ public class PostAdapter extends RecyclerView.Adapter{
                 context.startActivity(intent);
             }
         });
+        if(!CarbonForumApplication.isLoggedIn()){
+            holder.ReplyButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

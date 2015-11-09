@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,11 +19,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.lincanbin.carbonforum.adapter.PostAdapter;
+import com.lincanbin.carbonforum.application.CarbonForumApplication;
 import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.util.HttpUtil;
 import com.lincanbin.carbonforum.util.JSONUtil;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.IconicsDrawable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -116,6 +114,9 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
                 startActivity(intent);
             }
         });
+        if(!CarbonForumApplication.isLoggedIn()){
+            mFloatingActionButton.setVisibility(View.INVISIBLE);
+        }
         loadPost(Integer.parseInt(mTopicPage));
     }
     //加载帖子

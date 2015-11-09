@@ -149,6 +149,9 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
 
             }
         });
+        if(!CarbonForumApplication.isLoggedIn()){
+            mFloatingActionButton.setVisibility(View.INVISIBLE);
+        }
         //Activity渲染完毕时加载帖子，使用缓存
         loadTopic(1, true);
     }
@@ -335,7 +338,6 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
     //下拉刷新事件
     @Override
     public void onRefresh() {
-
         //if(!mSwipeRefreshLayout.isRefreshing()){
         loadTopic(1, false);
         //}
