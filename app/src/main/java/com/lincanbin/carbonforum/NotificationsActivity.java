@@ -1,6 +1,7 @@
 package com.lincanbin.carbonforum;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lincanbin.carbonforum.adapter.PostAdapter;
+import com.lincanbin.carbonforum.application.CarbonForumApplication;
 import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.util.HttpUtil;
 import com.lincanbin.carbonforum.util.JSONUtil;
@@ -188,6 +190,7 @@ public class NotificationsActivity extends AppCompatActivity{
         public class GetNotificationsTask extends AsyncTask<Void, Void, JSONObject> {
             private int targetPage;
             private int type;
+            private String keyName;
             private Boolean enableCache;
             private SwipeRefreshLayout mSwipeRefreshLayout;
             private RecyclerView mRecyclerView;
@@ -198,59 +201,66 @@ public class NotificationsActivity extends AppCompatActivity{
                                         int targetPage) {
                 this.targetPage = targetPage;
                 this.type = type;
+                this.keyName = type == 1 ? "MentionArray" : "ReplyArray";
                 this.enableCache = enableCache;
                 this.mSwipeRefreshLayout = mSwipeRefreshLayout;
                 this.mRecyclerView = mRecyclerView;
             }
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                //enableScrollListener = false;
-                mSwipeRefreshLayout.post(new Runnable(){
-                    @Override
-                    public void run(){
-                        mSwipeRefreshLayout.setRefreshing(true);
-                    }
-                });
-            }
-
-            @Override
-            protected void onPostExecute(JSONObject jsonObject) {
-                super.onPostExecute(jsonObject);
-                List<Map<String, Object>> list;
-                //TODO: Cache support
+            protected void refreshNotifications(List<Map<String, Object>> list){
                 //防止异步任务未完成时，用户按下返回造成NullPointer
                 if(mRecyclerView != null && mSwipeRefreshLayout !=null && rootView != null && getActivity() != null) {
-                    switch (type) {
-                        case 1:
-                            list = JSONUtil.json2List(jsonObject, "MentionArray");
-                            break;
-                        case 2:
-                        default:
-                            list = JSONUtil.json2List(jsonObject, "ReplyArray");
-                    }
-                    //textView.setText(getString(R.string.section_format, type));
-                    //Log.v("List", list.toString());
                     if (list != null && !list.isEmpty()) {
                         mAdapter = new PostAdapter(getActivity(), true);
                         mRecyclerView.setAdapter(mAdapter);
                         mAdapter.setData(list);
                         mAdapter.notifyDataSetChanged();
-
-                    } else {
-                        Snackbar.make(rootView, R.string.network_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
-                    //移除刷新控件
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    //enableScrollListener = true;
+                    if(!enableCache) {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                }
+            }
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                List<Map<String, Object>> notificationsList = JSONUtil.json2List(JSONUtil.json2Object(CarbonForumApplication.cacheSharedPreferences.getString("notifications" + keyName + "Cache", "{\"" + keyName + "\":[]}")), keyName);
+                refreshNotifications(notificationsList);
+                if(!enableCache) {
+                    mSwipeRefreshLayout.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSwipeRefreshLayout.setRefreshing(true);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject jsonObject) {
+                super.onPostExecute(jsonObject);
+                //先保存缓存
+                if(jsonObject!=null){
+                    try {
+                        SharedPreferences.Editor cacheEditor = CarbonForumApplication.cacheSharedPreferences.edit();
+                        cacheEditor.putString("notifications" + keyName + "Cache", jsonObject.toString(0));
+                        cacheEditor.apply();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                //更新界面
+                List<Map<String, Object>> list;
+                list = JSONUtil.json2List(jsonObject, keyName);
+                if (list != null && !list.isEmpty()) {
+                    Snackbar.make(rootView, R.string.network_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                }else{
+                    refreshNotifications(list);
                 }
             }
 
             @Override
             protected JSONObject doInBackground(Void... params) {
-
                 JSONObject temp = HttpUtil.postRequest(getActivity(), APIAddress.NOTIFICATIONS_URL, null, false, true);
-                //Log.v("TopicJSON", temp.toString());
                 return temp;
             }
 

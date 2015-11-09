@@ -1,6 +1,5 @@
 package com.lincanbin.carbonforum;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -60,7 +59,6 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
     private FloatingActionButton mFloatingActionButton;
     private TopicAdapter mAdapter;
     //private SharedPreferences mSharedPreferences;
-    private SharedPreferences cacheSharedPreferences;
     //private ActionBarDrawerToggle mDrawerToggle;
     private int currentPage = 0;
     private int totalPage = 65536;
@@ -74,8 +72,6 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("action.refreshDrawer");
         registerReceiver(mRefreshDrawerBroadcastReceiver, intentFilter);
-        //获取缓存与用户数据
-        cacheSharedPreferences = getSharedPreferences("MainCache", Activity.MODE_PRIVATE);
         //mSharedPreferences = getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
         // 设置ToolBar
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -329,7 +325,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
             //headerResult.setActiveProfile(profile);
         }
         //TODO:根据消息数量刷新Notification
-        int notificationsNumber = Integer.parseInt(cacheSharedPreferences.getString("notificationsNumber", "0"));
+        int notificationsNumber = Integer.parseInt(CarbonForumApplication.cacheSharedPreferences.getString("notificationsNumber", "0"));
         if(notificationsNumber>0){
             //添加消息通知
             mDrawer.updateBadge(4, new StringHolder(notificationsNumber + ""));
@@ -377,7 +373,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
             super.onPreExecute();
             enableScrollListener = false;
             if(enableCache){
-                topicList = JSONUtil.json2List(JSONUtil.json2Object(cacheSharedPreferences.getString("topicsCache", "{\"TopicsArray\":[]}")), "TopicsArray");
+                topicList = JSONUtil.json2List(JSONUtil.json2Object(CarbonForumApplication.cacheSharedPreferences.getString("topicsCache", "{\"TopicsArray\":[]}")), "TopicsArray");
                 if(topicList != null){
                     mAdapter.setData(topicList);
                     mAdapter.notifyDataSetChanged();
@@ -435,7 +431,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                 }
                 if(targetPage == 1){
                     try {
-                        SharedPreferences.Editor cacheEditor = cacheSharedPreferences.edit();
+                        SharedPreferences.Editor cacheEditor = CarbonForumApplication.cacheSharedPreferences.edit();
                         cacheEditor.putString("topicsCache", jsonObject.toString(0));
                         cacheEditor.apply();
                     }catch(Exception e){

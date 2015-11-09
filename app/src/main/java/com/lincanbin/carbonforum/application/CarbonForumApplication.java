@@ -21,6 +21,7 @@ import com.mikepenz.materialdrawer.util.DrawerUIUtils;
 public class CarbonForumApplication extends Application {
 
     public static SharedPreferences userInfo;
+    public static SharedPreferences cacheSharedPreferences;
 
     public static Boolean isLoggedIn(){
         return Integer.parseInt(userInfo.getString("UserID", "0")) > 0;
@@ -30,6 +31,8 @@ public class CarbonForumApplication extends Application {
     public void onCreate() {
         super.onCreate();
         userInfo = getApplicationContext().getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
+        //获取缓存
+        cacheSharedPreferences = getSharedPreferences("MainCache", Activity.MODE_PRIVATE);
         /*
         //initialize and create the image loader logic
         DrawerImageLoader.init(new AbstractDrawerImageLoader() {
