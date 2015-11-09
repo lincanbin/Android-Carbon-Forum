@@ -157,6 +157,7 @@ public class NotificationsActivity extends AppCompatActivity{
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            final int type = getArguments().getInt(ARG_SECTION_NUMBER);
             rootView = inflater.inflate(R.layout.fragment_notifications, container, false);
             mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_notifications_swipe_refresh_layout);
             mSwipeRefreshLayout.setColorSchemeResources(
@@ -180,10 +181,12 @@ public class NotificationsActivity extends AppCompatActivity{
             mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    new GetNotificationsTask(getArguments().getInt(ARG_SECTION_NUMBER), false, mSwipeRefreshLayout, mRecyclerView, 1).execute();
+                    new GetNotificationsTask(type, false, mSwipeRefreshLayout, mRecyclerView, 1).execute();
                 }
             });
-            new GetNotificationsTask(getArguments().getInt(ARG_SECTION_NUMBER), true, mSwipeRefreshLayout, mRecyclerView, 1).execute();
+            if(type == 1) {
+                new GetNotificationsTask(type, true, mSwipeRefreshLayout, mRecyclerView, 1).execute();
+            }
             return rootView;
         }
 
@@ -215,9 +218,7 @@ public class NotificationsActivity extends AppCompatActivity{
                         mAdapter.setData(list);
                         mAdapter.notifyDataSetChanged();
                     }
-                    if(!enableCache) {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
             }
             @Override
@@ -225,14 +226,12 @@ public class NotificationsActivity extends AppCompatActivity{
                 super.onPreExecute();
                 List<Map<String, Object>> notificationsList = JSONUtil.json2List(JSONUtil.json2Object(CarbonForumApplication.cacheSharedPreferences.getString("notifications" + keyName + "Cache", "{\"" + keyName + "\":[]}")), keyName);
                 refreshNotifications(notificationsList);
-                if(!enableCache) {
-                    mSwipeRefreshLayout.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mSwipeRefreshLayout.setRefreshing(true);
-                        }
-                    });
-                }
+                mSwipeRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
             }
 
             @Override
@@ -260,8 +259,7 @@ public class NotificationsActivity extends AppCompatActivity{
 
             @Override
             protected JSONObject doInBackground(Void... params) {
-                JSONObject temp = HttpUtil.postRequest(getActivity(), APIAddress.NOTIFICATIONS_URL, null, false, true);
-                return temp;
+                return HttpUtil.postRequest(getActivity(), APIAddress.NOTIFICATIONS_URL, null, false, true);
             }
 
         }
