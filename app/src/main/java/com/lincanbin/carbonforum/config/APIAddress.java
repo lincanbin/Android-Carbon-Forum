@@ -40,6 +40,9 @@ public class APIAddress
 	//推送接口，维护一个长连接
 	public static final String PUSH_SERVICE_URL = BASIC_API_URL + "/json/get_notifications";
 
+	//创建新主题接口
+	public static final String NEW_URL = BASIC_API_URL + "/new";
+
 	//回复接口
 	public static final String REPLY_URL = BASIC_API_URL + "/reply";
 }
