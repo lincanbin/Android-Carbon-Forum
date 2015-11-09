@@ -1,55 +1,31 @@
 package com.lincanbin.carbonforum.service;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.Toast;
 
-/**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p/>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
- */
+import com.lincanbin.carbonforum.R;
+import com.lincanbin.carbonforum.TopicActivity;
+import com.lincanbin.carbonforum.config.APIAddress;
+import com.lincanbin.carbonforum.util.HttpUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class NewService extends IntentService {
-    // TODO: Rename actions, choose action names that describe tasks that this
-    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-    private static final String ACTION_FOO = "com.lincanbin.carbonforum.service.action.FOO";
-    private static final String ACTION_BAZ = "com.lincanbin.carbonforum.service.action.BAZ";
-
-    // TODO: Rename parameters
-    private static final String EXTRA_PARAM1 = "com.lincanbin.carbonforum.service.extra.PARAM1";
-    private static final String EXTRA_PARAM2 = "com.lincanbin.carbonforum.service.extra.PARAM2";
-
-    /**
-     * Starts this service to perform action Foo with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionFoo(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, NewService.class);
-        intent.setAction(ACTION_FOO);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
-    }
-
-    /**
-     * Starts this service to perform action Baz with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, NewService.class);
-        intent.setAction(ACTION_BAZ);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
-    }
+    public String mTitle = "";
+    public String mTag = "";
+    public String mContent = "";
 
     public NewService() {
         super("NewService");
@@ -58,34 +34,97 @@ public class NewService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
-            final String action = intent.getAction();
-            if (ACTION_FOO.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionFoo(param1, param2);
-            } else if (ACTION_BAZ.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionBaz(param1, param2);
-            }
+            mTitle = intent.getStringExtra("Title");
+            mTag = intent.getStringExtra("Tag");
+            mContent = intent.getStringExtra("Content");
+            newTopic();
         }
     }
 
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionFoo(String param1, String param2) {
-        // TODO: Handle action Foo
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
+    private void newTopic(){
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        final Map<String, String> parameter = new HashMap<>();
+        String[] TagsArray= mTag.replace("，",",").split(",");
+        parameter.put("Title", mTitle);
+        for(String mTagItem:TagsArray) {
+            parameter.put("Tag[]", mTagItem);
+        }
+        parameter.put("Content", mContent);
 
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
+        //显示“发送中”提示
+        String shortContent = mContent.replaceAll("<!--.*?-->", "").replaceAll("<[^>]+>", "");//移除HTML标签
+        final Notification.Builder builder = new Notification.Builder(getApplicationContext())
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(getString(R.string.sending))
+                .setContentInfo(shortContent.subSequence(0, shortContent.length()))
+                .setOngoing(true);
+        if (Build.VERSION.SDK_INT >= 16) {
+            mNotificationManager.notify(102001, builder.build());
+        }else{
+            mNotificationManager.notify(102001, builder.getNotification());
+        }
+        final JSONObject jsonObject = HttpUtil.postRequest(getApplicationContext(), APIAddress.NEW_URL, parameter, false, true);
+        // 移除“发送中”通知
+        mNotificationManager.cancel(102001);
+        try {
+            if(jsonObject != null && jsonObject.getInt("Status") == 1) {
+                //发帖成功，并跳转Activity
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), getString(R.string.send_success), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                //跳转Activity
+                Intent intent = new Intent(getApplicationContext(), TopicActivity.class);
+                intent.putExtra("Topic", mTitle );
+                intent.putExtra("TopicID", jsonObject.getString("TopicID"));
+                intent.putExtra("TargetPage", "1");
+                startActivity(intent);
+
+            } else {
+                //回帖不成功，Toast，并添加重发的通知栏通知
+                PendingIntent mPendingIntent = PendingIntent.getService(
+                        getApplicationContext(),
+                        0,
+                        new Intent(getApplicationContext(), NewService.class)
+                                .putExtra("Title", mTitle)
+                                .putExtra("Tag", mTag)
+                                .putExtra("Content", mContent),
+                        0
+                );
+                final Notification.Builder failBuilder = new Notification.Builder(getApplicationContext())
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle(getString(R.string.app_name))
+                        .setContentText(getString(R.string.resend_topic))
+                        .setContentIntent(mPendingIntent)
+                        .setAutoCancel(true);
+                if (Build.VERSION.SDK_INT >= 16) {
+                    mNotificationManager.notify(102003, failBuilder.build());
+                }else{
+                    mNotificationManager.notify(102003, failBuilder.getNotification());
+                }
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(jsonObject != null) {
+                            try {
+                                Toast.makeText(getApplicationContext(), jsonObject.getString("ErrorMessage"), Toast.LENGTH_SHORT).show();
+                            }catch(JSONException e){
+                                e.printStackTrace();
+                            }
+                        }else{
+                            Toast.makeText(getApplicationContext(), getApplicationContext().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+            }
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
     }
 }
