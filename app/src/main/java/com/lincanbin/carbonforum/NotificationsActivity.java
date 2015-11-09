@@ -68,7 +68,7 @@ public class NotificationsActivity extends AppCompatActivity{
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-        ImageButton imageButton = (ImageButton) toolbar.findViewById(R.id.new_button);
+        ImageButton imageButton = (ImageButton) toolbar.findViewById(R.id.notifications_settings_button);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
