@@ -113,7 +113,7 @@ public class HttpUtil {
     // post方法访问服务器，返回json对象
     public static JSONObject postRequest(Context context, String url, Map<String, String> parameterMap, Boolean enableSession, Boolean loginRequired) {
         try{
-            if(loginRequired){
+            if(loginRequired && !CarbonForumApplication.userInfo.getString("UserID", "").equals("")){
                 if(parameterMap==null) {
                     parameterMap = new HashMap<>();
                 }
