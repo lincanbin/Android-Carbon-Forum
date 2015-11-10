@@ -35,7 +35,7 @@ public class NewActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     if(mTitle.getText().toString().length() > 0 &&
-                            mTag.getText().toString().length() > 0) {
+                            mTag.getText().toString().replace("，",",").split(",").length > 0) {
                         MarkdownProcessor mMarkdownProcessor = new MarkdownProcessor();
                         String contentHTML = mMarkdownProcessor.markdown(mContent.getText().toString());
                         Intent intent = new Intent(NewActivity.this, NewService.class);
