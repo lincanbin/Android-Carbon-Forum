@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -305,7 +306,7 @@ public class LoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }else{
-                Toast.makeText(LoginActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
+                Snackbar.make(mLoginFormView, R.string.network_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
 
         }
