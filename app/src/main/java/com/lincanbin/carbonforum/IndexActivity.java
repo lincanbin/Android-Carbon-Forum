@@ -75,6 +75,15 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         //mSharedPreferences = getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
         // 设置ToolBar
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(IndexActivity.this, NewActivity.class);
+                startActivity(intent);
+
+            }
+        });
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);//把Toolbar当做ActionBar给设置了
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -140,15 +149,6 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         mAdapter.setData(topicList);
         //设置Adapter
         mRecyclerView.setAdapter(mAdapter);
-        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
-        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(IndexActivity.this, NewActivity.class);
-                startActivity(intent);
-
-            }
-        });
         //Activity渲染完毕时加载帖子，使用缓存
         loadTopic(1, true);
     }
