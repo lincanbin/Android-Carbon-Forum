@@ -183,13 +183,13 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
             if(jsonObject != null){
                 try {
                     totalPage = jsonObject.getInt("TotalPage");
-                    JSONObject topicInfo = JSONUtil.json2Object(jsonObject.getString("TopicInfo"));
+                    JSONObject topicInfo = JSONUtil.jsonString2Object(jsonObject.getString("TopicInfo"));
                     getSupportActionBar().setTitle(topicInfo.getString("Topic"));
                 }catch(JSONException e){
                     e.printStackTrace();
                 }
             }
-            List<Map<String,Object>> list = JSONUtil.json2List(jsonObject, "PostsArray");
+            List<Map<String,Object>> list = JSONUtil.jsonObject2List(jsonObject, "PostsArray");
             //Log.v("List", list.toString());
             if(list!=null && !list.isEmpty()) {
 

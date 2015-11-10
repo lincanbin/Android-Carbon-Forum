@@ -182,6 +182,7 @@ public class NotificationsActivity extends AppCompatActivity{
                     new GetNotificationsTask(type, false, mSwipeRefreshLayout, mRecyclerView, 1).execute();
                 }
             });
+            new GetNotificationsTask(type, false, mSwipeRefreshLayout, mRecyclerView, 1).execute();
             if(type == 1) {
                 new GetNotificationsTask(type, true, mSwipeRefreshLayout, mRecyclerView, 1).execute();
             }
@@ -192,23 +193,23 @@ public class NotificationsActivity extends AppCompatActivity{
             private int targetPage;
             private int type;
             private String keyName;
-            private Boolean enableCache;
+            private Boolean loadFromCache;
             private SwipeRefreshLayout mSwipeRefreshLayout;
             private RecyclerView mRecyclerView;
             public GetNotificationsTask(int type,
-                                        Boolean enableCache,
+                                        Boolean loadFromCache,
                                         SwipeRefreshLayout mSwipeRefreshLayout,
                                         RecyclerView mRecyclerView,
                                         int targetPage) {
                 this.targetPage = targetPage;
                 this.type = type;
                 this.keyName = type == 1 ? "MentionArray" : "ReplyArray";
-                this.enableCache = enableCache;
+                this.loadFromCache = loadFromCache;
                 this.mSwipeRefreshLayout = mSwipeRefreshLayout;
                 this.mRecyclerView = mRecyclerView;
             }
             protected void refreshNotifications(List<Map<String, Object>> list){
-                //防止异步任务未完成时，用户按下返回造成NullPointer
+                //防止异步任务未完成时，用户按下返回，Activity被GC，造成NullPointer
                 if(mRecyclerView != null && mSwipeRefreshLayout !=null && rootView != null && getActivity() != null) {
                     if (list != null && !list.isEmpty()) {
                         mAdapter = new PostAdapter(getActivity(), true);
@@ -216,27 +217,29 @@ public class NotificationsActivity extends AppCompatActivity{
                         mAdapter.setData(list);
                         mAdapter.notifyDataSetChanged();
                     }
-                    mSwipeRefreshLayout.setRefreshing(false);
+                    if(!loadFromCache) {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
                 }
             }
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                List<Map<String, Object>> notificationsList = JSONUtil.json2List(JSONUtil.json2Object(CarbonForumApplication.cacheSharedPreferences.getString("notifications" + keyName + "Cache", "{\"" + keyName + "\":[]}")), keyName);
-                refreshNotifications(notificationsList);
-                mSwipeRefreshLayout.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(true);
-                    }
-                });
+                if(!loadFromCache) {
+                    mSwipeRefreshLayout.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSwipeRefreshLayout.setRefreshing(true);
+                        }
+                    });
+                }
             }
 
             @Override
             protected void onPostExecute(JSONObject jsonObject) {
                 super.onPostExecute(jsonObject);
                 //先保存缓存
-                if(jsonObject!=null){
+                if(jsonObject!=null && !loadFromCache){
                     try {
                         SharedPreferences.Editor cacheEditor = CarbonForumApplication.cacheSharedPreferences.edit();
                         cacheEditor.putString("notifications" + keyName + "Cache", jsonObject.toString(0));
@@ -247,8 +250,9 @@ public class NotificationsActivity extends AppCompatActivity{
                 }
                 //更新界面
                 List<Map<String, Object>> list;
-                list = JSONUtil.json2List(jsonObject, keyName);
-                if (list != null && !list.isEmpty() && rootView != null) {//防止异步任务未完成时，用户按下返回造成NullPointer
+                list = JSONUtil.jsonObject2List(jsonObject, keyName);
+                //防止异步任务未完成时，用户按下返回，Activity被GC，造成NullPointer
+                if (list != null && !list.isEmpty() && rootView != null) {
                     Snackbar.make(rootView, R.string.network_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }else{
                     refreshNotifications(list);
@@ -257,7 +261,14 @@ public class NotificationsActivity extends AppCompatActivity{
 
             @Override
             protected JSONObject doInBackground(Void... params) {
-                return HttpUtil.postRequest(getActivity(), APIAddress.NOTIFICATIONS_URL, null, false, true);
+                if(loadFromCache){
+                    return JSONUtil.jsonString2Object(
+                            CarbonForumApplication.cacheSharedPreferences.
+                                    getString("notifications" + keyName + "Cache", "{\"Status\":1, \"" + keyName + "\":[]}")
+                    );
+                }else {
+                    return HttpUtil.postRequest(getActivity(), APIAddress.NOTIFICATIONS_URL, null, false, true);
+                }
             }
 
         }

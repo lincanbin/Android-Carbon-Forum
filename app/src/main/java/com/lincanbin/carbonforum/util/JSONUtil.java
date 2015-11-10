@@ -16,12 +16,12 @@ import java.util.Map;
  */
 public class JSONUtil {
     // JSON字符串转List
-    public static List<Map<String, Object>> json2List(JSONObject jsonObject, String title) {
+    public static List<Map<String, Object>> jsonObject2List(JSONObject jsonObject, String keyName) {
 
         List<Map<String, Object>> list = new ArrayList<>();
         if(null != jsonObject){
             try {
-                JSONArray jsonArray = jsonObject.getJSONArray(title);
+                JSONArray jsonArray = jsonObject.getJSONArray(keyName);
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject2 = jsonArray.getJSONObject(i);
@@ -43,7 +43,7 @@ public class JSONUtil {
             return null;
         }
     }
-    public static JSONObject json2Object(String jsonString){
+    public static JSONObject jsonString2Object(String jsonString){
         try {
             JSONTokener jsonParser = new JSONTokener(jsonString);
             return (JSONObject) jsonParser.nextValue();

@@ -268,7 +268,7 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("UserExpirationTime", result.getString("UserExpirationTime"));
                         editor.putString("UserCode", result.getString("UserCode"));
 
-                        JSONObject userInfo =  JSONUtil.json2Object(result.getString("UserInfo"));
+                        JSONObject userInfo =  JSONUtil.jsonString2Object(result.getString("UserInfo"));
                         if(userInfo!=null){
                             editor.putString("UserName", userInfo.getString("UserName"));
                             editor.putString("UserRoleID", userInfo.getString("UserRoleID"));

@@ -87,7 +87,7 @@ public class HttpUtil {
                 String getResult = resultBuffer.toString();
                 Log.v("Get URL : ", url);
                 Log.v("Get Result",getResult);
-                return JSONUtil.json2Object(getResult);
+                return JSONUtil.jsonString2Object(getResult);
             }  catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -135,7 +135,6 @@ public class HttpUtil {
                     } else {
                         value = "";
                     }
-                    //TODO:发送Tag[]时的重复Key不同Value应该都全部保留而不是只保留一个。
                     parameterBuffer.append(key.contains("#") ? key.substring(0, key.indexOf("#")) : key).append("=").append(value);
                     if (iterator.hasNext()) {
                         parameterBuffer.append("&");

@@ -376,7 +376,9 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
             super.onPreExecute();
             enableScrollListener = false;
             if(enableCache){
-                topicList = JSONUtil.json2List(JSONUtil.json2Object(CarbonForumApplication.cacheSharedPreferences.getString("topicsCache", "{\"TopicsArray\":[]}")), "TopicsArray");
+                topicList = JSONUtil.jsonObject2List(JSONUtil.jsonString2Object(
+                        CarbonForumApplication.cacheSharedPreferences.getString("topicsCache", "{\"Status\":1, \"TopicsArray\":[]}"))
+                        , "TopicsArray");
                 if(topicList != null){
                     mAdapter.setData(topicList);
                     mAdapter.notifyDataSetChanged();
@@ -441,7 +443,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                     }
                 }
             }
-            list = JSONUtil.json2List(jsonObject, "TopicsArray");
+            list = JSONUtil.jsonObject2List(jsonObject, "TopicsArray");
             //Log.v("List", list.toString());
             return list;
         }
