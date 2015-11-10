@@ -149,9 +149,6 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
 
             }
         });
-        if(!CarbonForumApplication.isLoggedIn()){
-            mFloatingActionButton.setVisibility(View.INVISIBLE);
-        }
         //Activity渲染完毕时加载帖子，使用缓存
         loadTopic(1, true);
     }
@@ -178,6 +175,8 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         try{
             //Log.v("UserID", mSharedPreferences.getString("UserID", "0"));
             if(!CarbonForumApplication.isLoggedIn()){ //未登录
+                //隐藏发帖按钮
+                mFloatingActionButton.setVisibility(View.INVISIBLE);
                 final IProfile profile = new ProfileDrawerItem()
                         .withName("Not logged in")
                         .withIcon(R.drawable.profile)
@@ -193,6 +192,8 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                         .withSavedInstance(savedInstanceState)
                         .build();
             }else{ //已登录
+                //显示发帖按钮
+                mFloatingActionButton.setVisibility(View.VISIBLE);
                 final IProfile profile = new ProfileDrawerItem()
                         .withName(CarbonForumApplication.userInfo.getString("UserName", "lincanbin"))
                         .withEmail(CarbonForumApplication.userInfo.getString("UserMail", CarbonForumApplication.userInfo.getString("UserName", "lincanbin")))
@@ -412,7 +413,6 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                 currentPage = targetPage;
             }else{
                 Snackbar.make(mFloatingActionButton, R.string.network_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                //Toast.makeText(IndexActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
             }
             //移除刷新控件
             mSwipeRefreshLayout.setRefreshing(false);
