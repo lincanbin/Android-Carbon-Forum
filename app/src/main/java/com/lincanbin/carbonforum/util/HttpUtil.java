@@ -135,8 +135,8 @@ public class HttpUtil {
                     } else {
                         value = "";
                     }
-
-                    parameterBuffer.append(key).append("=").append(value);
+                    //TODO:发送Tag[]时的重复Key不同Value应该都全部保留而不是只保留一个。
+                    parameterBuffer.append(key.contains("#") ? key.substring(0, key.indexOf("#")) : key).append("=").append(value);
                     if (iterator.hasNext()) {
                         parameterBuffer.append("&");
                     }

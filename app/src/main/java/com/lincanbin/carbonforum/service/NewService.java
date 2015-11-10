@@ -47,7 +47,7 @@ public class NewService extends IntentService {
         String[] TagsArray= mTag.replace("，",",").split(",");
         parameter.put("Title", mTitle);
         for(String mTagItem:TagsArray) {
-            parameter.put("Tag[]", mTagItem);
+            parameter.put("Tag[]#" + mTagItem, mTagItem);
         }
         parameter.put("Content", mContent);
 

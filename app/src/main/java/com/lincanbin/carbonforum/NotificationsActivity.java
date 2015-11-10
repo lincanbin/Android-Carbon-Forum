@@ -248,7 +248,7 @@ public class NotificationsActivity extends AppCompatActivity{
                 //更新界面
                 List<Map<String, Object>> list;
                 list = JSONUtil.json2List(jsonObject, keyName);
-                if (list != null && !list.isEmpty()) {
+                if (list != null && !list.isEmpty() && rootView != null) {//防止异步任务未完成时，用户按下返回造成NullPointer
                     Snackbar.make(rootView, R.string.network_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }else{
                     refreshNotifications(list);
