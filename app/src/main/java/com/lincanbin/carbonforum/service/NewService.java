@@ -82,6 +82,7 @@ public class NewService extends IntentService {
                 intent.putExtra("Topic", mTitle );
                 intent.putExtra("TopicID", jsonObject.getString("TopicID"));
                 intent.putExtra("TargetPage", "1");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
 
             } else {
