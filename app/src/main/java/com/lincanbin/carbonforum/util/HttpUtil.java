@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -36,9 +37,13 @@ public class HttpUtil {
     private Integer proxyPort = null;
 
     // get方法访问服务器，返回json对象
-    public static JSONObject getRequest(Context context, String url, Boolean enableSession, Boolean loginRequired) {
+    public static JSONObject getRequest(Context context, String url, Map<String, String> parameterMap, Boolean enableSession, Boolean loginRequired) {
         try {
-            URL localURL = new URL(url);
+            Log.d("GET URL : ", url);
+            String parameterString = buildParameterString(parameterMap, loginRequired);
+            Log.d("GET parameter", parameterString);
+
+            URL localURL = new URL(url + "?" + parameterString);
 
             URLConnection connection = localURL.openConnection();
 
@@ -61,6 +66,9 @@ public class HttpUtil {
                 case 302:
                 case 404:
                     break;
+                case 403:
+                    Log.d("Configuration error", "API_KEY or API_SECRET or system time error.");
+                    return null;
                 case 401:
                     context.getSharedPreferences("UserInfo",Activity.MODE_PRIVATE).edit().clear().apply();
                     Intent intent = new Intent(context, LoginActivity.class);
@@ -114,42 +122,8 @@ public class HttpUtil {
     public static JSONObject postRequest(Context context, String url, Map<String, String> parameterMap, Boolean enableSession, Boolean loginRequired) {
         try{
             Log.d("POST URL : ", url);
-           /* Translate parameter map to parameter date string */
-            StringBuilder parameterBuffer = new StringBuilder();
-            if(loginRequired && CarbonForumApplication.isLoggedIn()){
-                parameterBuffer
-                        .append("AuthUserID").append("=")
-                        .append(CarbonForumApplication.userInfo.getString("UserID", ""))
-                        .append("&")
-                        .append("AuthUserExpirationTime").append("=")
-                        .append(CarbonForumApplication.userInfo.getString("UserExpirationTime", ""))
-                        .append("&")
-                        .append("AuthUserCode").append("=")
-                        .append(CarbonForumApplication.userInfo.getString("UserCode", ""));
-                if (parameterMap != null) {
-                    parameterBuffer.append("&");
-                }
-            }
-            if (parameterMap != null) {
-                Iterator iterator = parameterMap.keySet().iterator();
-                String key = null;
-                String value = null;
-                while (iterator.hasNext()) {
-                    key = (String) iterator.next();
-                    if (parameterMap.get(key) != null) {
-                        value = URLEncoder.encode(parameterMap.get(key), "UTF-8");
-                    } else {
-                        value = "";
-                    }
-                    parameterBuffer.append(key.contains("#") ? key.substring(0, key.indexOf("#")) : key).append("=").append(value);
-                    if (iterator.hasNext()) {
-                        parameterBuffer.append("&");
-                    }
-                }
-
-            }
-
-            Log.d("POST parameter", parameterBuffer.toString());
+            String parameterString = buildParameterString(parameterMap, loginRequired);
+            Log.d("POST parameter", parameterString);
 
             final URL localURL = new URL(url);
 
@@ -195,7 +169,7 @@ public class HttpUtil {
             }
             */
             httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            httpURLConnection.setRequestProperty("Content-Length", String.valueOf(parameterBuffer.length()));
+            httpURLConnection.setRequestProperty("Content-Length", String.valueOf(parameterString.length()));
             String cookie = getCookie(context);
             if(enableSession && cookie != null){
                 httpURLConnection.setRequestProperty("Cookie", cookie);
@@ -210,7 +184,7 @@ public class HttpUtil {
             String tempLine = null;
             OutputStream outputStream = httpURLConnection.getOutputStream();
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);//现在通过输出流对象构建对象输出流对象，以实现输出可序列化的对象。
-            outputStreamWriter.write(parameterBuffer.toString());// 向对象输出流写出数据，这些数据将存到内存缓冲区中
+            outputStreamWriter.write(parameterString);// 向对象输出流写出数据，这些数据将存到内存缓冲区中
             outputStreamWriter.flush();// 刷新对象输出流，将任何字节都写入潜在的流中（些处为ObjectOutputStream）
             outputStreamWriter.close();
             outputStream.close();
@@ -221,6 +195,9 @@ public class HttpUtil {
                 case 302:
                 case 404:
                     break;
+                case 403:
+                    Log.d("Configuration error", "API_KEY or API_SECRET or system time error.");
+                    return null;
                 case 401:
                     Log.d("Post Result","Code 401");
                     CarbonForumApplication.userInfo.edit().clear().apply();
@@ -271,8 +248,8 @@ public class HttpUtil {
             e.printStackTrace();
             return null;
         }
-
     }
+
     //保存Cookie
     public static Boolean saveCookie(Context context, URLConnection connection){
         //获取Cookie
@@ -290,6 +267,59 @@ public class HttpUtil {
             }
         }
         return false;
+    }
+
+    public static String buildParameterString(Map<String, String> parameterMap, Boolean loginRequired){
+        /* Translate parameter map to parameter date string */
+        StringBuilder parameterBuffer = new StringBuilder();
+        String currentTimeStamp = String.valueOf(System.currentTimeMillis() / 1000);
+        parameterBuffer
+                .append("SKey").append("=")
+                .append(APIAddress.API_KEY)
+                .append("&")
+                .append("STime").append("=")
+                .append(currentTimeStamp)
+                .append("&")
+                .append("SValue").append("=")
+                .append(MD5Util.md5(APIAddress.API_KEY + APIAddress.API_SECRET + currentTimeStamp));
+        if(loginRequired && CarbonForumApplication.isLoggedIn()){
+            parameterBuffer
+                    .append("&")
+                    .append("AuthUserID").append("=")
+                    .append(CarbonForumApplication.userInfo.getString("UserID", ""))
+                    .append("&")
+                    .append("AuthUserExpirationTime").append("=")
+                    .append(CarbonForumApplication.userInfo.getString("UserExpirationTime", ""))
+                    .append("&")
+                    .append("AuthUserCode").append("=")
+                    .append(CarbonForumApplication.userInfo.getString("UserCode", ""));
+            if (parameterMap != null) {
+                parameterBuffer.append("&");
+            }
+        }
+        if (parameterMap != null) {
+            Iterator iterator = parameterMap.keySet().iterator();
+            String key = null;
+            String value = null;
+            while (iterator.hasNext()) {
+                key = (String) iterator.next();
+                if (parameterMap.get(key) != null) {
+                    try {
+                        value = URLEncoder.encode(parameterMap.get(key), "UTF-8");
+                    }catch(UnsupportedEncodingException e){
+                        value = parameterMap.get(key);
+                        e.printStackTrace();
+                    }
+                } else {
+                    value = "";
+                }
+                parameterBuffer.append(key.contains("#") ? key.substring(0, key.indexOf("#")) : key).append("=").append(value);
+                if (iterator.hasNext()) {
+                    parameterBuffer.append("&");
+                }
+            }
+        }
+        return parameterBuffer.toString();
     }
 
     private URLConnection openConnection(URL localURL) throws IOException {

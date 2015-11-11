@@ -29,8 +29,8 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:background="?selectableItemBackground"
         android:id="@+id/topic_item"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:minHeight="?android:listPreferredItemHeight"
@@ -39,8 +39,7 @@
         android:focusable="true"
         android:descendantFocusability="blocksDescendants"
         android:duplicateParentState="true"
-        android:theme="@android:style/Widget.ListView"
-        >
+        android:theme="@android:style/Widget.ListView">
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/avatar"
             android:layout_width="56dp"

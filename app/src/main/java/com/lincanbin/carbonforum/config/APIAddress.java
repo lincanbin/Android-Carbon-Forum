@@ -1,19 +1,21 @@
 package com.lincanbin.carbonforum.config;
 public class APIAddress
 {
-	public static final String WEBSITE_PATH = ""; //网站路径，不以"/"结尾，默认留空
-
-	//Debug
-	public static final String DOMAIN_NAME = "http://192.168.191.1" + WEBSITE_PATH; // PC版域名
-	public static final String MOBILE_DOMAIN_NAME = "http://192.168.191.1" + WEBSITE_PATH; // 移动版域名
-	public static final String BASIC_API_URL = "http://192.168.191.1" + WEBSITE_PATH; // API地址前缀
-
+	public static final String WEBSITE_PATH = ""; //Website path, You can leave it blank in most cases.
+	public static final String API_KEY = "12450"; //Application key you set in ```config.php```
+	public static final String API_SECRET = "b40484df0ad979d8ba7708d24c301c38"; //Application secret you set in ```config.php```
 /*
-	//Real
-	public static final String DOMAIN_NAME = "https://www.94cb.com" + WEBSITE_PATH; // PC版域名
-	public static final String MOBILE_DOMAIN_NAME = "https://m.94cb.com" + WEBSITE_PATH; // 移动版域名
-	public static final String BASIC_API_URL = "https://api.94cb.com" + WEBSITE_PATH; // API地址前缀
- */
+    //Debug
+    public static final String DOMAIN_NAME = "http://192.168.191.1" + WEBSITE_PATH; // Main domain name
+    public static final String MOBILE_DOMAIN_NAME = "http://192.168.191.1" + WEBSITE_PATH; // Domain name of mobile version
+    public static final String BASIC_API_URL = "http://192.168.191.1" + WEBSITE_PATH; // Domain name of API
+*/
+
+    //Real
+    public static final String DOMAIN_NAME = "https://www.94cb.com" + WEBSITE_PATH; // Main domain name
+    public static final String MOBILE_DOMAIN_NAME = "https://m.94cb.com" + WEBSITE_PATH; // Domain name of mobile version
+    public static final String BASIC_API_URL = "https://api.94cb.com" + WEBSITE_PATH; // Domain name of API
+
 	//中等头像地址
 	public static String MIDDLE_AVATAR_URL(String userID, String avatarSize){
 		return DOMAIN_NAME + "/upload/avatar/"+ avatarSize +"/" + userID +".png";
