@@ -13,13 +13,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -51,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
 
     // UI references.
     private Toolbar mToolbar;
-    private AutoCompleteTextView mUsernameView;
+    private EditText mUsernameView;
     private EditText mPasswordView;
     private EditText mVerificationCodeView;
     private ImageView mVerificationCodeImageView;
@@ -65,12 +63,12 @@ public class LoginActivity extends AppCompatActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
-            mToolbar.setTitle(R.string.login);
+            mToolbar.setTitle(R.string.title_activity_login);
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         // Set up the login form.
-        mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
+        mUsernameView = (EditText) findViewById(R.id.username);
 
         mPasswordView = (EditText) findViewById(R.id.password);
 
@@ -93,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         refreshVerificationCode();
-        Button mUsernameSignInButton = (Button) findViewById(R.id.username_sign_in_button);
+        Button mUsernameSignInButton = (Button) findViewById(R.id.login_button);
         mUsernameSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -168,7 +166,8 @@ public class LoginActivity extends AppCompatActivity {
             cancel = true;
          */
         }
-        // Check for a valid username address.
+
+        // Check for a valid verification code.
         if (TextUtils.isEmpty(verification_code)) {
             mVerificationCodeView.setError(getString(R.string.error_field_required));
             focusView = mVerificationCodeView;
@@ -238,7 +237,7 @@ public class LoginActivity extends AppCompatActivity {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void,JSONObject> {
+    public class UserLoginTask extends AsyncTask<Void, Void, JSONObject> {
 
         private final Map<String, String> parameter = new HashMap<>();
 
@@ -259,9 +258,9 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(false);
             if(result !=null) {
                 try {
-                    Log.v("JSON", result.toString());
+                    //Log.v("JSON", result.toString());
                     if (result.getInt("Status") == 1) {
-                        Log.v("JSON", result.toString());
+                        //Log.v("JSON", result.toString());
 
                         SharedPreferences.Editor editor = CarbonForumApplication.userInfo.edit();
                         editor.putString("UserID", result.getString("UserID"));

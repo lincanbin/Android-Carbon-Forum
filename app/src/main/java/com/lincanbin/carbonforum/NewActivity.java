@@ -27,6 +27,7 @@ public class NewActivity extends AppCompatActivity {
         mTag = (EditText) findViewById(R.id.tag);
         mContent = (EditText) findViewById(R.id.content);
         if (mToolbar != null) {
+            mToolbar.setTitle(R.string.title_activity_new);
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

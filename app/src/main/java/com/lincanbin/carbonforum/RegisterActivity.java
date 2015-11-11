@@ -3,21 +3,23 @@ package com.lincanbin.carbonforum;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -27,15 +29,28 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.lincanbin.carbonforum.application.CarbonForumApplication;
+import com.lincanbin.carbonforum.config.APIAddress;
+import com.lincanbin.carbonforum.tools.VerificationCode;
+import com.lincanbin.carbonforum.util.HttpUtil;
+import com.lincanbin.carbonforum.util.JSONUtil;
+import com.lincanbin.carbonforum.util.MD5Util;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
- * A login screen that offers login via email/password.
+ * A register screen that offers register via email/password.
  */
 public class RegisterActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
@@ -45,61 +60,82 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     private static final int REQUEST_READ_CONTACTS = 0;
 
     /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
+     * Keep track of the register task to ensure we can cancel it if requested.
      */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
+    private UserRegisterTask mAuthTask = null;
 
     // UI references.
+    private Toolbar mToolbar;
+    private EditText mUsernameView;
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    private EditText mVerificationCodeView;
+    private ImageView mVerificationCodeImageView;
     private View mProgressView;
-    private View mLoginFormView;
+    private View mRegisterFormView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        setupActionBar();
-        // Set up the login form.
+        setContentView(R.layout.activity_register);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (mToolbar != null) {
+            mToolbar.setTitle(R.string.title_activity_register);
+            setSupportActionBar(mToolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        mUsernameView = (EditText) findViewById(R.id.username);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mVerificationCodeView = (EditText) findViewById(R.id.verification_code);
+        mVerificationCodeView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                if (id == EditorInfo.IME_ACTION_DONE) {
+                    attemptRegister();
                     return true;
                 }
                 return false;
             }
         });
+        mVerificationCodeImageView = (ImageView)  findViewById(R.id.verification_code_img);
+        mVerificationCodeImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refreshVerificationCode();
+            }
+        });
+        refreshVerificationCode();
+        
+        mPasswordView = (EditText) findViewById(R.id.password);
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button mRegisterButton = (Button) findViewById(R.id.register_button);
+        mRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                attemptRegister();
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        mRegisterFormView = findViewById(R.id.register_form);
+        mProgressView = findViewById(R.id.register_progress);
     }
-
+    
+    private void refreshVerificationCode(){
+        //接口回调的方法，完成验证码的异步读取与显示
+        VerificationCode verificationCodeImage = new VerificationCode(this);
+        verificationCodeImage.loadImage(new VerificationCode.ImageCallBack() {
+            @Override
+            public void getDrawable(Drawable drawable) {
+                mVerificationCodeImageView.setImageDrawable(drawable);
+            }
+        });
+    }
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
         }
-
         getLoaderManager().initLoader(0, null, this);
     }
 
@@ -139,33 +175,26 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     }
 
     /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void setupActionBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            // Show the Up button in the action bar.
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-    }
-
-    /**
-     * Attempts to sign in or register the account specified by the login form.
+     * Attempts to sign in or register the account specified by the register form.
      * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
+     * errors are presented and no actual register attempt is made.
      */
-    private void attemptLogin() {
+    private void attemptRegister() {
         if (mAuthTask != null) {
             return;
         }
 
         // Reset errors.
+        mUsernameView.setError(null);
         mEmailView.setError(null);
         mPasswordView.setError(null);
+        mVerificationCodeView.setError(null);
 
-        // Store values at the time of the login attempt.
+        // Store values at the time of the register attempt.
+        String username = mUsernameView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String verification_code = mVerificationCodeView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -177,6 +206,12 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             cancel = true;
         }
 
+        // Check for a valid username address.
+        if (TextUtils.isEmpty(username)) {
+            mUsernameView.setError(getString(R.string.error_field_required));
+            focusView = mUsernameView;
+            cancel = true;
+        }
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
@@ -188,15 +223,22 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             cancel = true;
         }
 
+        // Check for a valid verification code.
+        if (TextUtils.isEmpty(verification_code)) {
+            mVerificationCodeView.setError(getString(R.string.error_field_required));
+            focusView = mVerificationCodeView;
+            cancel = true;
+        }
+
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
+            // There was an error; don't attempt register and focus the first
             // form field with an error.
             focusView.requestFocus();
         } else {
             // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
+            // perform the user register attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserRegisterTask(username, email, password, verification_code);
             mAuthTask.execute((Void) null);
         }
     }
@@ -208,11 +250,11 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() >= 5;
     }
 
     /**
-     * Shows the progress UI and hides the login form.
+     * Shows the progress UI and hides the register form.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
@@ -222,12 +264,12 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+            mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRegisterFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -243,7 +285,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -302,53 +344,82 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
+     * Represents an asynchronous register/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserRegisterTask extends AsyncTask<Void, Void, JSONObject> {
 
-        private final String mEmail;
-        private final String mPassword;
+        private final Map<String, String> parameter = new HashMap<>();
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
+        UserRegisterTask(String username, String email, String password, String verification_code) {
+            parameter.put("UserName", username);
+            parameter.put("Email", email);
+            parameter.put("Password", MD5Util.md5(password));
+            parameter.put("VerifyCode", verification_code);
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
+        protected JSONObject doInBackground(Void... params) {
+            return HttpUtil.postRequest(RegisterActivity.this, APIAddress.REGISTER_URL, parameter, true, false);
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(JSONObject result) {
             mAuthTask = null;
             showProgress(false);
+            if(result !=null) {
+                try {
+                    //Log.v("JSON", result.toString());
+                    if (result.getInt("Status") == 1) {
+                        //Log.v("JSON", result.toString());
 
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                        SharedPreferences.Editor editor = CarbonForumApplication.userInfo.edit();
+                        editor.putString("UserID", result.getString("UserID"));
+                        editor.putString("UserExpirationTime", result.getString("UserExpirationTime"));
+                        editor.putString("UserCode", result.getString("UserCode"));
+
+                        JSONObject userInfo =  JSONUtil.jsonString2Object(result.getString("UserInfo"));
+                        if(userInfo!=null){
+                            editor.putString("UserName", userInfo.getString("UserName"));
+                            editor.putString("UserRoleID", userInfo.getString("UserRoleID"));
+                            editor.putString("UserMail", userInfo.getString("UserMail"));
+                            editor.putString("UserIntro", userInfo.getString("UserIntro"));
+                        }
+                        editor.apply();
+                        //发送广播刷新
+                        Intent intent = new Intent();
+                        intent.setAction("action.refreshDrawer");
+                        sendBroadcast(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(RegisterActivity.this, result.getString("ErrorMessage"), Toast.LENGTH_SHORT).show();
+                        refreshVerificationCode();
+                        switch(result.getInt("ErrorCode")){
+                            case 104001:
+                            case 104002:
+                            case 104005:
+                                mUsernameView.setError(result.getString("ErrorMessage"));
+                                mUsernameView.requestFocus();
+                                break;
+                            case 104003:
+                                mEmailView.setError(result.getString("ErrorMessage"));
+                                mEmailView.requestFocus();
+                                break;
+                            case 104004:
+                                mVerificationCodeView.setError(result.getString("ErrorMessage"));
+                                mVerificationCodeView.requestFocus();
+                                break;
+                            default:
+                        }
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else{
+                Snackbar.make(mRegisterFormView, R.string.network_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
+
         }
 
         @Override

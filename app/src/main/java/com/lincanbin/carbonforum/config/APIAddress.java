@@ -34,6 +34,9 @@ public class APIAddress
 	//登陆
 	public static final String LOGIN_URL = BASIC_API_URL + "/login";
 
+	//注册
+	public static final String REGISTER_URL = BASIC_API_URL + "/register";
+
 	//获取消息提醒
 	public static final String NOTIFICATIONS_URL = BASIC_API_URL + "/notifications";
 

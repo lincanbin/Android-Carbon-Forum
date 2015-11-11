@@ -210,7 +210,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                                 //don't ask but google uses 14dp for the add account icon in gmail but 20dp for the normal icons (like manage account)
                                 new ProfileSettingDrawerItem()
                                         .withName(getString(R.string.change_account))
-                                        .withIcon(GoogleMaterial.Icon.gmd_person_add)
+                                        .withIcon(GoogleMaterial.Icon.gmd_people)
                                         .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                                             @Override
                                             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -278,8 +278,10 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                             } else if (drawerItem.getIdentifier() == 3) {
                                 intent = new Intent(IndexActivity.this, LoginActivity.class);
                             } else if (drawerItem.getIdentifier() == 4) {
-                                intent = new Intent(IndexActivity.this, NotificationsActivity.class);
+                                intent = new Intent(IndexActivity.this, RegisterActivity.class);
                             } else if (drawerItem.getIdentifier() == 5) {
+                                intent = new Intent(IndexActivity.this, NotificationsActivity.class);
+                            } else if (drawerItem.getIdentifier() == 6) {
                                 intent = new Intent(IndexActivity.this, SettingsActivity.class);
                             }
                             if (intent != null) {
@@ -295,9 +297,14 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         if(!CarbonForumApplication.isLoggedIn()) { //未登录
             mDrawerBuilder.addDrawerItems(
                     new PrimaryDrawerItem().
-                            withName(R.string.login).
-                            withIcon(GoogleMaterial.Icon.gmd_person_add).
+                            withName(R.string.title_activity_login).
+                            withIcon(GoogleMaterial.Icon.gmd_person).
                             withIdentifier(3).
+                            withSelectable(false),
+                    new PrimaryDrawerItem().
+                            withName(R.string.title_activity_register).
+                            withIcon(GoogleMaterial.Icon.gmd_person_add).
+                            withIdentifier(4).
                             withSelectable(false)
             );
         }else{ //已登录
@@ -305,13 +312,13 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                     new PrimaryDrawerItem()
                             .withName(R.string.title_activity_notifications)
                             .withIcon(GoogleMaterial.Icon.gmd_notifications)
-                            .withIdentifier(4)
+                            .withIdentifier(5)
                             .withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.md_red_700))
                             .withSelectable(false),
                     new PrimaryDrawerItem()
                             .withName(R.string.title_activity_settings)
                             .withIcon(GoogleMaterial.Icon.gmd_settings)
-                            .withIdentifier(5)
+                            .withIdentifier(6)
                             .withSelectable(false)
             );
         }

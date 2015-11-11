@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Carbon Forum</string>
-    <string name="login">Login</string>
     <string name="refresh">Refresh</string>
     <string name="change_account">Change Account</string>
     <string name="log_out">Log Out</string>
