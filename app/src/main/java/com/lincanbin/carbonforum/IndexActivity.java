@@ -45,6 +45,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -432,7 +433,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         @Override
         protected List<Map<String, Object>> doInBackground(Void... params) {
             List<Map<String,Object>> list;
-            JSONObject jsonObject = HttpUtil.postRequest(IndexActivity.this, APIAddress.HOME_URL(targetPage), null, false, false);
+            JSONObject jsonObject = HttpUtil.postRequest(IndexActivity.this, APIAddress.HOME_URL(targetPage), new HashMap<String, String>(), false, false);
             //Log.v("JSON", str);
             if(jsonObject != null){
                 try {

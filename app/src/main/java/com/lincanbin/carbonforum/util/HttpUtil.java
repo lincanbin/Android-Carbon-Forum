@@ -67,7 +67,7 @@ public class HttpUtil {
                     context.startActivity(intent);
                     break;
                 case 500:
-                    Log.v("Post Result","Code 500");
+                    Log.d("Get Result","Code 500");
                     return null;
                 default:
                     throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
@@ -85,8 +85,8 @@ public class HttpUtil {
                 }
 
                 String getResult = resultBuffer.toString();
-                Log.v("Get URL : ", url);
-                Log.v("Get Result",getResult);
+                Log.d("Get URL : ", url);
+                Log.d("Get Result",getResult);
                 return JSONUtil.jsonString2Object(getResult);
             }  catch (Exception e) {
                 e.printStackTrace();
@@ -113,8 +113,9 @@ public class HttpUtil {
     // post方法访问服务器，返回json对象
     public static JSONObject postRequest(Context context, String url, Map<String, String> parameterMap, Boolean enableSession, Boolean loginRequired) {
         try{
-            if(loginRequired && !CarbonForumApplication.userInfo.getString("UserID", "").equals("")){
-                if(parameterMap==null) {
+            Log.d("POST URL : ", url);
+            if(loginRequired && CarbonForumApplication.isLoggedIn()){
+                if(parameterMap == null) {
                     parameterMap = new HashMap<>();
                 }
                 //SharedPreferences mySharedPreferences= context.getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
@@ -140,10 +141,8 @@ public class HttpUtil {
                         parameterBuffer.append("&");
                     }
                 }
+                Log.d("POST parameter : ", parameterBuffer.toString());
             }
-
-            Log.v("POST URL : ", url);
-            Log.v("POST parameter : ", parameterBuffer.toString());
 
             URL localURL = new URL(url);
 
@@ -154,17 +153,31 @@ public class HttpUtil {
             httpURLConnection.setDoOutput(true);
             // 设置是否从httpUrlConnection读入，默认情况下是true;
             httpURLConnection.setDoInput(true);
+            httpURLConnection.setInstanceFollowRedirects(true);//允许重定向
              // Post 请求不能使用缓存
             httpURLConnection.setUseCaches(false);
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setRequestProperty("Accept-Charset", charset);
+            /*
+            if (Build.VERSION.SDK_INT < 21) {
+                // http://stackoverflow.com/questions/17638398/androids-httpurlconnection-throws-eofexception-on-head-requests
+                // Fixed known bug in Android's class implementation
+                httpURLConnection.setRequestProperty("Accept-Encoding", "");
+            }
+            */
             httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             httpURLConnection.setRequestProperty("Content-Length", String.valueOf(parameterBuffer.length()));
-
             String cookie = getCookie(context);
             if(enableSession && cookie != null){
                 httpURLConnection.setRequestProperty("Cookie", cookie);
             }
+            /*
+            if (Build.VERSION.SDK_INT < 21) {
+                //http://stackoverflow.com/questions/15411213/android-httpsurlconnection-eofexception
+                // Fixed bug with recycled url connections in versions of android.
+                httpURLConnection.setRequestProperty("Connection", "close");
+            }
+            */
             OutputStream outputStream = null;
             OutputStreamWriter outputStreamWriter = null;
             InputStream inputStream = null;
@@ -180,7 +193,7 @@ public class HttpUtil {
                 outputStreamWriter.flush();// 刷新对象输出流，将任何字节都写入潜在的流中（些处为ObjectOutputStream）
 
                 switch (httpURLConnection.getResponseCode()){
-                    case 200:
+                    case HttpURLConnection.HTTP_OK:
                     case 301:
                     case 302:
                     case 404:
@@ -191,7 +204,7 @@ public class HttpUtil {
                         context.startActivity(intent);
                         break;
                     case 500:
-                        Log.v("Post Result","Code 500");
+                        Log.d("Post Result","Code 500");
                         return null;
                     default:
                         throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
@@ -208,11 +221,11 @@ public class HttpUtil {
                 }
 
                 String postResult = resultBuffer.toString();
-                Log.v("Post Result",postResult);
+                Log.d("Post Result",postResult);
                 JSONTokener jsonParser = new JSONTokener(postResult);
                 return (JSONObject) jsonParser.nextValue();
             } catch (Exception e) {
-                Log.v("No Network", "No Network");
+                Log.d("Post Error", "No Network");
                 e.printStackTrace();
                 return null;
             } finally {
