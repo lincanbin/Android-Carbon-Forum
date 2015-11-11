@@ -28,7 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -218,7 +217,7 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            JSONObject temp = HttpUtil.postRequest(TopicActivity.this, APIAddress.TOPIC_URL(Integer.parseInt(mTopicID), targetPage), new HashMap<String, String>(), false, true);
+            JSONObject temp = HttpUtil.postRequest(TopicActivity.this, APIAddress.TOPIC_URL(Integer.parseInt(mTopicID), targetPage), null, false, true);
             //Log.v("TopicJSON", temp.toString());
             return temp;
         }

@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.lincanbin.carbonforum.LoginActivity;
 import com.lincanbin.carbonforum.application.CarbonForumApplication;
+import com.lincanbin.carbonforum.config.APIAddress;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -24,7 +25,6 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -41,8 +41,8 @@ public class HttpUtil {
             URL localURL = new URL(url);
 
             URLConnection connection = localURL.openConnection();
-            HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
 
+            HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
             httpURLConnection.setRequestProperty("Accept-Charset", charset);
             httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             String cookie = getCookie(context);
@@ -114,17 +114,22 @@ public class HttpUtil {
     public static JSONObject postRequest(Context context, String url, Map<String, String> parameterMap, Boolean enableSession, Boolean loginRequired) {
         try{
             Log.d("POST URL : ", url);
-            if(loginRequired && CarbonForumApplication.isLoggedIn()){
-                if(parameterMap == null) {
-                    parameterMap = new HashMap<>();
-                }
-                //SharedPreferences mySharedPreferences= context.getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
-                parameterMap.put("AuthUserID", CarbonForumApplication.userInfo.getString("UserID", ""));
-                parameterMap.put("AuthUserExpirationTime", CarbonForumApplication.userInfo.getString("UserExpirationTime", ""));
-                parameterMap.put("AuthUserCode", CarbonForumApplication.userInfo.getString("UserCode", ""));
-            }
            /* Translate parameter map to parameter date string */
             StringBuilder parameterBuffer = new StringBuilder();
+            if(loginRequired && CarbonForumApplication.isLoggedIn()){
+                parameterBuffer
+                        .append("AuthUserID").append("=")
+                        .append(CarbonForumApplication.userInfo.getString("UserID", ""))
+                        .append("&")
+                        .append("AuthUserExpirationTime").append("=")
+                        .append(CarbonForumApplication.userInfo.getString("UserExpirationTime", ""))
+                        .append("&")
+                        .append("AuthUserCode").append("=")
+                        .append(CarbonForumApplication.userInfo.getString("UserCode", ""));
+                if (parameterMap != null) {
+                    parameterBuffer.append("&");
+                }
+            }
             if (parameterMap != null) {
                 Iterator iterator = parameterMap.keySet().iterator();
                 String key = null;
@@ -141,20 +146,44 @@ public class HttpUtil {
                         parameterBuffer.append("&");
                     }
                 }
-                Log.d("POST parameter : ", parameterBuffer.toString());
+
             }
 
-            URL localURL = new URL(url);
+            Log.d("POST parameter", parameterBuffer.toString());
+
+            final URL localURL = new URL(url);
 
             URLConnection connection = localURL.openConnection();
+
             HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
+            /*
+            // http://developer.android.com/training/articles/security-ssl.html
+            // Create an HostnameVerifier that hardwires the expected hostname.
+            // Note that is different than the URL's hostname:
+            // example.com versus example.org
+            HostnameVerifier hostnameVerifier = new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    HostnameVerifier hv =
+                            HttpsURLConnection.getDefaultHostnameVerifier();
+                    return hv.verify(localURL.getHost(), session);
+                }
+            };
+            httpURLConnection.setHostnameVerifier(hostnameVerifier);
+            */
+            httpURLConnection.setConnectTimeout(1500000);
+            if(url.equals(APIAddress.PUSH_SERVICE_URL)) {
+                httpURLConnection.setReadTimeout(36000000);
+            }else{
+                httpURLConnection.setReadTimeout(2000000);
+            }
             // 设置是否向httpUrlConnection输出，因为这个是post请求，参数要放在
             // http正文内，因此需要设为true, 默认情况下是false;
             httpURLConnection.setDoOutput(true);
             // 设置是否从httpUrlConnection读入，默认情况下是true;
             httpURLConnection.setDoInput(true);
             httpURLConnection.setInstanceFollowRedirects(true);//允许重定向
-             // Post 请求不能使用缓存
+            // Post 请求不能使用缓存
             httpURLConnection.setUseCaches(false);
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setRequestProperty("Accept-Charset", charset);
@@ -178,78 +207,55 @@ public class HttpUtil {
                 httpURLConnection.setRequestProperty("Connection", "close");
             }
             */
-            OutputStream outputStream = null;
-            OutputStreamWriter outputStreamWriter = null;
-            InputStream inputStream = null;
-            InputStreamReader inputStreamReader = null;
-            BufferedReader reader = null;
-            StringBuilder resultBuffer = new StringBuilder();
             String tempLine = null;
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);//现在通过输出流对象构建对象输出流对象，以实现输出可序列化的对象。
+            outputStreamWriter.write(parameterBuffer.toString());// 向对象输出流写出数据，这些数据将存到内存缓冲区中
+            outputStreamWriter.flush();// 刷新对象输出流，将任何字节都写入潜在的流中（些处为ObjectOutputStream）
+            outputStreamWriter.close();
+            outputStream.close();
 
-            try {
-                outputStream = httpURLConnection.getOutputStream();
-                outputStreamWriter = new OutputStreamWriter(outputStream);//现在通过输出流对象构建对象输出流对象，以实现输出可序列化的对象。
-                outputStreamWriter.write(parameterBuffer.toString());// 向对象输出流写出数据，这些数据将存到内存缓冲区中
-                outputStreamWriter.flush();// 刷新对象输出流，将任何字节都写入潜在的流中（些处为ObjectOutputStream）
-
-                switch (httpURLConnection.getResponseCode()){
-                    case HttpURLConnection.HTTP_OK:
-                    case 301:
-                    case 302:
-                    case 404:
-                        break;
-                    case 401:
-                        CarbonForumApplication.userInfo.edit().clear().apply();
-                        Intent intent = new Intent(context, LoginActivity.class);
-                        context.startActivity(intent);
-                        break;
-                    case 500:
-                        Log.d("Post Result","Code 500");
-                        return null;
-                    default:
-                        throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
-                }
-                if(enableSession) {
-                    saveCookie(context, httpURLConnection);
-                }
-                inputStream = httpURLConnection.getInputStream();
-                inputStreamReader = new InputStreamReader(inputStream);
-                reader = new BufferedReader(inputStreamReader);
-
-                while ((tempLine = reader.readLine()) != null) {
-                    resultBuffer.append(tempLine);
-                }
-
-                String postResult = resultBuffer.toString();
-                Log.d("Post Result",postResult);
-                JSONTokener jsonParser = new JSONTokener(postResult);
-                return (JSONObject) jsonParser.nextValue();
-            } catch (Exception e) {
-                Log.d("Post Error", "No Network");
-                e.printStackTrace();
-                return null;
-            } finally {
-                if (outputStreamWriter != null) {
-                    outputStreamWriter.close();
-                }
-
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-
-                if (reader != null) {
-                    reader.close();
-                }
-
-                if (inputStreamReader != null) {
-                    inputStreamReader.close();
-                }
-
-                if (inputStream != null) {
-                    inputStream.close();
-                }
+            switch (httpURLConnection.getResponseCode()){
+                case HttpURLConnection.HTTP_OK:
+                case 301:
+                case 302:
+                case 404:
+                    break;
+                case 401:
+                    Log.d("Post Result","Code 401");
+                    CarbonForumApplication.userInfo.edit().clear().apply();
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    context.startActivity(intent);
+                    break;
+                case 500:
+                    Log.d("Post Result","Code 500");
+                    return null;
+                default:
+                    throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
             }
+            if(enableSession) {
+                saveCookie(context, httpURLConnection);
+            }
+            InputStream inputStream = httpURLConnection.getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader reader = new BufferedReader(inputStreamReader);
+            StringBuilder resultBuffer = new StringBuilder();
+
+            while ((tempLine = reader.readLine()) != null) {
+                resultBuffer.append(tempLine);
+            }
+            reader.close();
+            inputStreamReader.close();
+            inputStream.close();
+
+            //httpURLConnection.disconnect();//断开连接
+            String postResult = resultBuffer.toString();
+            Log.d("Post Result",postResult);
+            JSONTokener jsonParser = new JSONTokener(postResult);
+            return (JSONObject) jsonParser.nextValue();
+
         } catch (Exception e) {
+            Log.d("Post Error", "No Network");
             e.printStackTrace();
             return null;
         }
