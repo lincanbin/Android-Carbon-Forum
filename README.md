@@ -3,7 +3,6 @@ Android-Carbon-Forum    [![Build Status](https://travis-ci.org/lincanbin/Android
 Android Client for Carbon Forum with Material Design.
 
 
-
 Requirements
 ------------
 * Android Studio version 1.4 or higher.
@@ -12,9 +11,9 @@ Requirements
 Build your Carbon Forum android client
 ------------
 1. Rename the package name form ```com.lincanbin.carbonforum``` to ```com.yourname.carbonforum```.
-2. Edit domain configuration in ```config/APIAddress.java```
-3. Edit ```app_name``` in ```res/values/string.xml```. (Optional).
-4. Modify the icon ```ic_launcher.png``` as you like. (Optional)
+2. Edit configuration of domain, API key and API secret in ```config/APIAddress.java```.
+3. Edit ```app_name``` in ```res/values/string.xml``` (Optional).
+4. Modify the icon ```ic_launcher.png``` as you like (Optional).
 5. Build and enjoy it.
 
 
@@ -26,9 +25,15 @@ Features
 Screenshot
 ------------
 
-![Main](https://raw.githubusercontent.com/lincanbin/Android-Carbon-Forum/master/screenshot/Screenshot_2015-10-16-00-36-59.png) ![Topic](https://raw.githubusercontent.com/lincanbin/Android-Carbon-Forum/master/screenshot/Screenshot_2015-10-16-00-41-33.png)
+![Main](https://raw.githubusercontent.com/lincanbin/Android-Carbon-Forum/master/screenshot/Screenshot_2015-10-16-00-36-59.png)
+
+![Topic](https://raw.githubusercontent.com/lincanbin/Android-Carbon-Forum/master/screenshot/Screenshot_2015-10-16-00-41-33.png)
+
+![New](https://raw.githubusercontent.com/lincanbin/Android-Carbon-Forum/master/screenshot/Screenshot_2015-11-10-20-38-12.png)
 
 ![Login](https://raw.githubusercontent.com/lincanbin/Android-Carbon-Forum/master/screenshot/Screenshot_2015-10-16-00-39-40.png) ![Settings](https://raw.githubusercontent.com/lincanbin/Android-Carbon-Forum/master/screenshot/Screenshot_2015-10-16-00-39-51.png)
+
+![Notifications](https://raw.githubusercontent.com/lincanbin/Android-Carbon-Forum/master/screenshot/Screenshot_2015-11-12-00-35-02.png)
 
 ![Push_Service](https://raw.githubusercontent.com/lincanbin/Android-Carbon-Forum/master/screenshot/Screenshot_2015-10-16-00-42-58.png)
 
