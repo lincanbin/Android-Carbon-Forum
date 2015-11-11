@@ -118,6 +118,7 @@ Hack: Add FrameLayout to make CardView margin work.
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:background="?selectableItemBackground"
+                android:hardwareAccelerated="true"
                 android:id="@+id/content"
                 />
             <!--android:hardwareAccelerated="true"-->

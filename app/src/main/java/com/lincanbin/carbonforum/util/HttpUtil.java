@@ -149,8 +149,13 @@ public class HttpUtil {
 
             URLConnection connection = localURL.openConnection();
             HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
-
+            // 设置是否向httpUrlConnection输出，因为这个是post请求，参数要放在
+            // http正文内，因此需要设为true, 默认情况下是false;
             httpURLConnection.setDoOutput(true);
+            // 设置是否从httpUrlConnection读入，默认情况下是true;
+            httpURLConnection.setDoInput(true);
+             // Post 请求不能使用缓存
+            httpURLConnection.setUseCaches(false);
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setRequestProperty("Accept-Charset", charset);
             httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -170,10 +175,10 @@ public class HttpUtil {
 
             try {
                 outputStream = httpURLConnection.getOutputStream();
-                outputStreamWriter = new OutputStreamWriter(outputStream);
+                outputStreamWriter = new OutputStreamWriter(outputStream);//现在通过输出流对象构建对象输出流对象，以实现输出可序列化的对象。
+                outputStreamWriter.write(parameterBuffer.toString());// 向对象输出流写出数据，这些数据将存到内存缓冲区中
+                outputStreamWriter.flush();// 刷新对象输出流，将任何字节都写入潜在的流中（些处为ObjectOutputStream）
 
-                outputStreamWriter.write(parameterBuffer.toString());
-                outputStreamWriter.flush();
                 switch (httpURLConnection.getResponseCode()){
                     case 200:
                     case 301:
