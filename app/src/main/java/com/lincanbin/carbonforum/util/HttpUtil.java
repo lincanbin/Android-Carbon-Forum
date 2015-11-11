@@ -171,11 +171,11 @@ public class HttpUtil {
             };
             httpURLConnection.setHostnameVerifier(hostnameVerifier);
             */
-            httpURLConnection.setConnectTimeout(1500000);
+            httpURLConnection.setConnectTimeout(15000);
             if(url.equals(APIAddress.PUSH_SERVICE_URL)) {
-                httpURLConnection.setReadTimeout(36000000);
+                httpURLConnection.setReadTimeout(360000);
             }else{
-                httpURLConnection.setReadTimeout(2000000);
+                httpURLConnection.setReadTimeout(25000);
             }
             // 设置是否向httpUrlConnection输出，因为这个是post请求，参数要放在
             // http正文内，因此需要设为true, 默认情况下是false;
