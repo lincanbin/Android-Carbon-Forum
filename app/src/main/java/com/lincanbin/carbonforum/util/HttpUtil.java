@@ -282,6 +282,7 @@ public class HttpUtil {
                 .append("&")
                 .append("SValue").append("=")
                 .append(MD5Util.md5(APIAddress.API_KEY + APIAddress.API_SECRET + currentTimeStamp));
+
         if(loginRequired && CarbonForumApplication.isLoggedIn()){
             parameterBuffer
                     .append("&")
@@ -293,11 +294,9 @@ public class HttpUtil {
                     .append("&")
                     .append("AuthUserCode").append("=")
                     .append(CarbonForumApplication.userInfo.getString("UserCode", ""));
-            if (parameterMap != null) {
-                parameterBuffer.append("&");
-            }
         }
         if (parameterMap != null) {
+            parameterBuffer.append("&");
             Iterator iterator = parameterMap.keySet().iterator();
             String key = null;
             String value = null;
