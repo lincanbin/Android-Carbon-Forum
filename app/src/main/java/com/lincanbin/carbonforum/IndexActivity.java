@@ -210,7 +210,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                                 //don't ask but google uses 14dp for the add account icon in gmail but 20dp for the normal icons (like manage account)
                                 new ProfileSettingDrawerItem()
                                         .withName(getString(R.string.change_account))
-                                        .withIcon(GoogleMaterial.Icon.gmd_people)
+                                        .withIcon(GoogleMaterial.Icon.gmd_accounts)
                                         .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                                             @Override
                                             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -220,7 +220,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                                         }),
                                 new ProfileSettingDrawerItem()
                                         .withName(getString(R.string.log_out))
-                                        .withIcon(GoogleMaterial.Icon.gmd_remove_circle_outline)
+                                        .withIcon(GoogleMaterial.Icon.gmd_close)
                                         .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                                             @Override
                                             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -258,7 +258,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
                                 withSelectable(true),
                         new PrimaryDrawerItem().
                                 withName(R.string.refresh).
-                                withIcon(GoogleMaterial.Icon.gmd_autorenew).
+                                withIcon(GoogleMaterial.Icon.gmd_refresh).
                                 withIdentifier(2).
                                 withSelectable(false),
                         new DividerDrawerItem()
@@ -298,12 +298,12 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
             mDrawerBuilder.addDrawerItems(
                     new PrimaryDrawerItem().
                             withName(R.string.title_activity_login).
-                            withIcon(GoogleMaterial.Icon.gmd_person).
+                            withIcon(GoogleMaterial.Icon.gmd_account).
                             withIdentifier(3).
                             withSelectable(false),
                     new PrimaryDrawerItem().
                             withName(R.string.title_activity_register).
-                            withIcon(GoogleMaterial.Icon.gmd_person_add).
+                            withIcon(GoogleMaterial.Icon.gmd_account_add).
                             withIdentifier(4).
                             withSelectable(false)
             );
