@@ -3,6 +3,12 @@ Android-Carbon-Forum    [![Build Status](https://travis-ci.org/lincanbin/Android
 Android Client for Carbon Forum with Material Design.
 
 
+Related Projects
+------------
+* [API Documentation](https://github.com/lincanbin/Carbon-Forum-API-Documentation)
+* [PHP Server](https://github.com/lincanbin/Carbon-Forum)
+
+
 Requirements
 ------------
 * Android Studio version 1.4 or higher.
