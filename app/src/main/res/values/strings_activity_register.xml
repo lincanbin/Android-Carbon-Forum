@@ -1,11 +1,10 @@
 <resources>
-    <string name="prompt_email">Email</string>
-    <string name="title_activity_register">Register</string>
+    <string name="prompt_email">邮箱</string>
+    <string name="title_activity_register">注册</string>
 
-    <string name="action_register">Register</string>
-    <string name="action_register_short">Register</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
+    <string name="action_register">注册</string>
+    <string name="action_register_short">注册</string>
+    <string name="error_invalid_email">邮箱地址无效</string>
+    <string name="permission_rationale">"必须填写邮箱。"
     </string>
 </resources>

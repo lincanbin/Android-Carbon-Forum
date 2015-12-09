@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.lincanbin.carbonforum.ReplyActivity">
+    tools:context="com.lincanbin.carbbsapp.ReplyActivity">
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
@@ -47,7 +47,7 @@
             android:paddingTop="@dimen/activity_vertical_margin"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            tools:context="com.lincanbin.carbonforum.ReplyActivity">
+            tools:context="com.lincanbin.carbbsapp.ReplyActivity">
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent">

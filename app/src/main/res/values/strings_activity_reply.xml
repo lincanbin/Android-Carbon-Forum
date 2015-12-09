@@ -1,9 +1,9 @@
 <resources>
-    <string name="title_activity_reply">Reply</string>
-    <string name="reply_content">Content</string>
-    <string name="content_empty">Content can\'t be empty.</string>
-    <string name="action_reply_to">Reply to</string>
-    <string name="replying">Replying</string>
-    <string name="reply_success">Reply success</string>
-    <string name="resend_reply">Click this to resend reply</string>
+    <string name="title_activity_reply">回复</string>
+    <string name="reply_content">内容</string>
+    <string name="content_empty">内容不能为空。</string>
+    <string name="action_reply_to">回复</string>
+    <string name="replying">正在发表回复</string>
+    <string name="reply_success">回复发表成功</string>
+    <string name="resend_reply">点这里重新发表回复</string>
 </resources>

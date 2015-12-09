@@ -6,7 +6,7 @@ android {
     compileSdkVersion 23
     buildToolsVersion '23.0.2'
     defaultConfig {
-        applicationId "com.lincanbin.carbonforum"
+        applicationId "com.xlz918.carbbsapp"
         minSdkVersion 15
         multiDexEnabled true
         targetSdkVersion 23
