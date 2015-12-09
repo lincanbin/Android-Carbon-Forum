@@ -27,6 +27,7 @@ proguard/
 *.log
 
 # Idea
+.idea/*
 .idea/workspace.xml
 .idea/libraries
 .DS_Store
