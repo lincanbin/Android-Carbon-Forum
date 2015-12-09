@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Carbon Forum</string>
-    <string name="refresh">Refresh</string>
-    <string name="change_account">Change Account</string>
-    <string name="log_out">Log Out</string>
-    <string name="action_search">Search</string>
-    <string name="action_share">Share</string>
-    <string name="avatar">Avatar</string>
-    <string name="network_error">Network Error</string>
+    <string name="app_name">玄凌子</string>
+    <string name="refresh">刷新</string>
+    <string name="change_account">切换账户</string>
+    <string name="log_out">退出登录</string>
+    <string name="action_search">搜索</string>
+    <string name="action_share">分享</string>
+    <string name="avatar">头像</string>
+    <string name="network_error">网络错误</string>
+    <string name="nocontent">无内容</string>
 
     <!--TimeUtil Start-->
-    <string name="just_now">top</string>
-    <string name="seconds_ago">seconds ago</string>
-    <string name="minutes_ago">minutes ago</string>
-    <string name="hours_ago">hours ago</string>
-    <string name="days_ago">days ago</string>
+    <string name="just_now">最新</string>
+    <string name="seconds_ago">秒钟前</string>
+    <string name="minutes_ago">分钟前</string>
+    <string name="hours_ago">小时前</string>
+    <string name="days_ago">天前</string>
     <!--TimeUtil End-->
 
-    <string name="title_activity_topic">Topic</string>
+    <string name="title_activity_topic">主题</string>
 </resources>

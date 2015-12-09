@@ -111,7 +111,7 @@ Hack: Add FrameLayout to make CardView margin work.
                         android:clickable="true"/>
                 </RelativeLayout>
             </LinearLayout>
-            <com.lincanbin.carbonforum.view.CarbonWebView
+            <com.lincanbin.carbbsapp.view.CarbonWebView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clickable="true"

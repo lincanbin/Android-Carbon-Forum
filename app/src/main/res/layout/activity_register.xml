@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.lincanbin.carbonforum.RegisterActivity">
+    tools:context="com.lincanbin.carbbsapp.RegisterActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,7 +25,7 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:orientation="vertical"
-            tools:context="com.lincanbin.carbonforum.RegisterActivity">
+            tools:context="com.lincanbin.carbbsapp.RegisterActivity">
 
             <!-- Login progress -->
             <ProgressBar

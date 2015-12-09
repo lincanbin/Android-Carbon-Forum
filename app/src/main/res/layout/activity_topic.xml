@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" android:fitsSystemWindows="true"
-    tools:context="com.lincanbin.carbonforum.TopicActivity">
+    tools:context="com.lincanbin.carbbsapp.TopicActivity">
     <include layout="@layout/toolbar" />
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/activity_topic_swipe_refresh_layout"
