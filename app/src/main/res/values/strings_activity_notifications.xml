@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="section_format">Hello World from section: %1$d</string>
-    
     <string name="title_activity_notifications">Notifications</string>
     <string name="notifications_replied_to_me">Replied To Me</string>
     <string name="notifications_mentioned_me">Mentioned Me</string>
