@@ -14,15 +14,15 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
-<com.andexert.library.RippleView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:rv_color="@color/colorPrimary"
-    app:rv_rippleDuration="300"
     android:focusable="true"
     android:clickable="true">
+    <!--app:rv_color="@color/colorPrimary"
+    app:rv_rippleDuration="300"-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -87,4 +87,4 @@
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
-</com.andexert.library.RippleView>
+</RelativeLayout>
