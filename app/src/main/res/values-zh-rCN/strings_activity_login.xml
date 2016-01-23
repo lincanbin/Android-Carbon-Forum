@@ -1,0 +1,14 @@
+<resources>
+    <string name="title_activity_login">登录</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_username">用户名</string>
+    <string name="prompt_password">密码</string>
+    <string name="prompt_verification_code">验证码</string>
+    <string name="action_sign_in">登录</string>
+    <string name="action_sign_in_short">登录</string>
+
+    <string name="error_invalid_password">密码太短</string>
+    <string name="error_incorrect_password">密码错误</string>
+    <string name="error_field_required">此处必须填写</string>
+</resources>

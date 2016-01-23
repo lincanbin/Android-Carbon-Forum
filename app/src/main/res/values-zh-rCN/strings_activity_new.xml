@@ -1,0 +1,10 @@
+<resources>
+    <string name="title_activity_new">发新帖</string>
+    <string name="new_title">标题</string>
+    <string name="new_tag">话题 (用\",\"分隔每个话题)</string>
+    <string name="new_content">内容</string>
+    <string name="action_send">发布</string>
+    <string name="sending">发布中</string>
+    <string name="send_success">发布成功</string>
+    <string name="resend_topic">发布失败，点击我重新发布</string>
+</resources>

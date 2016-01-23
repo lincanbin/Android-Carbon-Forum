@@ -1,0 +1,10 @@
+<resources>
+    <string name="prompt_email">邮箱地址</string>
+    <string name="title_activity_register">注册</string>
+
+    <string name="action_register">注册</string>
+    <string name="action_register_short">注册</string>
+    <string name="error_invalid_email">邮箱地址格式错误</string>
+    <string name="permission_rationale">为了提供自动补全邮箱地址，联系人权限是必须的
+    </string>
+</resources>

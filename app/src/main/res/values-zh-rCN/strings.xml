@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Carbon Forum</string>
+    <string name="refresh">刷新</string>
+    <string name="change_account">更换账户</string>
+    <string name="log_out">登出</string>
+    <string name="action_search">搜索</string>
+    <string name="action_share">分享</string>
+    <string name="avatar">头像</string>
+    <string name="network_error">网络错误</string>
+
+    <!--TimeUtil Start-->
+    <string name="just_now">置顶</string>
+    <string name="seconds_ago">秒钟前</string>
+    <string name="minutes_ago">分钟前</string>
+    <string name="hours_ago">小时前</string>
+    <string name="days_ago">天前</string>
+    <!--TimeUtil End-->
+
+    <string name="title_activity_topic">主题</string>
+</resources>

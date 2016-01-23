@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_activity_notifications">消息提醒</string>
+    <string name="notifications_replied_to_me">提到我的</string>
+    <string name="notifications_mentioned_me">回复我的</string>
+</resources>
