@@ -42,7 +42,7 @@ Hack: Add FrameLayout to make CardView margin work.
             android:focusable="true"
             android:id="@+id/post_item"
             android:foreground="?android:attr/selectableItemBackground"
-            android:background="?selectableItemBackground"
+            android:background="?android:attr/selectableItemBackground"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:paddingStart="8dp"
@@ -51,12 +51,11 @@ Hack: Add FrameLayout to make CardView margin work.
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:foreground="?android:attr/selectableItemBackground"
                 android:orientation="horizontal"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:clickable="true"
-                android:focusable="true"
+                android:focusable="false"
                 android:duplicateParentState="true">
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/avatar"
