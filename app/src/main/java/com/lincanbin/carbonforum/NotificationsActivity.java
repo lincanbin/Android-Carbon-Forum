@@ -247,9 +247,13 @@ public class NotificationsActivity extends AppCompatActivity{
                 //防止异步任务未完成时，用户按下返回，Fragment被GC，造成NullPointer
                 if(mRecyclerView != null && mSwipeRefreshLayout !=null && mAdapter != null && rootView != null && getActivity() != null) {
                     mSwipeRefreshLayout.setRefreshing(false);
-                    if (list != null && !list.isEmpty()) {
-                        mAdapter.setData(list);
-                        mAdapter.notifyDataSetChanged();
+                    if (list != null) {
+                        if(!list.isEmpty()){
+                            mAdapter.setData(list);
+                            mAdapter.notifyDataSetChanged();
+                        }else{
+                            //TODO: 新注册用户，网络正常但是当前无任何通知，准备做个提示
+                        }
                     } else {
                         Snackbar.make(rootView, R.string.network_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     }
