@@ -229,9 +229,11 @@ public class NotificationsActivity extends AppCompatActivity{
             @Override
             protected void onPostExecute(JSONObject jsonObject) {
                 super.onPostExecute(jsonObject);
+                int status = 0;
                 //先保存缓存
                 if(jsonObject != null && !loadFromCache){
                     try {
+                        status = jsonObject.getInt("Status");
                         SharedPreferences.Editor cacheEditor = CarbonForumApplication.cacheSharedPreferences.edit();
                         //cacheEditor.putString("notifications" + keyName + "Cache", jsonObject.toString(0));
                         cacheEditor.putString("notificationsMentionArrayCache", jsonObject.toString(0));
@@ -247,7 +249,7 @@ public class NotificationsActivity extends AppCompatActivity{
                 //防止异步任务未完成时，用户按下返回，Fragment被GC，造成NullPointer
                 if(mRecyclerView != null && mSwipeRefreshLayout !=null && mAdapter != null && rootView != null && getActivity() != null) {
                     mSwipeRefreshLayout.setRefreshing(false);
-                    if (list != null) {
+                    if (list != null && status == 1) {
                         if(!list.isEmpty()){
                             mAdapter.setData(list);
                             mAdapter.notifyDataSetChanged();
