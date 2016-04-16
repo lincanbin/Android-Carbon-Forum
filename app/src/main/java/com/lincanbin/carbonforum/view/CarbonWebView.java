@@ -35,12 +35,15 @@ public class CarbonWebView extends WebView {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         //TODO: 允许长按选择文本
-        /*
+
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            onScrollChanged(getScrollX(), getScrollY(), getScrollX(), getScrollY());
+            //onScrollChanged(getScrollX(), getScrollY(), getScrollX(), getScrollY());
+            return false;
+        }else{
+            return true;
         }
-        return super.onTouchEvent(ev);
-        */
-        return false;
+        //return super.onTouchEvent(ev);
+
+
     }
 }
