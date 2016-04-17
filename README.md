@@ -12,6 +12,7 @@ Android Client for Carbon Forum with Material Design.
 ## Requirements
 
 * Android Studio version 1.4 or higher.
+* Gradle Plugin 2.0 or higher.
 
 ## Build your Carbon Forum android client
 
