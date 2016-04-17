@@ -17,6 +17,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -207,7 +208,7 @@ public class NotificationsActivity extends AppCompatActivity{
                                         int targetPage) {
                 this.targetPage = targetPage;
                 this.type = type;
-                this.keyName = type == 1 ? "MentionArray" : "ReplyArray";
+                this.keyName = type == 1 ? "ReplyArray" : "MentionArray";
                 this.loadFromCache = loadFromCache;
                 this.mSwipeRefreshLayout = mSwipeRefreshLayout;
                 this.mRecyclerView = mRecyclerView;
@@ -230,6 +231,9 @@ public class NotificationsActivity extends AppCompatActivity{
             protected void onPostExecute(JSONObject jsonObject) {
                 super.onPostExecute(jsonObject);
                 int status = 0;
+                if(loadFromCache){
+                    status = 1;
+                }
                 //先保存缓存
                 if(jsonObject != null && !loadFromCache){
                     try {
@@ -249,12 +253,15 @@ public class NotificationsActivity extends AppCompatActivity{
                 //防止异步任务未完成时，用户按下返回，Fragment被GC，造成NullPointer
                 if(mRecyclerView != null && mSwipeRefreshLayout !=null && mAdapter != null && rootView != null && getActivity() != null) {
                     mSwipeRefreshLayout.setRefreshing(false);
-                    if (list != null && status == 1) {
-                        if(!list.isEmpty()){
+                    Log.d("Status : ", keyName + String.valueOf(status));
+                    if (status == 1) {
+                        if(list != null && !list.isEmpty()){
+                            Log.d("Action : ", keyName + " SetData");
                             mAdapter.setData(list);
                             mAdapter.notifyDataSetChanged();
                         }else{
-                            //TODO: 新注册用户，网络正常但是当前无任何通知，准备做个提示
+                            //新注册用户，网络正常但是当前无任何通知，准备做个提示
+                            Snackbar.make(rootView, R.string.empty_notification, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                         }
                     } else {
                         Snackbar.make(rootView, R.string.network_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();

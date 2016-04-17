@@ -3,4 +3,5 @@
     <string name="title_activity_notifications">Notifications</string>
     <string name="notifications_replied_to_me">Replied To Me</string>
     <string name="notifications_mentioned_me">Mentioned Me</string>
+    <string name="empty_notification">Currently there is no any notification</string>
 </resources>
