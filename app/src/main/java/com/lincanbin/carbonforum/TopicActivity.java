@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -51,7 +52,7 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
         //注册一个广播用于回复成功时，刷新主题
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("action.refreshTopic");
-        registerReceiver(mRefreshTopicBroadcastReceiver, intentFilter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshTopicBroadcastReceiver, intentFilter);
         //取得启动该Activity的Intent对象
         Intent mIntent = getIntent();
         //取出Intent中附加的数据
@@ -137,7 +138,7 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mRefreshTopicBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshTopicBroadcastReceiver);
     }
     //下拉刷新事件
     @Override

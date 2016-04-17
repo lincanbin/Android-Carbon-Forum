@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import com.lincanbin.carbonforum.R;
@@ -73,7 +74,7 @@ public class ReplyService extends IntentService {
                 Intent intent = new Intent();
                 intent.putExtra("TargetPage", jsonObject.getInt("Page"));
                 intent.setAction("action.refreshTopic");
-                sendBroadcast(intent);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
             } else {
                 //回帖不成功，Toast，并添加重发的通知栏通知

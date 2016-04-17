@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -71,7 +72,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         //注册一个广播用来登录和退出时刷新Drawer
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("action.refreshDrawer");
-        registerReceiver(mRefreshDrawerBroadcastReceiver, intentFilter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshDrawerBroadcastReceiver, intentFilter);
         //mSharedPreferences = getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
         // 设置ToolBar
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -155,7 +156,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mRefreshDrawerBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshDrawerBroadcastReceiver);
     }
     //加载帖子列表
     private void loadTopic(int targetPage, Boolean enableCache) {
