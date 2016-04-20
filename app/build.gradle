@@ -14,7 +14,7 @@ android {
         versionName '5.0.1'
         // To disable this functionality (and gain the true advantage and space savings of this Support Library)
         // http://android-developers.blogspot.sg/2016/02/android-support-library-232.html
-        vectorDrawables.useSupportLibrary = true
+        // vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
