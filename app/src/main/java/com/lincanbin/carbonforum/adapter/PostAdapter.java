@@ -144,8 +144,11 @@ public class PostAdapter extends RecyclerView.Adapter{
                 // http://stackoverflow.com/questions/15133132/android-webview-doesnt-display-web-page-in-some-cases
                 Content.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             } else {
-                // Content.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                Content.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                //Content.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                //Content.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                // 修复显示长帖时申请不到内存的bug
+                // http://stackoverflow.com/questions/18471194/webview-in-scrollview-view-too-large-to-fit-into-drawing-cache-how-to-rewor
+                Content.setLayerType(View.LAYER_TYPE_NONE, null);
             }
             // http://stackoverflow.com/questions/5003156/android-webview-style-background-colortransparent-ignored-on-android-2-2
             Content.setBackgroundColor(Color.TRANSPARENT);
