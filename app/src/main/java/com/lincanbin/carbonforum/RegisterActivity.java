@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -389,7 +390,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                         //发送广播刷新
                         Intent intent = new Intent();
                         intent.setAction("action.refreshDrawer");
-                        sendBroadcast(intent);
+                        LocalBroadcastManager.getInstance(RegisterActivity.this).sendBroadcast(intent);
                         finish();
                     } else {
                         Toast.makeText(RegisterActivity.this, result.getString("ErrorMessage"), Toast.LENGTH_SHORT).show();
