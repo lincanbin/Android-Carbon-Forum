@@ -260,7 +260,7 @@ public class NotificationsActivity extends AppCompatActivity{
                             mAdapter.setData(list);
                             mAdapter.notifyDataSetChanged();
                         }else{
-                            //新注册用户，网络正常但是当前无任何通知，准备做个提示
+                            //新注册用户，网络正常但是当前无任何通知，做个提示
                             Snackbar.make(rootView, R.string.empty_notification, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                         }
                     } else {
