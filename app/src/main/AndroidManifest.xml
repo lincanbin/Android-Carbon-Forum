@@ -12,6 +12,7 @@
 
     <application
         android:name=".application.CarbonForumApplication"
+        android:hardwareAccelerated="true"
         android:allowBackup="true"
         android:fullBackupContent="@xml/mybackupscheme"
         android:fullBackupOnly="true"
