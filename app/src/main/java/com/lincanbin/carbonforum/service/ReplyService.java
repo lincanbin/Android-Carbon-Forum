@@ -48,9 +48,8 @@ public class ReplyService extends IntentService {
         String shortContent = mContent.replaceAll("<!--.*?-->", "").replaceAll("<[^>]+>", "");//移除HTML标签
         final Notification.Builder builder = new Notification.Builder(getApplicationContext())
                 .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(getString(R.string.replying))
-                .setContentInfo(shortContent.subSequence(0, shortContent.length()))
+                .setContentTitle(getString(R.string.replying))
+                .setContentText(shortContent.subSequence(0, shortContent.length()))
                 .setOngoing(true);
         if (Build.VERSION.SDK_INT >= 16) {
             mNotificationManager.notify(102001, builder.build());
@@ -86,8 +85,8 @@ public class ReplyService extends IntentService {
                 );
                 final Notification.Builder failBuilder = new Notification.Builder(getApplicationContext())
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle(getString(R.string.app_name))
-                        .setContentText(getString(R.string.resend_reply))
+                        .setContentTitle(getString(R.string.resend_reply))
+                        .setContentText(shortContent.subSequence(0, shortContent.length()))
                         .setContentIntent(mPendingIntent)
                         .setAutoCancel(true);
                 if (Build.VERSION.SDK_INT >= 16) {

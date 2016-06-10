@@ -59,8 +59,8 @@ public class PushService extends IntentService {
                     );
                     final Notification.Builder builder = new Notification.Builder(getApplicationContext())
                             .setSmallIcon(R.drawable.ic_launcher)
-                            .setContentTitle(getString(R.string.app_name))
-                            .setContentText(newMessageNumber + " New Messages")
+                            .setContentTitle(getString(R.string.new_message).replace("{{NewMessage}}", String.valueOf(newMessageNumber)))
+                            .setContentText(getString(R.string.app_name))
                             .setContentIntent(mPendingIntent)
                             .setAutoCancel(true);
                     //有新通知的话才振动与响铃
