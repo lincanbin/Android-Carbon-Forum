@@ -3,13 +3,13 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
     }
-    compileSdkVersion 23
-    buildToolsVersion '24.0.0'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.lincanbin.carbonforum"
         minSdkVersion 15
         multiDexEnabled true
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 24
         versionName '5.6.1'
         // To disable this functionality (and gain the true advantage and space savings of this Support Library)
@@ -32,15 +32,15 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile('com.mikepenz:materialdrawer:4.6.4@aar') {
+    compile('com.mikepenz:materialdrawer:5.8.0@aar') {
         transitive = true
     }
-    compile 'com.android.support:support-v4:23.3.0'
-    compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.android.support:recyclerview-v7:23.3.0'
-    compile 'com.android.support:cardview-v7:23.3.0'
-    compile 'com.android.support:design:23.3.0'
+    compile 'com.android.support:support-v4:25.0.1'
+    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:recyclerview-v7:25.0.1'
+    compile 'com.android.support:cardview-v7:25.0.1'
+    compile 'com.android.support:design:25.0.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'de.hdodenhof:circleimageview:2.0.0'
-    compile 'com.mikepenz:google-material-typeface:2.2.0.1@aar'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'com.mikepenz:google-material-typeface:2.2.0.3.original@aar'
 }
