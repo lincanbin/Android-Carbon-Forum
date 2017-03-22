@@ -22,7 +22,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7">
     <output url="file://$MODULE_DIR$/build/intermediates/classes/debug" />
     <output-test url="file://$MODULE_DIR$/build/intermediates/classes/test/debug" />
     <exclude-output />
@@ -80,27 +80,6 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/blame" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/25.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/cardview-v7/25.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/design/25.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/multidex-instrumentation/1.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/multidex/1.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/25.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-compat/25.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-core-ui/25.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-core-utils/25.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-fragment/25.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/25.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/25.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/transition/25.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.mikepenz/fastadapter/2.1.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.mikepenz/google-material-typeface/2.2.0.3.original/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.mikepenz/iconics-core/2.8.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.mikepenz/materialdrawer/5.8.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.mikepenz/materialize/1.0.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/de.hdodenhof/circleimageview/2.1.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-safeguard" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
@@ -114,33 +93,34 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
+      <excludeFolder url="file://$MODULE_DIR$/build/reports" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 25 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" scope="TEST" name="multidex-instrumentation-1.0.1" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-25.0.1" level="project" />
-    <orderEntry type="library" exported="" name="design-25.0.1" level="project" />
     <orderEntry type="library" exported="" name="fastadapter-2.1.0" level="project" />
-    <orderEntry type="library" exported="" name="materialdrawer-5.8.0" level="project" />
+    <orderEntry type="library" exported="" name="design-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="transition-25.3.0" level="project" />
     <orderEntry type="library" exported="" name="circleimageview-2.1.0" level="project" />
-    <orderEntry type="library" exported="" name="transition-25.0.1" level="project" />
-    <orderEntry type="library" exported="" name="support-compat-25.0.1" level="project" />
-    <orderEntry type="library" exported="" name="support-fragment-25.0.1" level="project" />
-    <orderEntry type="library" exported="" name="animated-vector-drawable-25.0.1" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-25.0.1" level="project" />
-    <orderEntry type="library" exported="" name="materialize-1.0.0" level="project" />
-    <orderEntry type="library" exported="" name="cardview-v7-25.0.1" level="project" />
+    <orderEntry type="library" exported="" name="materialdrawer-5.8.2" level="project" />
+    <orderEntry type="library" exported="" name="materialize-1.0.1" level="project" />
+    <orderEntry type="library" exported="" name="cardview-v7-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="support-compat-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-25.3.0" level="project" />
     <orderEntry type="library" exported="" name="multidex-1.0.1" level="project" />
-    <orderEntry type="library" exported="" name="support-core-ui-25.0.1" level="project" />
-    <orderEntry type="library" exported="" name="support-media-compat-25.0.1" level="project" />
+    <orderEntry type="library" exported="" name="support-media-compat-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="support-core-ui-25.3.0" level="project" />
     <orderEntry type="library" exported="" name="google-material-typeface-2.2.0.3.original" level="project" />
-    <orderEntry type="library" exported="" name="support-vector-drawable-25.0.1" level="project" />
-    <orderEntry type="library" exported="" name="appcompat-v7-25.0.1" level="project" />
+    <orderEntry type="library" exported="" name="recyclerview-v7-25.3.0" level="project" />
     <orderEntry type="library" exported="" name="glide-3.7.0" level="project" />
-    <orderEntry type="library" exported="" name="recyclerview-v7-25.0.1" level="project" />
+    <orderEntry type="library" exported="" name="support-core-utils-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="appcompat-v7-25.3.0" level="project" />
     <orderEntry type="library" exported="" name="iconics-core-2.8.0" level="project" />
-    <orderEntry type="library" exported="" name="support-core-utils-25.0.1" level="project" />
+    <orderEntry type="library" exported="" name="support-fragment-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="animated-vector-drawable-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-25.3.0" level="project" />
+    <orderEntry type="library" exported="" name="support-vector-drawable-25.3.0" level="project" />
     <orderEntry type="library" exported="" name="android-android-25" level="project" />
   </component>
 </module>

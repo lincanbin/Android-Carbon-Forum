@@ -5,16 +5,17 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0-alpha1'
+        classpath 'com.android.tools.build:gradle:2.4.0-alpha3'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
+
 // To avoid manually setting the same values in all Android modules, set the value on the root
 // project and then reference this from the modules
 ext {
     compileSdkVersion = 25
-    buildToolsVersion = "25.0.0"
+    buildToolsVersion = "25.0.2"
 }
 
 allprojects {
@@ -33,5 +34,5 @@ allprojects {
 */
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.2'
+    gradleVersion = '3.4.1'
 }
