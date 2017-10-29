@@ -110,8 +110,8 @@
                         </android.support.design.widget.TextInputLayout>
                         <ImageView
                             android:id="@+id/verification_code_img"
-                            android:layout_width="88.5dp"
-                            android:layout_height="40.5dp"
+                            android:layout_width="125dp"
+                            android:layout_height="50dp"
                             android:contentDescription="@string/prompt_verification_code"/>
                     </LinearLayout>
                     <Button

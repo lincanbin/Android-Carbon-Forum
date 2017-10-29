@@ -31,7 +31,7 @@ public class APIAddress
 	}
 
 	//验证码
-	public static final String VERIFICATION_CODE = BASIC_API_URL + "/captcha";
+	public static final String VERIFICATION_CODE = MOBILE_DOMAIN_NAME + "/captcha";
 
 	//登陆
 	public static final String LOGIN_URL = BASIC_API_URL + "/login";
