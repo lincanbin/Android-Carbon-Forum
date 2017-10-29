@@ -15,3 +15,9 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# https://stackoverflow.com/questions/41362386/execution-failed-for-task-apptransformclassesandresourceswithproguardforrelea
+-ignorewarnings
+-keep class * {
+    public private *;
+}
