@@ -13,8 +13,8 @@ import android.widget.Toast;
 
 import com.lincanbin.carbonforum.R;
 import com.lincanbin.carbonforum.TopicActivity;
+import com.lincanbin.carbonforum.application.CarbonForumApplication;
 import com.lincanbin.carbonforum.config.APIAddress;
-import com.lincanbin.carbonforum.util.HttpUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,7 +63,7 @@ public class NewService extends IntentService {
         }else{
             mNotificationManager.notify(102001, builder.getNotification());
         }
-        final JSONObject jsonObject = HttpUtil.postRequest(getApplicationContext(), APIAddress.NEW_URL, parameter, false, true);
+        final JSONObject jsonObject = CarbonForumApplication.httpUtil.request("POST", APIAddress.NEW_URL, parameter, false, true);
         // 移除“发送中”通知
         mNotificationManager.cancel(102001);
         try {

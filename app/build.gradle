@@ -3,13 +3,13 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
     }
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.lincanbin.carbonforum"
         minSdkVersion 15
         multiDexEnabled true
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 24
         versionName '5.6.1'
         // To disable this functionality (and gain the true advantage and space savings of this Support Library)
@@ -22,6 +22,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    flavorDimensions "color"
     productFlavors {
     }
     lintOptions {
@@ -32,15 +33,18 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile('com.mikepenz:materialdrawer:5.8.2@aar') {
+    compile 'com.squareup.okhttp3:okhttp:3.7.0'
+    compile('com.mikepenz:materialdrawer:5.9.5@aar') {
         transitive = true
     }
-    compile 'com.android.support:support-v4:25.3.0'
-    compile 'com.android.support:appcompat-v7:25.3.0'
-    compile 'com.android.support:recyclerview-v7:25.3.0'
-    compile 'com.android.support:cardview-v7:25.3.0'
-    compile 'com.android.support:design:25.3.0'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'de.hdodenhof:circleimageview:2.1.0'
-    compile 'com.mikepenz:google-material-typeface:2.2.0.3.original@aar'
+    compile 'com.android.support:support-v4:26.1.0'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:recyclerview-v7:26.1.0'
+    compile 'com.android.support:cardview-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
+    compile 'com.github.bumptech.glide:glide:3.8.0'
+    compile 'de.hdodenhof:circleimageview:2.2.0'
+    compile 'com.mikepenz:iconics-core:2.9.3@aar'
+    compile 'com.mikepenz:google-material-typeface:3.0.1.1.original@aar'
+    testCompile 'junit:junit:4.12'
 }

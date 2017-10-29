@@ -27,7 +27,6 @@ import android.widget.ImageButton;
 import com.lincanbin.carbonforum.adapter.PostAdapter;
 import com.lincanbin.carbonforum.application.CarbonForumApplication;
 import com.lincanbin.carbonforum.config.APIAddress;
-import com.lincanbin.carbonforum.util.HttpUtil;
 import com.lincanbin.carbonforum.util.JSONUtil;
 
 import org.json.JSONObject;
@@ -281,7 +280,7 @@ public class NotificationsActivity extends AppCompatActivity{
                                     getString("notifications" + keyName + "Cache", "{\"Status\":1, \"" + keyName + "\":[]}")
                     );
                 }else {
-                    return HttpUtil.postRequest(getActivity(), APIAddress.NOTIFICATIONS_URL, new HashMap<String, String>(), false, true);
+                    return CarbonForumApplication.httpUtil.request("POST", APIAddress.NOTIFICATIONS_URL, new HashMap<String, String>(), false, true);
                 }
             }
 

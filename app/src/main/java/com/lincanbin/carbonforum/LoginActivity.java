@@ -28,7 +28,6 @@ import android.widget.Toast;
 import com.lincanbin.carbonforum.application.CarbonForumApplication;
 import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.tools.VerificationCode;
-import com.lincanbin.carbonforum.util.HttpUtil;
 import com.lincanbin.carbonforum.util.JSONUtil;
 import com.lincanbin.carbonforum.util.MD5Util;
 
@@ -250,7 +249,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            return HttpUtil.postRequest(LoginActivity.this, APIAddress.LOGIN_URL,parameter, true, false);
+            return CarbonForumApplication.httpUtil.request("POST", APIAddress.LOGIN_URL,parameter, true, false);
         }
 
         @Override

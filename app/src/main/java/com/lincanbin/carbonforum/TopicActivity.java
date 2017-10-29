@@ -22,7 +22,6 @@ import android.widget.TextView;
 import com.lincanbin.carbonforum.adapter.PostAdapter;
 import com.lincanbin.carbonforum.application.CarbonForumApplication;
 import com.lincanbin.carbonforum.config.APIAddress;
-import com.lincanbin.carbonforum.util.HttpUtil;
 import com.lincanbin.carbonforum.util.JSONUtil;
 
 import org.json.JSONException;
@@ -218,7 +217,7 @@ public class TopicActivity extends AppCompatActivity implements SwipeRefreshLayo
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            JSONObject temp = HttpUtil.postRequest(TopicActivity.this, APIAddress.TOPIC_URL(Integer.parseInt(mTopicID), targetPage), null, false, true);
+            JSONObject temp = CarbonForumApplication.httpUtil.request("GET", APIAddress.TOPIC_URL(Integer.parseInt(mTopicID), targetPage), null, false, true);
             //Log.v("TopicJSON", temp.toString());
             return temp;
         }

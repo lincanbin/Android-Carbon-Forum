@@ -17,7 +17,6 @@ import com.lincanbin.carbonforum.NotificationsActivity;
 import com.lincanbin.carbonforum.R;
 import com.lincanbin.carbonforum.application.CarbonForumApplication;
 import com.lincanbin.carbonforum.config.APIAddress;
-import com.lincanbin.carbonforum.util.HttpUtil;
 
 import org.json.JSONObject;
 
@@ -42,7 +41,7 @@ public class PushService extends IntentService {
         SharedPreferences cacheSharedPreferences = getSharedPreferences("MainCache", Activity.MODE_PRIVATE);
         int notificationsNumber = Integer.parseInt(cacheSharedPreferences.getString("notificationsNumber", "0"));
 
-        JSONObject jsonObject = HttpUtil.postRequest(getApplicationContext(), APIAddress.PUSH_SERVICE_URL, parameter, false, true);
+        JSONObject jsonObject = CarbonForumApplication.httpUtil.request("GET", APIAddress.PUSH_SERVICE_URL, parameter, false, true);
         try {
             if(jsonObject != null && jsonObject.getInt("Status") == 1){
                 int newMessageNumber = jsonObject.getInt("NewMessage");

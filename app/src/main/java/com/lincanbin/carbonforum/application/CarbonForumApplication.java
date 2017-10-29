@@ -10,10 +10,12 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.lincanbin.carbonforum.R;
+import com.lincanbin.carbonforum.util.HttpUtil;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerUIUtils;
+
 
 /**
  * Created by 灿斌 on 10/12/2015.
@@ -22,6 +24,7 @@ public class CarbonForumApplication extends Application {
 
     public static SharedPreferences userInfo;
     public static SharedPreferences cacheSharedPreferences;
+    public static HttpUtil httpUtil;
 
     public static Boolean isLoggedIn(){
         return Integer.parseInt(userInfo.getString("UserID", "0")) > 0;
@@ -33,6 +36,7 @@ public class CarbonForumApplication extends Application {
         userInfo = getApplicationContext().getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
         //获取缓存
         cacheSharedPreferences = getSharedPreferences("MainCache", Activity.MODE_PRIVATE);
+        httpUtil = new HttpUtil(getApplicationContext());
         /*
         //initialize and create the image loader logic
         DrawerImageLoader.init(new AbstractDrawerImageLoader() {
@@ -50,7 +54,7 @@ public class CarbonForumApplication extends Application {
         //initialize and create the image loader logic
         DrawerImageLoader.init(new AbstractDrawerImageLoader() {
             @Override
-            public void set(ImageView imageView, Uri uri, Drawable placeholder) {
+            public void set(ImageView imageView, Uri uri, Drawable placeholder, String tag) {
                 Glide.with(imageView.getContext()).load(uri).placeholder(placeholder).into(imageView);
             }
 
@@ -69,7 +73,7 @@ public class CarbonForumApplication extends Application {
                 } else if (DrawerImageLoader.Tags.ACCOUNT_HEADER.name().equals(tag)) {
                     return new IconicsDrawable(ctx).iconText(" ").backgroundColorRes(com.mikepenz.materialdrawer.R.color.primary).sizeDp(56);
                 } else if ("customUrlItem".equals(tag)) {
-                    return new IconicsDrawable(ctx).iconText(" ").backgroundColorRes(R.color.md_blue_500).sizeDp(56);
+                    return new IconicsDrawable(ctx).iconText(" ").backgroundColorRes(R.color.md_red_500).sizeDp(56);
                 }
 
                 //we use the default one for

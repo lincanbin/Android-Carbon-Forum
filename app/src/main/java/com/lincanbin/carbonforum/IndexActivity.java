@@ -25,7 +25,6 @@ import com.lincanbin.carbonforum.adapter.TopicAdapter;
 import com.lincanbin.carbonforum.application.CarbonForumApplication;
 import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.service.PushService;
-import com.lincanbin.carbonforum.util.HttpUtil;
 import com.lincanbin.carbonforum.util.JSONUtil;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -40,7 +39,6 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
-// import com.mikepenz.materialdrawer.util.RecyclerViewCacheUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +46,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+// import com.mikepenz.materialdrawer.util.RecyclerViewCacheUtil;
 
 //http://stackoverflow.com/questions/28150100/setsupportactionbar-throws-error/28150167
 public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -433,7 +433,7 @@ public class IndexActivity extends AppCompatActivity implements SwipeRefreshLayo
         @Override
         protected List<Map<String, Object>> doInBackground(Void... params) {
             List<Map<String,Object>> list;
-            JSONObject jsonObject = HttpUtil.postRequest(IndexActivity.this, APIAddress.HOME_URL(targetPage), null, false, false);
+            JSONObject jsonObject = CarbonForumApplication.httpUtil.request("GET", APIAddress.HOME_URL(targetPage), null, false, false);
             //Log.v("JSON", str);
             if(jsonObject != null){
                 try {

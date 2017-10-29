@@ -37,7 +37,6 @@ import android.widget.Toast;
 import com.lincanbin.carbonforum.application.CarbonForumApplication;
 import com.lincanbin.carbonforum.config.APIAddress;
 import com.lincanbin.carbonforum.tools.VerificationCode;
-import com.lincanbin.carbonforum.util.HttpUtil;
 import com.lincanbin.carbonforum.util.JSONUtil;
 import com.lincanbin.carbonforum.util.MD5Util;
 
@@ -361,7 +360,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            return HttpUtil.postRequest(RegisterActivity.this, APIAddress.REGISTER_URL, parameter, true, false);
+            return CarbonForumApplication.httpUtil.request("POST", APIAddress.REGISTER_URL, parameter, true, false);
         }
 
         @Override
